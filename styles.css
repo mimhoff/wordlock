@@ -94,9 +94,8 @@ h1 {
 }
 
 .tile.locked {
-    border: 3px solid #ffd700;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-    background-color: #2a2a2a;
+    background-color: #8b2e2e;
+    border-color: #8b2e2e;
 }
 
 .tile.correct {
