@@ -82,26 +82,33 @@ header {
     text-align: center;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
     margin-bottom: 10px;
     position: relative;
     min-height: 60px;
-    display: flex;
+    display: grid;
+    grid-template-columns: 120px 1fr 120px;
     align-items: center;
-    justify-content: center;
+    gap: 10px;
 }
 
 h1 {
     font-size: 36px;
     font-weight: bold;
     letter-spacing: 0.5px;
-    margin: 0 120px;
+    margin: 0;
+    grid-column: 2;
+}
+
+#how-to-play-btn {
+    grid-column: 1;
+    justify-self: start;
 }
 
 .header-buttons {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    grid-column: 3;
+    justify-self: end;
     display: flex;
     gap: 10px;
 }
@@ -125,10 +132,6 @@ h1 {
 }
 
 #how-to-play-btn {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
     background-color: var(--btn-secondary);
     border: none;
     border-radius: 4px;
@@ -487,30 +490,34 @@ h1 {
 
 /* Tablet/medium screens */
 @media screen and (max-width: 800px) {
+    header {
+        grid-template-columns: 100px 1fr 100px;
+        gap: 8px;
+    }
+
     h1 {
         font-size: 28px;
-        margin: 0 100px;
     }
 
     #stats-btn,
     #new-game-btn {
-        font-size: 12px;
-        padding: 8px 12px;
+        font-size: 11px;
+        padding: 8px 10px;
     }
 
     #theme-toggle-btn {
         font-size: 14px;
         padding: 8px;
-        min-width: 38px;
+        min-width: 36px;
     }
 
     #how-to-play-btn {
-        font-size: 12px;
-        padding: 8px 12px;
+        font-size: 11px;
+        padding: 8px 10px;
     }
 
     .header-buttons {
-        gap: 6px;
+        gap: 5px;
     }
 }
 
@@ -526,34 +533,32 @@ h1 {
     }
 
     header {
-        min-height: 80px;
-        flex-direction: column;
-        align-items: stretch;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 8px;
         padding-bottom: 15px;
     }
 
     h1 {
-        font-size: 28px;
-        margin: 5px 0;
-        order: 1;
+        font-size: 24px;
+        grid-column: 1;
+        grid-row: 2;
     }
 
     #how-to-play-btn {
-        position: static;
-        transform: none;
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: start;
         font-size: 12px;
         padding: 8px 12px;
-        order: 0;
-        align-self: flex-start;
     }
 
     .header-buttons {
-        position: static;
-        transform: none;
+        grid-column: 1;
+        grid-row: 3;
+        justify-self: center;
         gap: 6px;
-        order: 2;
-        justify-content: center;
-        margin-top: 8px;
+        margin-top: 0;
     }
 
     #theme-toggle-btn {
