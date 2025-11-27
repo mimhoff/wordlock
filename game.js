@@ -341,8 +341,16 @@ function generateShareText() {
         'absent': '⬛'
     };
 
-    guessResults.forEach(result => {
-        shareText += result.map(status => emojiMap[status]).join('') + '\n';
+    guessResults.forEach((result, rowIndex) => {
+        const rowEmojis = result.map((status, colIndex) => {
+            // Check if this position was locked for this row
+            const lockedPos = lockedPositions[rowIndex];
+            if (lockedPos === colIndex && rowIndex > 0) {
+                return '🟥'; // Red square for locked positions
+            }
+            return emojiMap[status];
+        });
+        shareText += rowEmojis.join('') + '\n';
     });
 
     shareText += '\nPlay at mimhoff.com/wordlock';
