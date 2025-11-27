@@ -418,7 +418,9 @@ function submitGuess() {
     if (completeGuess === targetWord) {
         showMessage('You won!');
         gameOver = true;
-        updateStats(true, currentRow + 1);
+        if (isDailyMode) {
+            updateStats(true, currentRow + 1);
+        }
         markDailyComplete();
         saveGameState();
         if (isDailyMode) {
@@ -434,7 +436,9 @@ function submitGuess() {
     if (currentRow >= MAX_GUESSES) {
         showMessage(`Game over! The word was ${targetWord}`);
         gameOver = true;
-        updateStats(false, 0);
+        if (isDailyMode) {
+            updateStats(false, 0);
+        }
         markDailyComplete();
         saveGameState();
         if (isDailyMode) {
