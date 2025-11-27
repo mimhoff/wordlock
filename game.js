@@ -654,11 +654,18 @@ function generateShareText() {
 
 function copyToClipboard() {
     const shareText = generateShareText();
+    const shareBtn = document.getElementById('share-btn');
+    const originalText = shareBtn.textContent;
 
     // Try modern clipboard API first
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(shareText).then(() => {
-            showMessage('Copied to clipboard!');
+            shareBtn.textContent = '✓ Copied!';
+            shareBtn.style.backgroundColor = '#6aaa64';
+            setTimeout(() => {
+                shareBtn.textContent = originalText;
+                shareBtn.style.backgroundColor = '';
+            }, 2000);
         }).catch(() => {
             // Fallback for older browsers
             fallbackCopyToClipboard(shareText);
@@ -669,6 +676,9 @@ function copyToClipboard() {
 }
 
 function fallbackCopyToClipboard(text) {
+    const shareBtn = document.getElementById('share-btn');
+    const originalText = shareBtn.textContent;
+
     const textArea = document.createElement('textarea');
     textArea.value = text;
     textArea.style.position = 'fixed';
@@ -678,9 +688,19 @@ function fallbackCopyToClipboard(text) {
 
     try {
         document.execCommand('copy');
-        showMessage('Copied to clipboard!');
+        shareBtn.textContent = '✓ Copied!';
+        shareBtn.style.backgroundColor = '#6aaa64';
+        setTimeout(() => {
+            shareBtn.textContent = originalText;
+            shareBtn.style.backgroundColor = '';
+        }, 2000);
     } catch (err) {
-        showMessage('Failed to copy');
+        shareBtn.textContent = '✗ Failed to copy';
+        shareBtn.style.backgroundColor = '#d85656';
+        setTimeout(() => {
+            shareBtn.textContent = originalText;
+            shareBtn.style.backgroundColor = '';
+        }, 2000);
     }
 
     document.body.removeChild(textArea);
