@@ -53,10 +53,9 @@ function createBoard() {
             const lockIcon = document.createElement('span');
             lockIcon.className = 'lock-icon';
             lockIcon.innerHTML = `
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="6" y="10" width="12" height="10" rx="1" fill="#6b6b6b"/>
-                    <path d="M8 10V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V10" stroke="#6b6b6b" stroke-width="2" stroke-linecap="round"/>
-                    <circle cx="12" cy="15" r="1.5" fill="#ffffff"/>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="10" width="12" height="10" rx="1" fill="#4a4a4a"/>
+                    <path d="M8 10V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V10" stroke="#4a4a4a" stroke-width="2.5" stroke-linecap="round" fill="#4a4a4a"/>
                 </svg>
             `;
             tile.appendChild(lockIcon);
