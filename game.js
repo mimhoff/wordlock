@@ -24,6 +24,26 @@ function getTodaysSeed() {
     return dateStr.split('-').join('') | 0;
 }
 
+// Theme management
+function getTheme() {
+    return localStorage.getItem('theme') || 'dark';
+}
+
+function setTheme(theme) {
+    localStorage.setItem('theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+
+    // Update theme toggle button icon
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    themeBtn.textContent = theme === 'light' ? '🌙' : '☀️';
+}
+
+function toggleTheme() {
+    const currentTheme = getTheme();
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+}
+
 // Game mode
 let isDailyMode = true;
 let dailyCompleted = false;
@@ -83,6 +103,9 @@ const keyboardLayout = [
 ];
 
 function initGame() {
+    // Load saved theme
+    setTheme(getTheme());
+
     checkDailyCompletion();
     startGame(isDailyMode);
     createBoard();
@@ -761,3 +784,7 @@ window.addEventListener('click', (event) => {
         statsModal.style.display = 'none';
     }
 });
+
+// Theme toggle functionality
+const themeToggleBtn = document.getElementById('theme-toggle-btn');
+themeToggleBtn.addEventListener('click', toggleTheme);

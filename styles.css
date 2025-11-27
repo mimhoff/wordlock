@@ -4,14 +4,72 @@
     box-sizing: border-box;
 }
 
+:root {
+    /* Dark theme (default) */
+    --bg-primary: #121213;
+    --bg-secondary: #1a1a1b;
+    --text-primary: #ffffff;
+    --text-secondary: #aaa;
+    --border-color: #3a3a3c;
+    --border-filled: #565758;
+
+    /* Tile colors */
+    --tile-bg: #121213;
+    --tile-correct: #538d4e;
+    --tile-present: #b59f3b;
+    --tile-absent: #3a3a3c;
+    --tile-locked: #8b2e2e;
+
+    /* Button colors */
+    --btn-primary: #538d4e;
+    --btn-primary-hover: #6aaa64;
+    --btn-secondary: #818384;
+    --btn-secondary-hover: #9a9a9a;
+    --btn-mode: #3a3a3c;
+    --btn-mode-hover: #4a4a4c;
+
+    /* Keyboard */
+    --key-bg: #818384;
+    --key-hover: #9a9a9a;
+}
+
+[data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --text-primary: #1a1a1b;
+    --text-secondary: #787c7e;
+    --border-color: #d3d6da;
+    --border-filled: #878a8c;
+
+    /* Tile colors */
+    --tile-bg: #ffffff;
+    --tile-correct: #6aaa64;
+    --tile-present: #c9b458;
+    --tile-absent: #787c7e;
+    --tile-locked: #d85656;
+
+    /* Button colors */
+    --btn-primary: #6aaa64;
+    --btn-primary-hover: #538d4e;
+    --btn-secondary: #878a8c;
+    --btn-secondary-hover: #787c7e;
+    --btn-mode: #d3d6da;
+    --btn-mode-hover: #b3b6ba;
+
+    /* Keyboard */
+    --key-bg: #d3d6da;
+    --key-hover: #b3b6ba;
+}
+
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #121213;
-    color: #ffffff;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -22,7 +80,7 @@ body {
 
 header {
     text-align: center;
-    border-bottom: 1px solid #3a3a3c;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 20px;
     margin-bottom: 10px;
     position: relative;
@@ -45,7 +103,7 @@ h1 {
 
 #stats-btn,
 #new-game-btn {
-    background-color: #538d4e;
+    background-color: var(--btn-primary);
     border: none;
     border-radius: 4px;
     color: white;
@@ -58,7 +116,7 @@ h1 {
 
 #stats-btn:hover,
 #new-game-btn:hover {
-    background-color: #6aaa64;
+    background-color: var(--btn-primary-hover);
 }
 
 #how-to-play-btn {
@@ -66,7 +124,7 @@ h1 {
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    background-color: #818384;
+    background-color: var(--btn-secondary);
     border: none;
     border-radius: 4px;
     color: white;
@@ -78,7 +136,25 @@ h1 {
 }
 
 #how-to-play-btn:hover {
-    background-color: #9a9a9a;
+    background-color: var(--btn-secondary-hover);
+}
+
+#theme-toggle-btn {
+    position: absolute;
+    left: 50%;
+    bottom: -45px;
+    transform: translateX(-50%);
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.2s ease;
+}
+
+#theme-toggle-btn:hover {
+    transform: translateX(-50%) scale(1.2);
 }
 
 .mode-selector {
@@ -89,9 +165,9 @@ h1 {
 }
 
 .mode-btn {
-    background-color: #3a3a3c;
+    background-color: var(--btn-mode);
     border: none;
-    color: #aaa;
+    color: var(--text-secondary);
     font-size: 14px;
     font-weight: bold;
     padding: 10px 30px;
@@ -110,17 +186,17 @@ h1 {
 }
 
 .mode-btn.active {
-    background-color: #538d4e;
+    background-color: var(--btn-primary);
     color: white;
 }
 
 .mode-btn:not(.active):hover {
-    background-color: #4a4a4c;
+    background-color: var(--btn-mode-hover);
 }
 
 .mode-btn.completed {
-    background-color: #4a4a4c;
-    color: #888;
+    background-color: var(--btn-mode-hover);
+    color: var(--text-secondary);
 }
 
 .modal {
@@ -135,14 +211,14 @@ h1 {
 }
 
 .modal-content {
-    background-color: #1a1a1b;
+    background-color: var(--bg-secondary);
     margin: 10% auto;
     padding: 30px;
-    border: 1px solid #3a3a3c;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     width: 90%;
     max-width: 500px;
-    color: #ffffff;
+    color: var(--text-primary);
     position: relative;
 }
 
@@ -176,7 +252,7 @@ h1 {
     position: absolute;
     right: 15px;
     top: 15px;
-    color: #aaa;
+    color: var(--text-secondary);
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
@@ -185,7 +261,7 @@ h1 {
 
 .close:hover,
 .close:focus {
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .game-container {
@@ -211,14 +287,15 @@ h1 {
 .tile {
     width: 62px;
     height: 62px;
-    border: 2px solid #3a3a3c;
+    border: 2px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 32px;
     font-weight: bold;
     text-transform: uppercase;
-    background-color: #121213;
+    background-color: var(--tile-bg);
+    color: var(--text-primary);
     transition: all 0.3s ease;
     position: relative;
 }
@@ -244,30 +321,31 @@ h1 {
 }
 
 .tile.filled {
-    border-color: #565758;
+    border-color: var(--border-filled);
     animation: pop 0.1s ease-in-out;
 }
 
 .tile.locked {
-    background-color: #8b2e2e;
-    border-color: #8b2e2e;
+    background-color: var(--tile-locked);
+    border-color: var(--tile-locked);
+    color: white;
 }
 
 .tile.correct {
-    background-color: #538d4e;
-    border-color: #538d4e;
+    background-color: var(--tile-correct);
+    border-color: var(--tile-correct);
     color: white;
 }
 
 .tile.present {
-    background-color: #b59f3b;
-    border-color: #b59f3b;
+    background-color: var(--tile-present);
+    border-color: var(--tile-present);
     color: white;
 }
 
 .tile.absent {
-    background-color: #3a3a3c;
-    border-color: #3a3a3c;
+    background-color: var(--tile-absent);
+    border-color: var(--tile-absent);
     color: white;
 }
 
@@ -285,7 +363,7 @@ h1 {
 
 #share-btn {
     margin-top: 20px;
-    background-color: #538d4e;
+    background-color: var(--btn-primary);
     border: none;
     border-radius: 4px;
     color: white;
@@ -297,7 +375,7 @@ h1 {
 }
 
 #share-btn:hover {
-    background-color: #6aaa64;
+    background-color: var(--btn-primary-hover);
 }
 
 #keyboard {
@@ -312,7 +390,7 @@ h1 {
 }
 
 .key {
-    background-color: #818384;
+    background-color: var(--key-bg);
     border: none;
     border-radius: 4px;
     color: white;
@@ -326,7 +404,7 @@ h1 {
 }
 
 .key:hover {
-    background-color: #9a9a9a;
+    background-color: var(--key-hover);
 }
 
 .key.wide {
@@ -335,15 +413,15 @@ h1 {
 }
 
 .key.correct {
-    background-color: #538d4e;
+    background-color: var(--tile-correct);
 }
 
 .key.present {
-    background-color: #b59f3b;
+    background-color: var(--tile-present);
 }
 
 .key.absent {
-    background-color: #3a3a3c;
+    background-color: var(--tile-absent);
 }
 
 /* Statistics Modal */
@@ -361,12 +439,12 @@ h1 {
 .stat-value {
     font-size: 32px;
     font-weight: bold;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .stat-label {
     font-size: 12px;
-    color: #aaa;
+    color: var(--text-secondary);
     margin-top: 5px;
 }
 
@@ -388,7 +466,7 @@ h1 {
 }
 
 .distribution-bar {
-    background-color: #3a3a3c;
+    background-color: var(--btn-mode);
     color: white;
     padding: 4px 8px;
     min-width: 20px;
@@ -399,7 +477,7 @@ h1 {
 }
 
 .distribution-bar.highlight {
-    background-color: #538d4e;
+    background-color: var(--tile-correct);
 }
 
 /* Mobile responsive styles */
