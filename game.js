@@ -339,3 +339,22 @@ initGame();
 
 // Add New Game button event listener
 document.getElementById('new-game-btn').addEventListener('click', resetGame);
+
+// How to Play modal functionality
+const modal = document.getElementById('how-to-play-modal');
+const howToPlayBtn = document.getElementById('how-to-play-btn');
+const closeBtn = document.querySelector('.close');
+
+howToPlayBtn.addEventListener('click', () => {
+    modal.style.display = 'block';
+});
+
+closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+});
