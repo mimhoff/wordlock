@@ -85,8 +85,15 @@ function updateStats(won, guessCount) {
         stats.currentStreak++;
         stats.maxStreak = Math.max(stats.maxStreak, stats.currentStreak);
         stats.guessDistribution[guessCount - 1]++;
+
+        // Save last game info for highlighting
+        stats.lastGameGuessCount = guessCount;
+        stats.lastGameDate = getTodaysSeed().toString();
     } else {
         stats.currentStreak = 0;
+        // Save last game info even for losses
+        stats.lastGameGuessCount = 0; // 0 means loss
+        stats.lastGameDate = getTodaysSeed().toString();
     }
 
     saveStats(stats);
@@ -174,9 +181,6 @@ function restoreDailyGame() {
         } else {
             message.textContent = `Game over! The word was ${targetWord}`;
         }
-
-        // Show share button
-        showShareButton();
 
     } catch (err) {
         console.error('Failed to restore daily game:', err);
@@ -381,12 +385,9 @@ function submitGuess() {
         gameOver = true;
         updateStats(true, currentRow + 1);
         markDailyComplete();
-        setTimeout(() => {
-            showShareButton();
-            if (isDailyMode) {
-                setTimeout(showStatsModal, 500);
-            }
-        }, 1500);
+        if (isDailyMode) {
+            setTimeout(showStatsModal, 1500);
+        }
         return;
     }
 
@@ -399,12 +400,9 @@ function submitGuess() {
         gameOver = true;
         updateStats(false, 0);
         markDailyComplete();
-        setTimeout(() => {
-            showShareButton();
-            if (isDailyMode) {
-                setTimeout(showStatsModal, 500);
-            }
-        }, 1500);
+        if (isDailyMode) {
+            setTimeout(showStatsModal, 1500);
+        }
     } else {
         // Show the locked letter after tile animations complete
         // Animation time: (WORD_LENGTH - 1) * 200ms + small buffer
@@ -577,11 +575,6 @@ function generateShareText() {
     return shareText;
 }
 
-function showShareButton() {
-    const shareBtn = document.getElementById('share-btn');
-    shareBtn.style.display = 'block';
-}
-
 function copyToClipboard() {
     const shareText = generateShareText();
 
@@ -702,6 +695,8 @@ function displayStats() {
     distributionContainer.innerHTML = '';
 
     const maxCount = Math.max(...stats.guessDistribution, 1);
+    const todaySeed = getTodaysSeed().toString();
+    const playedToday = stats.lastGameDate === todaySeed;
 
     stats.guessDistribution.forEach((count, index) => {
         const row = document.createElement('div');
@@ -720,14 +715,22 @@ function displayStats() {
         const width = count > 0 ? Math.max((count / maxCount) * 100, 7) : 7;
         bar.style.width = `${width}%`;
 
-        // Highlight the most recent win
-        if (gameOver && !gameOver && previousGuesses.length === index + 1) {
+        // Highlight today's score if played today
+        if (playedToday && stats.lastGameGuessCount === index + 1) {
             bar.classList.add('highlight');
         }
 
         row.appendChild(bar);
         distributionContainer.appendChild(row);
     });
+
+    // Show share button if a game has been completed today
+    const shareBtn = document.getElementById('share-btn');
+    if (playedToday) {
+        shareBtn.style.display = 'block';
+    } else {
+        shareBtn.style.display = 'none';
+    }
 }
 
 function showStatsModal() {

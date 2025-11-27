@@ -140,21 +140,20 @@ h1 {
 }
 
 #theme-toggle-btn {
-    position: absolute;
-    left: 50%;
-    bottom: -45px;
-    transform: translateX(-50%);
-    background: none;
+    background-color: var(--btn-secondary);
     border: none;
-    color: var(--text-primary);
-    font-size: 20px;
+    border-radius: 4px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+    min-width: 42px;
     cursor: pointer;
-    padding: 5px;
-    transition: transform 0.2s ease;
+    transition: background-color 0.2s ease;
 }
 
 #theme-toggle-btn:hover {
-    transform: translateX(-50%) scale(1.2);
+    background-color: var(--btn-secondary-hover);
 }
 
 .mode-selector {
@@ -361,23 +360,6 @@ h1 {
     text-align: center;
 }
 
-#share-btn {
-    margin-top: 20px;
-    background-color: var(--btn-primary);
-    border: none;
-    border-radius: 4px;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 12px 24px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-#share-btn:hover {
-    background-color: var(--btn-primary-hover);
-}
-
 #keyboard {
     margin-top: 20px;
 }
@@ -480,6 +462,24 @@ h1 {
     background-color: var(--tile-correct);
 }
 
+#stats-modal #share-btn {
+    margin-top: 20px;
+    width: 100%;
+    background-color: var(--btn-primary);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#stats-modal #share-btn:hover {
+    background-color: var(--btn-primary-hover);
+}
+
 /* Mobile responsive styles */
 @media screen and (max-width: 600px) {
     .container {
@@ -495,26 +495,32 @@ h1 {
         font-size: 24px;
     }
 
-    /* Stack header buttons vertically on very small screens */
+    /* Stack header buttons on small screens */
     #how-to-play-btn {
         left: 0;
         top: 0;
         transform: none;
-        font-size: 11px;
-        padding: 6px 10px;
+        font-size: 10px;
+        padding: 6px 8px;
     }
 
     .header-buttons {
         right: 0;
         top: 0;
         transform: none;
-        gap: 5px;
+        gap: 4px;
+    }
+
+    #theme-toggle-btn {
+        font-size: 14px;
+        padding: 6px 8px;
+        min-width: 32px;
     }
 
     #stats-btn,
     #new-game-btn {
-        font-size: 11px;
-        padding: 6px 10px;
+        font-size: 10px;
+        padding: 6px 8px;
     }
 
     /* Smaller tiles */
@@ -581,7 +587,7 @@ h1 {
         font-size: 16px;
     }
 
-    #share-btn {
+    #stats-modal #share-btn {
         font-size: 14px;
         padding: 10px 20px;
     }
