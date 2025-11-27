@@ -48,10 +48,25 @@ function createBoard() {
             const tile = document.createElement('div');
             tile.className = 'tile';
             tile.id = `tile-${i}-${j}`;
+
+            // Add lock indicator
+            const lockIcon = document.createElement('span');
+            lockIcon.className = 'lock-icon';
+            lockIcon.innerHTML = '🔒';
+            tile.appendChild(lockIcon);
+
+            // Add letter container
+            const letter = document.createElement('span');
+            letter.className = 'letter';
+            tile.appendChild(letter);
+
             row.appendChild(tile);
         }
         gameBoard.appendChild(row);
     }
+
+    // Show lock indicators for future rows
+    updateLockIndicators();
 }
 
 function createKeyboard() {
@@ -68,6 +83,24 @@ function createKeyboard() {
         });
         keyboard.appendChild(keyboardRow);
     });
+}
+
+function updateLockIndicators() {
+    // Show lock icons for rows that haven't been played yet
+    for (let row = currentRow; row < MAX_GUESSES; row++) {
+        const lockedPos = lockedPositions[row];
+        if (lockedPos !== undefined) {
+            for (let col = 0; col < WORD_LENGTH; col++) {
+                const tile = document.getElementById(`tile-${row}-${col}`);
+                const lockIcon = tile.querySelector('.lock-icon');
+                if (col === lockedPos && row > 0) {
+                    lockIcon.style.display = 'block';
+                } else {
+                    lockIcon.style.display = 'none';
+                }
+            }
+        }
+    }
 }
 
 function handleKeyPress(e) {
@@ -118,18 +151,19 @@ function updateBoard() {
 
     for (let i = 0; i < WORD_LENGTH; i++) {
         const tile = document.getElementById(`tile-${currentRow}-${i}`);
+        const letterSpan = tile.querySelector('.letter');
 
         // Check if this position is locked
         if (i === lockedPos && currentRow > 0 && previousGuesses.length > 0) {
             const lockedLetter = previousGuesses[currentRow - 1][i];
-            tile.textContent = lockedLetter;
+            letterSpan.textContent = lockedLetter;
             tile.classList.add('filled', 'locked');
         } else if (i < currentGuess.length) {
-            tile.textContent = currentGuess[i];
+            letterSpan.textContent = currentGuess[i];
             tile.classList.add('filled');
             tile.classList.remove('locked');
         } else {
-            tile.textContent = '';
+            letterSpan.textContent = '';
             tile.classList.remove('filled', 'locked');
         }
     }
@@ -157,6 +191,7 @@ function submitGuess() {
 
     currentRow++;
     currentGuess = '';
+    updateLockIndicators();
 
     if (currentRow >= MAX_GUESSES) {
         showMessage(`Game over! The word was ${targetWord}`);

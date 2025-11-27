@@ -65,6 +65,21 @@ h1 {
     text-transform: uppercase;
     background-color: #121213;
     transition: all 0.3s ease;
+    position: relative;
+}
+
+.tile .lock-icon {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-size: 12px;
+    opacity: 0.4;
+    display: none;
+    pointer-events: none;
+}
+
+.tile .letter {
+    z-index: 1;
 }
 
 .tile.filled {
