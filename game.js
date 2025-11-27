@@ -153,6 +153,7 @@ function deleteLetter() {
 
 function updateBoard() {
     const lockedPos = lockedPositions[currentRow];
+    let guessIndex = 0;
 
     for (let i = 0; i < WORD_LENGTH; i++) {
         const tile = document.getElementById(`tile-${currentRow}-${i}`);
@@ -163,13 +164,17 @@ function updateBoard() {
             const lockedLetter = previousGuesses[currentRow - 1][i];
             letterSpan.textContent = lockedLetter;
             tile.classList.add('filled', 'locked');
-        } else if (i < currentGuess.length) {
-            letterSpan.textContent = currentGuess[i];
-            tile.classList.add('filled');
-            tile.classList.remove('locked');
         } else {
-            letterSpan.textContent = '';
-            tile.classList.remove('filled', 'locked');
+            // Display letters from currentGuess, skipping over the locked position
+            if (guessIndex < currentGuess.length) {
+                letterSpan.textContent = currentGuess[guessIndex];
+                tile.classList.add('filled');
+                tile.classList.remove('locked');
+            } else {
+                letterSpan.textContent = '';
+                tile.classList.remove('filled', 'locked');
+            }
+            guessIndex++;
         }
     }
 }
