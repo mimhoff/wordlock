@@ -114,13 +114,15 @@ function initGame() {
     setTheme(getTheme());
 
     checkDailyCompletion();
-    startGame(isDailyMode);
     createBoard();
     createKeyboard();
 
-    // If daily is already completed, restore and display the saved game
-    if (dailyCompleted && isDailyMode) {
-        restoreDailyGame();
+    // Try to restore saved game state for current mode
+    const restored = restoreGameState(isDailyMode ? 'dailyGameState' : 'practiceGameState');
+
+    // If no saved state, start a new game
+    if (!restored) {
+        startGame(isDailyMode);
     }
 
     document.addEventListener('keydown', handleKeyPress);
@@ -139,19 +141,31 @@ function checkDailyCompletion() {
     }
 }
 
-function restoreDailyGame() {
-    const savedState = localStorage.getItem('dailyGameState');
-    if (!savedState) return;
+function restoreGameState(stateKey) {
+    const savedState = localStorage.getItem(stateKey);
+    if (!savedState) return false;
 
     try {
         const gameState = JSON.parse(savedState);
 
+        // For daily mode, check if the saved game is from today
+        if (stateKey === 'dailyGameState') {
+            const today = getTodaysSeed().toString();
+            if (gameState.dateKey !== today) {
+                // Old daily game, don't restore
+                localStorage.removeItem('dailyGameState');
+                return false;
+            }
+        }
+
         // Restore game variables
-        previousGuesses = gameState.previousGuesses;
-        guessResults = gameState.guessResults;
+        targetWord = gameState.targetWord;
+        currentGuess = gameState.currentGuess || '';
         currentRow = gameState.currentRow;
+        previousGuesses = gameState.previousGuesses || [];
+        guessResults = gameState.guessResults || [];
         lockedPositions = gameState.lockedPositions;
-        gameOver = true;
+        gameOver = gameState.gameOver || false;
 
         // Reconstruct the board
         gameState.previousGuesses.forEach((guess, rowIndex) => {
@@ -175,15 +189,28 @@ function restoreDailyGame() {
             }
         });
 
-        // Show appropriate message
-        if (gameState.won) {
-            message.textContent = 'You won!';
-        } else {
-            message.textContent = `Game over! The word was ${targetWord}`;
+        // Update lock indicators for remaining rows
+        updateLockIndicators();
+
+        // Show current row's locked letter if in progress
+        if (!gameOver && currentRow > 0 && currentRow < MAX_GUESSES) {
+            showNextLockedLetter();
         }
 
+        // Show appropriate message if game is over
+        if (gameOver) {
+            const won = previousGuesses[previousGuesses.length - 1] === targetWord;
+            if (won) {
+                message.textContent = 'You won!';
+            } else {
+                message.textContent = `Game over! The word was ${targetWord}`;
+            }
+        }
+
+        return true;
     } catch (err) {
-        console.error('Failed to restore daily game:', err);
+        console.error('Failed to restore game state:', err);
+        return false;
     }
 }
 
@@ -385,6 +412,7 @@ function submitGuess() {
         gameOver = true;
         updateStats(true, currentRow + 1);
         markDailyComplete();
+        saveGameState();
         if (isDailyMode) {
             setTimeout(showStatsModal, 1500);
         }
@@ -400,10 +428,13 @@ function submitGuess() {
         gameOver = true;
         updateStats(false, 0);
         markDailyComplete();
+        saveGameState();
         if (isDailyMode) {
             setTimeout(showStatsModal, 1500);
         }
     } else {
+        // Save in-progress game state
+        saveGameState();
         // Show the locked letter after tile animations complete
         // Animation time: (WORD_LENGTH - 1) * 200ms + small buffer
         setTimeout(() => {
@@ -515,22 +546,31 @@ function showMessage(text) {
     }, 2000);
 }
 
+function saveGameState() {
+    const gameState = {
+        targetWord: targetWord,
+        currentGuess: currentGuess,
+        currentRow: currentRow,
+        previousGuesses: previousGuesses,
+        guessResults: guessResults,
+        lockedPositions: lockedPositions,
+        gameOver: gameOver
+    };
+
+    if (isDailyMode) {
+        const today = getTodaysSeed().toString();
+        gameState.dateKey = today;
+        localStorage.setItem('dailyGameState', JSON.stringify(gameState));
+    } else {
+        localStorage.setItem('practiceGameState', JSON.stringify(gameState));
+    }
+}
+
 function markDailyComplete() {
     if (isDailyMode) {
         const today = getTodaysSeed().toString();
         localStorage.setItem('dailyCompleted', 'true');
         localStorage.setItem('dailyCompletedDate', today);
-
-        // Save game state for sharing later
-        const gameState = {
-            previousGuesses: previousGuesses,
-            guessResults: guessResults,
-            currentRow: currentRow,
-            won: previousGuesses[previousGuesses.length - 1] === targetWord,
-            lockedPositions: lockedPositions
-        };
-        localStorage.setItem('dailyGameState', JSON.stringify(gameState));
-
         dailyCompleted = true;
         updateModeButtons();
     }
@@ -616,6 +656,9 @@ function resetGame() {
         return;
     }
 
+    // Clear practice game state
+    localStorage.removeItem('practiceGameState');
+
     // Reset game state
     currentGuess = '';
     currentRow = 0;
@@ -633,9 +676,6 @@ function resetGame() {
     // Clear message
     message.textContent = '';
 
-    // Hide share button
-    document.getElementById('share-btn').style.display = 'none';
-
     // Reinitialize the game with current mode
     startGame(isDailyMode);
     createBoard();
@@ -643,13 +683,26 @@ function resetGame() {
 }
 
 function switchMode(daily) {
-    if (daily && dailyCompleted) {
-        showMessage('Already completed today!');
-        return;
+    isDailyMode = daily;
+
+    // Clear current board and keyboard
+    gameBoard.innerHTML = '';
+    keyboard.innerHTML = '';
+    message.textContent = '';
+    currentGuess = '';
+
+    // Recreate board and keyboard
+    createBoard();
+    createKeyboard();
+
+    // Try to restore saved game state for the selected mode
+    const restored = restoreGameState(isDailyMode ? 'dailyGameState' : 'practiceGameState');
+
+    // If no saved state, start a new game
+    if (!restored) {
+        startGame(isDailyMode);
     }
 
-    isDailyMode = daily;
-    resetGame();
     updateModeButtons();
 }
 
