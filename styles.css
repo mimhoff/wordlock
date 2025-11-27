@@ -42,7 +42,7 @@ h1 {
 
 #game-board {
     display: grid;
-    grid-template-rows: repeat(6, 1fr);
+    grid-template-rows: repeat(8, 1fr);
     gap: 5px;
     margin-bottom: 20px;
 }
@@ -70,6 +70,12 @@ h1 {
 .tile.filled {
     border-color: #565758;
     animation: pop 0.1s ease-in-out;
+}
+
+.tile.locked {
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    background-color: #2a2a2a;
 }
 
 .tile.correct {

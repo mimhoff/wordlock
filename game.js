@@ -7,12 +7,14 @@ const WORDS = [
 ];
 
 const WORD_LENGTH = 5;
-const MAX_GUESSES = 6;
+const MAX_GUESSES = 8;
 
 let targetWord = WORDS[Math.floor(Math.random() * WORDS.length)];
 let currentGuess = '';
 let currentRow = 0;
 let gameOver = false;
+let lockedPositions = {}; // Maps row number to locked position index
+let previousGuesses = []; // Stores all previous guesses
 
 const gameBoard = document.getElementById('game-board');
 const keyboard = document.getElementById('keyboard');
@@ -25,9 +27,17 @@ const keyboardLayout = [
 ];
 
 function initGame() {
+    initLockedPositions();
     createBoard();
     createKeyboard();
     document.addEventListener('keydown', handleKeyPress);
+}
+
+function initLockedPositions() {
+    // For rows 2-7 (indices 1-6), randomly pick one position to lock
+    for (let row = 1; row <= 6; row++) {
+        lockedPositions[row] = Math.floor(Math.random() * WORD_LENGTH);
+    }
 }
 
 function createBoard() {
@@ -87,7 +97,10 @@ function handleKeyClick(key) {
 }
 
 function addLetter(letter) {
-    if (currentGuess.length < WORD_LENGTH) {
+    const lockedPos = lockedPositions[currentRow];
+    const maxLetters = (lockedPos !== undefined && currentRow > 0) ? WORD_LENGTH - 1 : WORD_LENGTH;
+
+    if (currentGuess.length < maxLetters) {
         currentGuess += letter;
         updateBoard();
     }
@@ -101,27 +114,42 @@ function deleteLetter() {
 }
 
 function updateBoard() {
+    const lockedPos = lockedPositions[currentRow];
+
     for (let i = 0; i < WORD_LENGTH; i++) {
         const tile = document.getElementById(`tile-${currentRow}-${i}`);
-        if (i < currentGuess.length) {
+
+        // Check if this position is locked
+        if (i === lockedPos && currentRow > 0 && previousGuesses.length > 0) {
+            const lockedLetter = previousGuesses[currentRow - 1][i];
+            tile.textContent = lockedLetter;
+            tile.classList.add('filled', 'locked');
+        } else if (i < currentGuess.length) {
             tile.textContent = currentGuess[i];
             tile.classList.add('filled');
+            tile.classList.remove('locked');
         } else {
             tile.textContent = '';
-            tile.classList.remove('filled');
+            tile.classList.remove('filled', 'locked');
         }
     }
 }
 
 function submitGuess() {
-    if (currentGuess.length !== WORD_LENGTH) {
+    // Build the complete guess including locked letter
+    const completeGuess = buildCompleteGuess();
+
+    if (completeGuess.length !== WORD_LENGTH) {
         showMessage('Not enough letters');
         return;
     }
 
-    checkGuess();
+    // Save the complete guess
+    previousGuesses.push(completeGuess);
 
-    if (currentGuess === targetWord) {
+    checkGuess(completeGuess);
+
+    if (completeGuess === targetWord) {
         showMessage('You won!');
         gameOver = true;
         return;
@@ -136,8 +164,32 @@ function submitGuess() {
     }
 }
 
-function checkGuess() {
-    const guess = currentGuess;
+function buildCompleteGuess() {
+    const lockedPos = lockedPositions[currentRow];
+    let completeGuess = '';
+
+    // If there's a locked position, insert the locked letter
+    if (lockedPos !== undefined && currentRow > 0 && previousGuesses.length > 0) {
+        const lockedLetter = previousGuesses[currentRow - 1][lockedPos];
+
+        // Build the complete word by inserting letters around the locked position
+        for (let i = 0; i < WORD_LENGTH; i++) {
+            if (i === lockedPos) {
+                completeGuess += lockedLetter;
+            } else if (i < lockedPos) {
+                completeGuess += currentGuess[i] || '';
+            } else {
+                completeGuess += currentGuess[i - 1] || '';
+            }
+        }
+    } else {
+        completeGuess = currentGuess;
+    }
+
+    return completeGuess;
+}
+
+function checkGuess(guess) {
     const letterCount = {};
 
     // Count letters in target word
