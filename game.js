@@ -36,6 +36,42 @@ let lockedPositions = {}; // Maps row number to locked position index
 let previousGuesses = []; // Stores all previous guesses
 let guessResults = []; // Stores color results for sharing
 
+// Statistics
+function getStats() {
+    const stats = localStorage.getItem('stats');
+    if (!stats) {
+        return {
+            gamesPlayed: 0,
+            gamesWon: 0,
+            currentStreak: 0,
+            maxStreak: 0,
+            guessDistribution: [0, 0, 0, 0, 0, 0, 0, 0] // Index 0 = won in 1 guess, etc.
+        };
+    }
+    return JSON.parse(stats);
+}
+
+function saveStats(stats) {
+    localStorage.setItem('stats', JSON.stringify(stats));
+}
+
+function updateStats(won, guessCount) {
+    const stats = getStats();
+
+    stats.gamesPlayed++;
+
+    if (won) {
+        stats.gamesWon++;
+        stats.currentStreak++;
+        stats.maxStreak = Math.max(stats.maxStreak, stats.currentStreak);
+        stats.guessDistribution[guessCount - 1]++;
+    } else {
+        stats.currentStreak = 0;
+    }
+
+    saveStats(stats);
+}
+
 const gameBoard = document.getElementById('game-board');
 const keyboard = document.getElementById('keyboard');
 const message = document.getElementById('message');
@@ -223,9 +259,10 @@ function updateLockIndicators() {
 function handleKeyPress(e) {
     if (gameOver) return;
 
-    // Don't process keyboard input if modal is open
-    const modal = document.getElementById('how-to-play-modal');
-    if (modal.style.display === 'block') return;
+    // Don't process keyboard input if any modal is open
+    const howToPlayModal = document.getElementById('how-to-play-modal');
+    const statsModal = document.getElementById('stats-modal');
+    if (howToPlayModal.style.display === 'block' || statsModal.style.display === 'block') return;
 
     const key = e.key.toUpperCase();
 
@@ -319,8 +356,14 @@ function submitGuess() {
     if (completeGuess === targetWord) {
         showMessage('You won!');
         gameOver = true;
+        updateStats(true, currentRow + 1);
         markDailyComplete();
-        setTimeout(showShareButton, 1500);
+        setTimeout(() => {
+            showShareButton();
+            if (isDailyMode) {
+                setTimeout(showStatsModal, 500);
+            }
+        }, 1500);
         return;
     }
 
@@ -331,8 +374,14 @@ function submitGuess() {
     if (currentRow >= MAX_GUESSES) {
         showMessage(`Game over! The word was ${targetWord}`);
         gameOver = true;
+        updateStats(false, 0);
         markDailyComplete();
-        setTimeout(showShareButton, 1500);
+        setTimeout(() => {
+            showShareButton();
+            if (isDailyMode) {
+                setTimeout(showStatsModal, 500);
+            }
+        }, 1500);
     } else {
         // Show the locked letter after tile animations complete
         // Animation time: (WORD_LENGTH - 1) * 200ms + small buffer
@@ -611,6 +660,59 @@ function updateModeButtons() {
     }
 }
 
+function displayStats() {
+    const stats = getStats();
+
+    // Update stat values
+    document.getElementById('stat-played').textContent = stats.gamesPlayed;
+
+    const winPct = stats.gamesPlayed > 0
+        ? Math.round((stats.gamesWon / stats.gamesPlayed) * 100)
+        : 0;
+    document.getElementById('stat-win-pct').textContent = winPct;
+
+    document.getElementById('stat-current-streak').textContent = stats.currentStreak;
+    document.getElementById('stat-max-streak').textContent = stats.maxStreak;
+
+    // Display guess distribution
+    const distributionContainer = document.getElementById('guess-distribution');
+    distributionContainer.innerHTML = '';
+
+    const maxCount = Math.max(...stats.guessDistribution, 1);
+
+    stats.guessDistribution.forEach((count, index) => {
+        const row = document.createElement('div');
+        row.className = 'distribution-row';
+
+        const label = document.createElement('div');
+        label.className = 'distribution-label';
+        label.textContent = index + 1;
+        row.appendChild(label);
+
+        const bar = document.createElement('div');
+        bar.className = 'distribution-bar';
+        bar.textContent = count;
+
+        // Calculate width as percentage of max count (minimum 7% for visibility)
+        const width = count > 0 ? Math.max((count / maxCount) * 100, 7) : 7;
+        bar.style.width = `${width}%`;
+
+        // Highlight the most recent win
+        if (gameOver && !gameOver && previousGuesses.length === index + 1) {
+            bar.classList.add('highlight');
+        }
+
+        row.appendChild(bar);
+        distributionContainer.appendChild(row);
+    });
+}
+
+function showStatsModal() {
+    displayStats();
+    const statsModal = document.getElementById('stats-modal');
+    statsModal.style.display = 'block';
+}
+
 // Initialize the game
 initGame();
 
@@ -640,5 +742,22 @@ closeBtn.addEventListener('click', () => {
 window.addEventListener('click', (event) => {
     if (event.target === modal) {
         modal.style.display = 'none';
+    }
+});
+
+// Stats modal functionality
+const statsModal = document.getElementById('stats-modal');
+const statsBtn = document.getElementById('stats-btn');
+const statsCloseBtn = document.querySelector('.stats-close');
+
+statsBtn.addEventListener('click', showStatsModal);
+
+statsCloseBtn.addEventListener('click', () => {
+    statsModal.style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === statsModal) {
+        statsModal.style.display = 'none';
     }
 });

@@ -12,7 +12,10 @@
         <header>
             <button id="how-to-play-btn">How to Play</button>
             <h1>WordLock</h1>
-            <button id="new-game-btn">New Game</button>
+            <div class="header-buttons">
+                <button id="stats-btn">Stats</button>
+                <button id="new-game-btn">New Game</button>
+            </div>
         </header>
 
         <div class="mode-selector">
@@ -49,6 +52,33 @@
             <p>Plan your guesses carefully - your early word choices will constrain later guesses!</p>
 
             <p style="margin-top: 20px; font-style: italic;">A lock icon shows which position will be locked before you start typing each row.</p>
+        </div>
+    </div>
+
+    <div id="stats-modal" class="modal">
+        <div class="modal-content">
+            <span class="close stats-close">&times;</span>
+            <h2>Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-played">0</div>
+                    <div class="stat-label">Played</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-win-pct">0</div>
+                    <div class="stat-label">Win %</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-current-streak">0</div>
+                    <div class="stat-label">Current Streak</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-max-streak">0</div>
+                    <div class="stat-label">Max Streak</div>
+                </div>
+            </div>
+            <h3>Guess Distribution</h3>
+            <div id="guess-distribution"></div>
         </div>
     </div>
 
