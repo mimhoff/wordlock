@@ -184,8 +184,9 @@ function submitGuess() {
         return;
     }
 
-    // Validate the word is in the valid guesses list
-    if (!VALID_GUESSES.includes(completeGuess.toLowerCase())) {
+    // Validate the word is in either the solutions or valid guesses list
+    const guessLower = completeGuess.toLowerCase();
+    if (!SOLUTION_WORDS.includes(guessLower) && !VALID_GUESSES.includes(guessLower)) {
         showMessage('Not in word list');
         return;
     }
