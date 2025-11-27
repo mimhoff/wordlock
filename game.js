@@ -1,15 +1,11 @@
-// Word list - you can expand this later
-const WORDS = [
-    'REACT', 'FOCUS', 'BRAIN', 'LUNCH', 'TRADE', 'CROWN', 'BEACH',
-    'STORM', 'PLANT', 'MUSIC', 'HOUSE', 'LIGHT', 'WORLD', 'SPACE',
-    'SHARK', 'SNAKE', 'APPLE', 'BREAD', 'DANCE', 'FLAME', 'GRAPH',
-    'HAPPY', 'JUMPS', 'KNIFE', 'LEMON', 'MOTOR', 'NIGHT', 'OCEAN'
-];
+// Word lists are loaded from words.js
+// SOLUTION_WORDS: possible answers (2,314 words)
+// VALID_GUESSES: all acceptable guesses (10,656 words)
 
 const WORD_LENGTH = 5;
 const MAX_GUESSES = 8;
 
-let targetWord = WORDS[Math.floor(Math.random() * WORDS.length)];
+let targetWord = SOLUTION_WORDS[Math.floor(Math.random() * SOLUTION_WORDS.length)].toUpperCase();
 let currentGuess = '';
 let currentRow = 0;
 let gameOver = false;
@@ -188,6 +184,12 @@ function submitGuess() {
         return;
     }
 
+    // Validate the word is in the valid guesses list
+    if (!VALID_GUESSES.includes(completeGuess.toLowerCase())) {
+        showMessage('Not in word list');
+        return;
+    }
+
     // Save the complete guess
     previousGuesses.push(completeGuess);
 
@@ -312,7 +314,7 @@ function showMessage(text) {
 
 function resetGame() {
     // Reset game state
-    targetWord = WORDS[Math.floor(Math.random() * WORDS.length)];
+    targetWord = SOLUTION_WORDS[Math.floor(Math.random() * SOLUTION_WORDS.length)].toUpperCase();
     currentGuess = '';
     currentRow = 0;
     gameOver = false;
