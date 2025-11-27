@@ -201,6 +201,20 @@ function submitGuess() {
     if (currentRow >= MAX_GUESSES) {
         showMessage(`Game over! The word was ${targetWord}`);
         gameOver = true;
+    } else {
+        // Show the locked letter for the next row
+        showNextLockedLetter();
+    }
+}
+
+function showNextLockedLetter() {
+    const lockedPos = lockedPositions[currentRow];
+    if (lockedPos !== undefined && currentRow > 0 && previousGuesses.length > 0) {
+        const lockedLetter = previousGuesses[currentRow - 1][lockedPos];
+        const tile = document.getElementById(`tile-${currentRow}-${lockedPos}`);
+        const letterSpan = tile.querySelector('.letter');
+        letterSpan.textContent = lockedLetter;
+        tile.classList.add('filled', 'locked');
     }
 }
 
