@@ -201,7 +201,7 @@ h1 {
     background-color: var(--btn-mode-hover);
 }
 
-.mode-btn.completed {
+.mode-btn.completed:not(.active) {
     background-color: var(--btn-mode-hover);
     color: var(--text-secondary);
 }

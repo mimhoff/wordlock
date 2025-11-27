@@ -691,16 +691,38 @@ function switchMode(daily) {
     message.textContent = '';
     currentGuess = '';
 
+    // Try to restore saved game state for the selected mode first
+    const stateKey = isDailyMode ? 'dailyGameState' : 'practiceGameState';
+    const savedState = localStorage.getItem(stateKey);
+    let hasState = false;
+
+    if (savedState) {
+        try {
+            const gameState = JSON.parse(savedState);
+            // For daily mode, check if the saved game is from today
+            if (stateKey === 'dailyGameState') {
+                const today = getTodaysSeed().toString();
+                hasState = (gameState.dateKey === today);
+            } else {
+                hasState = true;
+            }
+        } catch (err) {
+            hasState = false;
+        }
+    }
+
+    // If no saved state, start a new game to set up locks
+    if (!hasState) {
+        startGame(isDailyMode);
+    }
+
     // Recreate board and keyboard
     createBoard();
     createKeyboard();
 
-    // Try to restore saved game state for the selected mode
-    const restored = restoreGameState(isDailyMode ? 'dailyGameState' : 'practiceGameState');
-
-    // If no saved state, start a new game
-    if (!restored) {
-        startGame(isDailyMode);
+    // Restore saved game state if available
+    if (hasState) {
+        restoreGameState(stateKey);
     }
 
     updateModeButtons();
