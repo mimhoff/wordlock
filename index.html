@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="WordLock - A strategic Wordle clone with locked letters">
+    <meta name="description" content="WordLock - Wordle, but with locks!">
     <title>WordLock</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -14,6 +14,11 @@
             <h1>WordLock</h1>
             <button id="new-game-btn">New Game</button>
         </header>
+
+        <div class="mode-selector">
+            <button id="daily-mode-btn" class="mode-btn active">Daily</button>
+            <button id="practice-mode-btn" class="mode-btn">Practice</button>
+        </div>
 
         <div class="game-container">
             <div id="game-board"></div>

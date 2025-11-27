@@ -5,7 +5,30 @@
 const WORD_LENGTH = 5;
 const MAX_GUESSES = 8;
 
-let targetWord = SOLUTION_WORDS[Math.floor(Math.random() * SOLUTION_WORDS.length)].toUpperCase();
+// Seeded random number generator (Mulberry32)
+function seededRandom(seed) {
+    return function() {
+        seed |= 0;
+        seed = seed + 0x6D2B79F5 | 0;
+        let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+}
+
+// Get today's date as a seed
+function getTodaysSeed() {
+    const today = new Date();
+    const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    // Convert date string to number
+    return dateStr.split('-').join('') | 0;
+}
+
+// Game mode
+let isDailyMode = true;
+let dailyCompleted = false;
+
+let targetWord;
 let currentGuess = '';
 let currentRow = 0;
 let gameOver = false;
@@ -24,16 +47,51 @@ const keyboardLayout = [
 ];
 
 function initGame() {
-    initLockedPositions();
+    checkDailyCompletion();
+    startGame(isDailyMode);
     createBoard();
     createKeyboard();
     document.addEventListener('keydown', handleKeyPress);
+    updateModeButtons();
 }
 
-function initLockedPositions() {
+function checkDailyCompletion() {
+    const today = getTodaysSeed().toString();
+    const completed = localStorage.getItem('dailyCompleted');
+    const completedDate = localStorage.getItem('dailyCompletedDate');
+
+    if (completed === 'true' && completedDate === today) {
+        dailyCompleted = true;
+    } else {
+        dailyCompleted = false;
+    }
+}
+
+function startGame(daily) {
+    isDailyMode = daily;
+
+    if (daily) {
+        // Use seeded random for daily mode
+        const seed = getTodaysSeed();
+        const rng = seededRandom(seed);
+
+        // Select word using seeded random
+        const wordIndex = Math.floor(rng() * SOLUTION_WORDS.length);
+        targetWord = SOLUTION_WORDS[wordIndex].toUpperCase();
+
+        // Generate locked positions using seeded random
+        initLockedPositions(rng);
+    } else {
+        // Use regular random for practice mode
+        targetWord = SOLUTION_WORDS[Math.floor(Math.random() * SOLUTION_WORDS.length)].toUpperCase();
+        initLockedPositions(Math.random);
+    }
+}
+
+function initLockedPositions(rng) {
     // For rows 2-7 (indices 1-6), randomly pick one position to lock
     for (let row = 1; row <= 6; row++) {
-        lockedPositions[row] = Math.floor(Math.random() * WORD_LENGTH);
+        lockedPositions[row] = Math.floor(rng() * WORD_LENGTH);
     }
 }
 
@@ -204,6 +262,7 @@ function submitGuess() {
     if (completeGuess === targetWord) {
         showMessage('You won!');
         gameOver = true;
+        markDailyComplete();
         setTimeout(showShareButton, 1500);
         return;
     }
@@ -215,6 +274,7 @@ function submitGuess() {
     if (currentRow >= MAX_GUESSES) {
         showMessage(`Game over! The word was ${targetWord}`);
         gameOver = true;
+        markDailyComplete();
         setTimeout(showShareButton, 1500);
     } else {
         // Show the locked letter after tile animations complete
@@ -328,11 +388,22 @@ function showMessage(text) {
     }, 2000);
 }
 
+function markDailyComplete() {
+    if (isDailyMode) {
+        const today = getTodaysSeed().toString();
+        localStorage.setItem('dailyCompleted', 'true');
+        localStorage.setItem('dailyCompletedDate', today);
+        dailyCompleted = true;
+        updateModeButtons();
+    }
+}
+
 function generateShareText() {
     const won = previousGuesses[previousGuesses.length - 1] === targetWord;
     const score = won ? (currentRow + 1) : 'X';
+    const mode = isDailyMode ? 'Daily' : 'Practice';
 
-    let shareText = `WordLock ${score}/${MAX_GUESSES}\n\n`;
+    let shareText = `WordLock ${mode} ${score}/${MAX_GUESSES}\n\n`;
 
     // Add colored squares for each guess
     const emojiMap = {
@@ -399,7 +470,6 @@ function fallbackCopyToClipboard(text) {
 
 function resetGame() {
     // Reset game state
-    targetWord = SOLUTION_WORDS[Math.floor(Math.random() * SOLUTION_WORDS.length)].toUpperCase();
     currentGuess = '';
     currentRow = 0;
     gameOver = false;
@@ -419,10 +489,44 @@ function resetGame() {
     // Hide share button
     document.getElementById('share-btn').style.display = 'none';
 
-    // Reinitialize the game
-    initLockedPositions();
+    // Reinitialize the game with current mode
+    startGame(isDailyMode);
     createBoard();
     createKeyboard();
+}
+
+function switchMode(daily) {
+    if (daily && dailyCompleted) {
+        showMessage('Already completed today!');
+        return;
+    }
+
+    isDailyMode = daily;
+    resetGame();
+    updateModeButtons();
+}
+
+function updateModeButtons() {
+    const dailyBtn = document.getElementById('daily-mode-btn');
+    const practiceBtn = document.getElementById('practice-mode-btn');
+
+    // Update active state
+    if (isDailyMode) {
+        dailyBtn.classList.add('active');
+        practiceBtn.classList.remove('active');
+    } else {
+        dailyBtn.classList.remove('active');
+        practiceBtn.classList.add('active');
+    }
+
+    // Show completed state on daily button
+    if (dailyCompleted) {
+        dailyBtn.classList.add('completed');
+        dailyBtn.textContent = 'Daily ✓';
+    } else {
+        dailyBtn.classList.remove('completed');
+        dailyBtn.textContent = 'Daily';
+    }
 }
 
 // Initialize the game
@@ -433,6 +537,10 @@ document.getElementById('new-game-btn').addEventListener('click', resetGame);
 
 // Add Share button event listener
 document.getElementById('share-btn').addEventListener('click', copyToClipboard);
+
+// Add mode button event listeners
+document.getElementById('daily-mode-btn').addEventListener('click', () => switchMode(true));
+document.getElementById('practice-mode-btn').addEventListener('click', () => switchMode(false));
 
 // How to Play modal functionality
 const modal = document.getElementById('how-to-play-modal');
