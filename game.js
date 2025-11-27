@@ -34,8 +34,16 @@ function setTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
 
     // Update theme toggle button icon
-    const themeBtn = document.getElementById('theme-toggle-btn');
-    themeBtn.textContent = theme === 'light' ? '🌙' : '☀️';
+    const moonIcon = document.querySelector('.moon-icon');
+    const sunIcon = document.querySelector('.sun-icon');
+
+    if (theme === 'light') {
+        moonIcon.style.display = 'block';
+        sunIcon.style.display = 'none';
+    } else {
+        moonIcon.style.display = 'none';
+        sunIcon.style.display = 'block';
+    }
 }
 
 function toggleTheme() {

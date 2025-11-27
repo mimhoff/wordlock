@@ -158,10 +158,19 @@ h1 {
     min-width: 42px;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #theme-toggle-btn:hover {
     background-color: var(--btn-secondary-hover);
+}
+
+.theme-icon {
+    width: 20px;
+    height: 20px;
+    display: block;
 }
 
 .mode-selector {
@@ -540,9 +549,13 @@ h1 {
     }
 
     #theme-toggle-btn {
-        font-size: 14px;
         padding: 8px;
         min-width: 36px;
+    }
+
+    .theme-icon {
+        width: 18px;
+        height: 18px;
     }
 
     #how-to-play-btn {
@@ -607,9 +620,13 @@ h1 {
     }
 
     #theme-toggle-btn {
-        font-size: 16px;
         padding: 8px;
         min-width: 40px;
+    }
+
+    .theme-icon {
+        width: 20px;
+        height: 20px;
     }
 
     #stats-btn,
