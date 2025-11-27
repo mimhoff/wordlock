@@ -469,9 +469,17 @@ function markDailyComplete() {
 function generateShareText() {
     const won = previousGuesses[previousGuesses.length - 1] === targetWord;
     const score = won ? (currentRow + 1) : 'X';
-    const mode = isDailyMode ? 'Daily' : 'Practice';
 
-    let shareText = `WordLock ${mode} ${score}/${MAX_GUESSES}\n\n`;
+    let shareText;
+    if (isDailyMode) {
+        // Add date for daily mode
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        shareText = `WordLock Daily ${day}/${month} - ${score}/${MAX_GUESSES}\n\n`;
+    } else {
+        shareText = `WordLock Practice ${score}/${MAX_GUESSES}\n\n`;
+    }
 
     // Add colored squares for each guess
     const emojiMap = {
