@@ -711,8 +711,16 @@ function switchMode(daily) {
         }
     }
 
-    // If no saved state, start a new game to set up locks
+    // If no saved state, start a fresh game
     if (!hasState) {
+        // Reset all game variables
+        currentGuess = '';
+        currentRow = 0;
+        gameOver = false;
+        previousGuesses = [];
+        guessResults = [];
+
+        // Start new game (sets targetWord and lockedPositions)
         startGame(isDailyMode);
     }
 
