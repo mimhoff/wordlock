@@ -401,3 +401,143 @@ h1 {
 .distribution-bar.highlight {
     background-color: #538d4e;
 }
+
+/* Mobile responsive styles */
+@media screen and (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    header {
+        padding-bottom: 15px;
+        margin-bottom: 10px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    /* Stack header buttons vertically on very small screens */
+    #how-to-play-btn {
+        left: 0;
+        top: 0;
+        transform: none;
+        font-size: 11px;
+        padding: 6px 10px;
+    }
+
+    .header-buttons {
+        right: 0;
+        top: 0;
+        transform: none;
+        gap: 5px;
+    }
+
+    #stats-btn,
+    #new-game-btn {
+        font-size: 11px;
+        padding: 6px 10px;
+    }
+
+    /* Smaller tiles */
+    .tile {
+        width: 52px;
+        height: 52px;
+        font-size: 28px;
+    }
+
+    .tile .lock-icon svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    /* Smaller keyboard */
+    .key {
+        font-size: 12px;
+        padding: 12px 0;
+        min-width: 28px;
+    }
+
+    .key.wide {
+        min-width: 42px;
+        font-size: 10px;
+    }
+
+    .keyboard-row {
+        gap: 4px;
+        margin-bottom: 6px;
+    }
+
+    /* Smaller mode buttons */
+    .mode-btn {
+        font-size: 12px;
+        padding: 8px 20px;
+    }
+
+    /* Modal adjustments */
+    .modal-content {
+        margin: 5% auto;
+        padding: 20px;
+        width: 95%;
+    }
+
+    .modal-content h2 {
+        font-size: 22px;
+    }
+
+    .modal-content h3 {
+        font-size: 16px;
+    }
+
+    /* Stats grid - 2x2 on mobile */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .stat-value {
+        font-size: 28px;
+    }
+
+    #message {
+        font-size: 16px;
+    }
+
+    #share-btn {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+}
+
+/* Extra small phones */
+@media screen and (max-width: 380px) {
+    h1 {
+        font-size: 20px;
+    }
+
+    .tile {
+        width: 46px;
+        height: 46px;
+        font-size: 24px;
+    }
+
+    .tile .lock-icon svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .key {
+        font-size: 11px;
+        padding: 10px 0;
+        min-width: 24px;
+    }
+
+    .key.wide {
+        min-width: 38px;
+        font-size: 9px;
+    }
+
+    .keyboard-row {
+        gap: 3px;
+    }
+}
