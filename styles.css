@@ -84,12 +84,17 @@ header {
     padding-bottom: 20px;
     margin-bottom: 10px;
     position: relative;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 h1 {
     font-size: 36px;
     font-weight: bold;
     letter-spacing: 0.5px;
+    margin: 0 120px;
 }
 
 .header-buttons {
@@ -480,6 +485,35 @@ h1 {
     background-color: var(--btn-primary-hover);
 }
 
+/* Tablet/medium screens */
+@media screen and (max-width: 800px) {
+    h1 {
+        font-size: 28px;
+        margin: 0 100px;
+    }
+
+    #stats-btn,
+    #new-game-btn {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    #theme-toggle-btn {
+        font-size: 14px;
+        padding: 8px;
+        min-width: 38px;
+    }
+
+    #how-to-play-btn {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    .header-buttons {
+        gap: 6px;
+    }
+}
+
 /* Mobile responsive styles */
 @media screen and (max-width: 600px) {
     .container {
@@ -491,36 +525,47 @@ h1 {
         margin-bottom: 10px;
     }
 
-    h1 {
-        font-size: 24px;
+    header {
+        min-height: 80px;
+        flex-direction: column;
+        align-items: stretch;
+        padding-bottom: 15px;
     }
 
-    /* Stack header buttons on small screens */
+    h1 {
+        font-size: 28px;
+        margin: 5px 0;
+        order: 1;
+    }
+
     #how-to-play-btn {
-        left: 0;
-        top: 0;
+        position: static;
         transform: none;
-        font-size: 10px;
-        padding: 6px 8px;
+        font-size: 12px;
+        padding: 8px 12px;
+        order: 0;
+        align-self: flex-start;
     }
 
     .header-buttons {
-        right: 0;
-        top: 0;
+        position: static;
         transform: none;
-        gap: 4px;
+        gap: 6px;
+        order: 2;
+        justify-content: center;
+        margin-top: 8px;
     }
 
     #theme-toggle-btn {
-        font-size: 14px;
-        padding: 6px 8px;
-        min-width: 32px;
+        font-size: 16px;
+        padding: 8px;
+        min-width: 40px;
     }
 
     #stats-btn,
     #new-game-btn {
-        font-size: 10px;
-        padding: 6px 8px;
+        font-size: 12px;
+        padding: 8px 12px;
     }
 
     /* Smaller tiles */
