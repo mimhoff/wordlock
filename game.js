@@ -11,6 +11,7 @@ let currentRow = 0;
 let gameOver = false;
 let lockedPositions = {}; // Maps row number to locked position index
 let previousGuesses = []; // Stores all previous guesses
+let guessResults = []; // Stores color results for sharing
 
 const gameBoard = document.getElementById('game-board');
 const keyboard = document.getElementById('keyboard');
@@ -203,6 +204,7 @@ function submitGuess() {
     if (completeGuess === targetWord) {
         showMessage('You won!');
         gameOver = true;
+        setTimeout(showShareButton, 1500);
         return;
     }
 
@@ -213,6 +215,7 @@ function submitGuess() {
     if (currentRow >= MAX_GUESSES) {
         showMessage(`Game over! The word was ${targetWord}`);
         gameOver = true;
+        setTimeout(showShareButton, 1500);
     } else {
         // Show the locked letter after tile animations complete
         // Animation time: (WORD_LENGTH - 1) * 200ms + small buffer
@@ -284,6 +287,9 @@ function checkGuess(guess) {
         }
     }
 
+    // Save results for sharing
+    guessResults.push([...result]);
+
     // Apply colors to tiles
     for (let i = 0; i < WORD_LENGTH; i++) {
         const tile = document.getElementById(`tile-${currentRow}-${i}`);
@@ -322,6 +328,67 @@ function showMessage(text) {
     }, 2000);
 }
 
+function generateShareText() {
+    const won = previousGuesses[previousGuesses.length - 1] === targetWord;
+    const score = won ? (currentRow + 1) : 'X';
+
+    let shareText = `WordLock ${score}/${MAX_GUESSES}\n\n`;
+
+    // Add colored squares for each guess
+    const emojiMap = {
+        'correct': '🟩',
+        'present': '🟨',
+        'absent': '⬛'
+    };
+
+    guessResults.forEach(result => {
+        shareText += result.map(status => emojiMap[status]).join('') + '\n';
+    });
+
+    shareText += '\nPlay at mimhoff.com/wordlock';
+
+    return shareText;
+}
+
+function showShareButton() {
+    const shareBtn = document.getElementById('share-btn');
+    shareBtn.style.display = 'block';
+}
+
+function copyToClipboard() {
+    const shareText = generateShareText();
+
+    // Try modern clipboard API first
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareText).then(() => {
+            showMessage('Copied to clipboard!');
+        }).catch(() => {
+            // Fallback for older browsers
+            fallbackCopyToClipboard(shareText);
+        });
+    } else {
+        fallbackCopyToClipboard(shareText);
+    }
+}
+
+function fallbackCopyToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+
+    try {
+        document.execCommand('copy');
+        showMessage('Copied to clipboard!');
+    } catch (err) {
+        showMessage('Failed to copy');
+    }
+
+    document.body.removeChild(textArea);
+}
+
 function resetGame() {
     // Reset game state
     targetWord = SOLUTION_WORDS[Math.floor(Math.random() * SOLUTION_WORDS.length)].toUpperCase();
@@ -330,6 +397,7 @@ function resetGame() {
     gameOver = false;
     lockedPositions = {};
     previousGuesses = [];
+    guessResults = [];
 
     // Clear the board
     gameBoard.innerHTML = '';
@@ -339,6 +407,9 @@ function resetGame() {
 
     // Clear message
     message.textContent = '';
+
+    // Hide share button
+    document.getElementById('share-btn').style.display = 'none';
 
     // Reinitialize the game
     initLockedPositions();
@@ -351,6 +422,9 @@ initGame();
 
 // Add New Game button event listener
 document.getElementById('new-game-btn').addEventListener('click', resetGame);
+
+// Add Share button event listener
+document.getElementById('share-btn').addEventListener('click', copyToClipboard);
 
 // How to Play modal functionality
 const modal = document.getElementById('how-to-play-modal');
