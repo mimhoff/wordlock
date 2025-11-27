@@ -469,6 +469,12 @@ function fallbackCopyToClipboard(text) {
 }
 
 function resetGame() {
+    // Don't allow reset in daily mode
+    if (isDailyMode) {
+        showMessage('Switch to Practice for unlimited games');
+        return;
+    }
+
     // Reset game state
     currentGuess = '';
     currentRow = 0;
