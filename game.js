@@ -122,19 +122,44 @@ function initGame() {
     setTheme(getTheme());
 
     checkDailyCompletion();
+
+    // Check if we have saved state before creating board
+    const stateKey = isDailyMode ? 'dailyGameState' : 'practiceGameState';
+    const hasSavedState = checkForSavedState(stateKey);
+
+    // If no saved state, start a new game to set up locks
+    if (!hasSavedState) {
+        startGame(isDailyMode);
+    }
+
+    // Create board and keyboard
     createBoard();
     createKeyboard();
 
-    // Try to restore saved game state for current mode
-    const restored = restoreGameState(isDailyMode ? 'dailyGameState' : 'practiceGameState');
-
-    // If no saved state, start a new game
-    if (!restored) {
-        startGame(isDailyMode);
+    // If we have saved state, restore it now that board exists
+    if (hasSavedState) {
+        restoreGameState(stateKey);
     }
 
     document.addEventListener('keydown', handleKeyPress);
     updateModeButtons();
+}
+
+function checkForSavedState(stateKey) {
+    const savedState = localStorage.getItem(stateKey);
+    if (!savedState) return false;
+
+    try {
+        const gameState = JSON.parse(savedState);
+        // For daily mode, check if the saved game is from today
+        if (stateKey === 'dailyGameState') {
+            const today = getTodaysSeed().toString();
+            return gameState.dateKey === today;
+        }
+        return true;
+    } catch (err) {
+        return false;
+    }
 }
 
 function checkDailyCompletion() {
