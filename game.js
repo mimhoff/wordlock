@@ -51,6 +51,12 @@ function initGame() {
     startGame(isDailyMode);
     createBoard();
     createKeyboard();
+
+    // If daily is already completed, restore and display the saved game
+    if (dailyCompleted && isDailyMode) {
+        restoreDailyGame();
+    }
+
     document.addEventListener('keydown', handleKeyPress);
     updateModeButtons();
 }
@@ -64,6 +70,57 @@ function checkDailyCompletion() {
         dailyCompleted = true;
     } else {
         dailyCompleted = false;
+    }
+}
+
+function restoreDailyGame() {
+    const savedState = localStorage.getItem('dailyGameState');
+    if (!savedState) return;
+
+    try {
+        const gameState = JSON.parse(savedState);
+
+        // Restore game variables
+        previousGuesses = gameState.previousGuesses;
+        guessResults = gameState.guessResults;
+        currentRow = gameState.currentRow;
+        lockedPositions = gameState.lockedPositions;
+        gameOver = true;
+
+        // Reconstruct the board
+        gameState.previousGuesses.forEach((guess, rowIndex) => {
+            const result = gameState.guessResults[rowIndex];
+
+            // Fill in the letters
+            for (let i = 0; i < WORD_LENGTH; i++) {
+                const tile = document.getElementById(`tile-${rowIndex}-${i}`);
+                const letterSpan = tile.querySelector('.letter');
+                letterSpan.textContent = guess[i];
+                tile.classList.add('filled', result[i]);
+
+                // Hide lock icon for completed tiles
+                const lockIcon = tile.querySelector('.lock-icon');
+                if (lockIcon) {
+                    lockIcon.style.display = 'none';
+                }
+
+                // Update keyboard
+                updateKeyboard(guess[i], result[i]);
+            }
+        });
+
+        // Show appropriate message
+        if (gameState.won) {
+            message.textContent = 'You won!';
+        } else {
+            message.textContent = `Game over! The word was ${targetWord}`;
+        }
+
+        // Show share button
+        showShareButton();
+
+    } catch (err) {
+        console.error('Failed to restore daily game:', err);
     }
 }
 
@@ -393,6 +450,17 @@ function markDailyComplete() {
         const today = getTodaysSeed().toString();
         localStorage.setItem('dailyCompleted', 'true');
         localStorage.setItem('dailyCompletedDate', today);
+
+        // Save game state for sharing later
+        const gameState = {
+            previousGuesses: previousGuesses,
+            guessResults: guessResults,
+            currentRow: currentRow,
+            won: previousGuesses[previousGuesses.length - 1] === targetWord,
+            lockedPositions: lockedPositions
+        };
+        localStorage.setItem('dailyGameState', JSON.stringify(gameState));
+
         dailyCompleted = true;
         updateModeButtons();
     }
