@@ -310,4 +310,32 @@ function showMessage(text) {
     }, 2000);
 }
 
+function resetGame() {
+    // Reset game state
+    targetWord = WORDS[Math.floor(Math.random() * WORDS.length)];
+    currentGuess = '';
+    currentRow = 0;
+    gameOver = false;
+    lockedPositions = {};
+    previousGuesses = [];
+
+    // Clear the board
+    gameBoard.innerHTML = '';
+
+    // Clear the keyboard
+    keyboard.innerHTML = '';
+
+    // Clear message
+    message.textContent = '';
+
+    // Reinitialize the game
+    initLockedPositions();
+    createBoard();
+    createKeyboard();
+}
+
+// Initialize the game
 initGame();
+
+// Add New Game button event listener
+document.getElementById('new-game-btn').addEventListener('click', resetGame);
