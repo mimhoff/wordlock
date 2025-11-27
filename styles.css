@@ -488,6 +488,41 @@ h1 {
     background-color: var(--btn-primary-hover);
 }
 
+.support-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.support-section p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.kofi-btn {
+    display: inline-block;
+    background-color: #13C3FF;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.kofi-btn:hover {
+    background-color: #0fb9f1;
+    transform: translateY(-1px);
+}
+
+.kofi-icon {
+    font-size: 16px;
+    margin-right: 5px;
+}
+
 /* Tablet/medium screens */
 @media screen and (max-width: 800px) {
     header {
