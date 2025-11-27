@@ -13,7 +13,7 @@ A Wordle clone with a strategic twist! Built with vanilla HTML, CSS, and JavaScr
 
 ## The WordLock Twist
 
-In rows 2-7, one letter position is randomly **locked** (shown with a gold border). A locked letter **must** be the same as the letter directly above it from your previous guess. This means your early word choices will constrain your later guesses, adding a strategic planning element to the game!
+In rows 2-7, one letter position is randomly **locked** (shown with a red background and lock icon). A locked letter **must** be the same as the letter directly above it from your previous guess. This means your early word choices will constrain your later guesses, adding a strategic planning element to the game!
 
 Example:
 - Row 1: BREAD (no locks)
@@ -24,10 +24,15 @@ Example:
 
 - 8 attempts to guess the word
 - Locked letter mechanic for strategic gameplay
+- 2,314 possible answer words from official Wordle list
+- 10,656 additional valid guess words
+- Word validation with helpful error messages
 - On-screen keyboard with color feedback
 - Physical keyboard support
 - Color-coded tiles showing guess accuracy
-- Random word selection from word list
+- Lock icons showing future constraints
+- How to Play instructions
+- New Game button to restart anytime
 
 ## Running the Game
 
@@ -35,7 +40,6 @@ Simply open `index.html` in any modern web browser. No build process or server r
 
 ## Future Enhancements
 
-- Larger word list
 - Daily word mode
 - Statistics tracking
 - Share results

@@ -107,6 +107,10 @@ function updateLockIndicators() {
 function handleKeyPress(e) {
     if (gameOver) return;
 
+    // Don't process keyboard input if modal is open
+    const modal = document.getElementById('how-to-play-modal');
+    if (modal.style.display === 'block') return;
+
     const key = e.key.toUpperCase();
 
     if (key === 'ENTER') {
@@ -285,6 +289,11 @@ function checkGuess(guess) {
         const tile = document.getElementById(`tile-${currentRow}-${i}`);
         setTimeout(() => {
             tile.classList.add(result[i]);
+            // Hide lock icon once tile is colored
+            const lockIcon = tile.querySelector('.lock-icon');
+            if (lockIcon) {
+                lockIcon.style.display = 'none';
+            }
         }, i * 200);
 
         updateKeyboard(guess[i], result[i]);
