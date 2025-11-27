@@ -202,8 +202,11 @@ function submitGuess() {
         showMessage(`Game over! The word was ${targetWord}`);
         gameOver = true;
     } else {
-        // Show the locked letter for the next row
-        showNextLockedLetter();
+        // Show the locked letter after tile animations complete
+        // Animation time: (WORD_LENGTH - 1) * 200ms + small buffer
+        setTimeout(() => {
+            showNextLockedLetter();
+        }, 1000);
     }
 }
 
