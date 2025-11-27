@@ -88,9 +88,9 @@ header {
     position: relative;
     min-height: 60px;
     display: grid;
-    grid-template-columns: 120px 1fr 120px;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
 }
 
 h1 {
@@ -491,12 +491,11 @@ h1 {
 /* Tablet/medium screens */
 @media screen and (max-width: 800px) {
     header {
-        grid-template-columns: 100px 1fr 100px;
         gap: 8px;
     }
 
     h1 {
-        font-size: 28px;
+        font-size: 26px;
     }
 
     #stats-btn,
@@ -521,6 +520,33 @@ h1 {
     }
 }
 
+/* Smaller tablets - switch to vertical layout */
+@media screen and (max-width: 700px) {
+    header {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 8px;
+    }
+
+    h1 {
+        font-size: 28px;
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    #how-to-play-btn {
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: start;
+    }
+
+    .header-buttons {
+        grid-column: 1;
+        grid-row: 3;
+        justify-self: center;
+    }
+}
+
 /* Mobile responsive styles */
 @media screen and (max-width: 600px) {
     .container {
@@ -532,33 +558,17 @@ h1 {
         margin-bottom: 10px;
     }
 
-    header {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
-        gap: 8px;
-        padding-bottom: 15px;
-    }
-
     h1 {
         font-size: 24px;
-        grid-column: 1;
-        grid-row: 2;
     }
 
     #how-to-play-btn {
-        grid-column: 1;
-        grid-row: 1;
-        justify-self: start;
         font-size: 12px;
         padding: 8px 12px;
     }
 
     .header-buttons {
-        grid-column: 1;
-        grid-row: 3;
-        justify-self: center;
         gap: 6px;
-        margin-top: 0;
     }
 
     #theme-toggle-btn {
