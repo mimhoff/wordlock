@@ -20,6 +20,11 @@
     --tile-absent: #3a3a3c;
     --tile-locked: #8b2e2e;
 
+    /* Lock icon colors (darker versions) */
+    --lock-correct: #3a6e35;
+    --lock-present: #8a7a2a;
+    --lock-absent: #2a2a2c;
+
     /* Button colors */
     --btn-primary: #538d4e;
     --btn-primary-hover: #6aaa64;
@@ -47,6 +52,11 @@
     --tile-present: #c9b458;
     --tile-absent: #787c7e;
     --tile-locked: #d85656;
+
+    /* Lock icon colors (darker versions) */
+    --lock-correct: #4a7a44;
+    --lock-present: #998438;
+    --lock-absent: #58595e;
 
     /* Button colors */
     --btn-primary: #6aaa64;
@@ -81,16 +91,22 @@ body {
 header {
     text-align: center;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 20px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 15px 10px 20px 10px;
     margin-bottom: 10px;
     position: relative;
-    min-height: 60px;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 15px;
+}
+
+#theme-toggle-btn {
+    position: absolute;
+    top: 15px;
+    right: 10px;
+}
+
+.header-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
 }
 
 h1 {
@@ -98,19 +114,6 @@ h1 {
     font-weight: bold;
     letter-spacing: 0.5px;
     margin: 0;
-    grid-column: 2;
-}
-
-#how-to-play-btn {
-    grid-column: 1;
-    justify-self: start;
-}
-
-.header-buttons {
-    grid-column: 3;
-    justify-self: end;
-    display: flex;
-    gap: 10px;
 }
 
 #stats-btn,
@@ -332,6 +335,34 @@ h1 {
     height: 40px;
 }
 
+/* Colored lock icons for evaluated tiles */
+.tile .lock-icon.lock-correct svg rect {
+    fill: var(--lock-correct);
+}
+
+.tile .lock-icon.lock-correct svg path {
+    stroke: var(--lock-correct);
+    fill: none;
+}
+
+.tile .lock-icon.lock-present svg rect {
+    fill: var(--lock-present);
+}
+
+.tile .lock-icon.lock-present svg path {
+    stroke: var(--lock-present);
+    fill: none;
+}
+
+.tile .lock-icon.lock-absent svg rect {
+    fill: var(--lock-absent);
+}
+
+.tile .lock-icon.lock-absent svg path {
+    stroke: var(--lock-absent);
+    fill: none;
+}
+
 .tile .letter {
     z-index: 1;
 }
@@ -534,18 +565,15 @@ h1 {
 
 /* Tablet/medium screens */
 @media screen and (max-width: 800px) {
-    header {
-        gap: 8px;
-    }
-
     h1 {
-        font-size: 26px;
+        font-size: 28px;
     }
 
     #stats-btn,
-    #new-game-btn {
-        font-size: 11px;
-        padding: 8px 10px;
+    #new-game-btn,
+    #how-to-play-btn {
+        font-size: 12px;
+        padding: 8px 12px;
     }
 
     #theme-toggle-btn {
@@ -558,40 +586,8 @@ h1 {
         height: 18px;
     }
 
-    #how-to-play-btn {
-        font-size: 11px;
-        padding: 8px 10px;
-    }
-
     .header-buttons {
-        gap: 5px;
-    }
-}
-
-/* Smaller tablets - switch to vertical layout */
-@media screen and (max-width: 700px) {
-    header {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
         gap: 8px;
-    }
-
-    h1 {
-        font-size: 28px;
-        grid-column: 1;
-        grid-row: 2;
-    }
-
-    #how-to-play-btn {
-        grid-column: 1;
-        grid-row: 1;
-        justify-self: start;
-    }
-
-    .header-buttons {
-        grid-column: 1;
-        grid-row: 3;
-        justify-self: center;
     }
 }
 
@@ -610,29 +606,26 @@ h1 {
         font-size: 24px;
     }
 
-    #how-to-play-btn {
-        font-size: 12px;
-        padding: 8px 12px;
-    }
-
     .header-buttons {
         gap: 6px;
+        margin-bottom: 12px;
+    }
+
+    #how-to-play-btn,
+    #stats-btn,
+    #new-game-btn {
+        font-size: 11px;
+        padding: 8px 10px;
     }
 
     #theme-toggle-btn {
         padding: 8px;
-        min-width: 40px;
+        min-width: 38px;
     }
 
     .theme-icon {
-        width: 20px;
-        height: 20px;
-    }
-
-    #stats-btn,
-    #new-game-btn {
-        font-size: 12px;
-        padding: 8px 12px;
+        width: 18px;
+        height: 18px;
     }
 
     /* Smaller tiles */

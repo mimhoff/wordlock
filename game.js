@@ -143,6 +143,22 @@ function initGame() {
 
     document.addEventListener('keydown', handleKeyPress);
     updateModeButtons();
+
+    // Show "How to Play" for first-time users
+    checkFirstTimeUser();
+}
+
+function checkFirstTimeUser() {
+    const hasVisited = localStorage.getItem('hasVisited');
+    if (!hasVisited) {
+        // Mark as visited
+        localStorage.setItem('hasVisited', 'true');
+        // Show How to Play modal after a short delay
+        setTimeout(() => {
+            const modal = document.getElementById('how-to-play-modal');
+            modal.style.display = 'block';
+        }, 300);
+    }
 }
 
 function checkForSavedState(stateKey) {
@@ -203,6 +219,7 @@ function restoreGameState(stateKey) {
         // Reconstruct the board
         gameState.previousGuesses.forEach((guess, rowIndex) => {
             const result = gameState.guessResults[rowIndex];
+            const lockedPos = gameState.lockedPositions[rowIndex];
 
             // Fill in the letters
             for (let i = 0; i < WORD_LENGTH; i++) {
@@ -211,9 +228,12 @@ function restoreGameState(stateKey) {
                 letterSpan.textContent = guess[i];
                 tile.classList.add('filled', result[i]);
 
-                // Hide lock icon for completed tiles
+                // Keep lock icon visible for locked positions, hide for others
                 const lockIcon = tile.querySelector('.lock-icon');
-                if (lockIcon) {
+                if (lockIcon && i === lockedPos && rowIndex > 0) {
+                    lockIcon.style.display = 'block';
+                    lockIcon.className = 'lock-icon lock-' + result[i];
+                } else if (lockIcon) {
                     lockIcon.style.display = 'none';
                 }
 
@@ -548,11 +568,17 @@ function checkGuess(guess) {
     // Apply colors to tiles
     for (let i = 0; i < WORD_LENGTH; i++) {
         const tile = document.getElementById(`tile-${currentRow}-${i}`);
+        const lockedPos = lockedPositions[currentRow];
+
         setTimeout(() => {
             tile.classList.add(result[i]);
-            // Hide lock icon once tile is colored
+            // Keep lock icon visible for locked positions, hide for others
             const lockIcon = tile.querySelector('.lock-icon');
-            if (lockIcon) {
+            if (lockIcon && i === lockedPos && currentRow > 0) {
+                lockIcon.style.display = 'block';
+                // Add color class to lock icon based on result
+                lockIcon.className = 'lock-icon lock-' + result[i];
+            } else if (lockIcon) {
                 lockIcon.style.display = 'none';
             }
         }, i * 200);
@@ -707,6 +733,9 @@ function fallbackCopyToClipboard(text) {
 }
 
 function resetGame() {
+    // Blur the button so Enter key doesn't trigger it again
+    document.activeElement.blur();
+
     // Don't allow reset in daily mode
     if (isDailyMode) {
         showMessage('Switch to Practice for unlimited games');
@@ -740,6 +769,9 @@ function resetGame() {
 }
 
 function switchMode(daily) {
+    // Blur the button so Enter key doesn't trigger it again
+    document.activeElement.blur();
+
     isDailyMode = daily;
 
     // Clear current board and keyboard
