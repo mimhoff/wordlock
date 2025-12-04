@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+www/
+android/
+ios/
+
+# Capacitor
+.capacitor/
+
+# Android
+*.iml
+.gradle
+local.properties
+.idea/
+*.apk
+*.ap_
+*.aab
+*.dex
+build/
+captures/
+.externalNativeBuild
+.cxx
+
+# Keystores (IMPORTANT: Never commit!)
+*.keystore
+*.jks
+key.properties
+
+# OS files
+.DS_Store
+Thumbs.db
