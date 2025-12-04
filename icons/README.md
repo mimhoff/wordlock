@@ -1,5 +1,7 @@
 # WordLock Icons
 
+✨ **Icon design created!** See `icon-source.svg` for the 3x3 WORD/LOCK grid design.
+
 This folder should contain app icons in various sizes for PWA and native app support.
 
 ## Required Icon Sizes
@@ -42,14 +44,26 @@ Easy ways to create these:
    - Canva (free)
    - Adobe Illustrator
 
-## Quick Start
+## Quick Start - Generate Icons from SVG
 
-If you have a single 512x512 PNG source image, run:
+### Method 1: Browser Tool (Easiest!)
+1. Open `icon-generator.html` in your browser
+2. Click "Generate All Icon Sizes"
+3. Right-click each link and "Save As" to this folder
+4. Run `npm run copy && npm run sync`
+
+### Method 2: Command Line
 ```bash
-npx @pwa/asset-generator logo.png ./icons --icon-only --padding "10%"
+cd icons
+chmod +x generate-icons.sh
+./generate-icons.sh
 ```
 
-This will generate all required sizes automatically.
+### Method 3: Online Tool
+1. Upload `icon-source.svg` to https://www.pwabuilder.com/imageGenerator
+2. Download all sizes
+3. Place in this folder
+4. Run `npm run copy && npm run sync`
 
 ## Maskable Icons
 

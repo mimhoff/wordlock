@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WordLock Icon Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #121213;
+            color: white;
+        }
+        h1 { color: #538d4e; }
+        .preview {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: inline-block;
+        }
+        button {
+            background: #538d4e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #6aaa64;
+        }
+        .downloads {
+            margin-top: 20px;
+        }
+        a {
+            color: #6aaa64;
+        }
+    </style>
+</head>
+<body>
+    <h1>WordLock Icon Generator</h1>
+    <p>This tool generates all required app icon sizes from the SVG source.</p>
+
+    <div class="preview">
+        <img id="preview" src="icon-source.svg" width="256" height="256" alt="Icon Preview">
+    </div>
+
+    <div>
+        <button onclick="generateAllIcons()">Generate All Icon Sizes</button>
+        <button onclick="location.reload()">Reset</button>
+    </div>
+
+    <div class="downloads" id="downloads"></div>
+
+    <h2>Required Sizes</h2>
+    <ul>
+        <li>72x72 - Android</li>
+        <li>96x96 - Android</li>
+        <li>128x128 - Android</li>
+        <li>144x144 - Android</li>
+        <li>152x152 - iOS/Apple Touch Icon</li>
+        <li>192x192 - Standard PWA</li>
+        <li>384x384 - High DPI</li>
+        <li>512x512 - Splash screens</li>
+    </ul>
+
+    <h2>Alternative: Online Tools</h2>
+    <ul>
+        <li><a href="https://www.pwabuilder.com/imageGenerator" target="_blank">PWA Builder Image Generator</a> (recommended)</li>
+        <li><a href="https://realfavicongenerator.net/" target="_blank">RealFaviconGenerator</a></li>
+    </ul>
+
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+
+        async function generateAllIcons() {
+            const downloadsDiv = document.getElementById('downloads');
+            downloadsDiv.innerHTML = '<h2>Generated Icons (Right-click → Save As)</h2>';
+
+            for (const size of sizes) {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = size;
+                    canvas.height = size;
+                    const ctx = canvas.getContext('2d');
+
+                    const img = new Image();
+                    const svgBlob = await fetch('icon-source.svg').then(r => r.blob());
+                    const url = URL.createObjectURL(svgBlob);
+
+                    await new Promise((resolve, reject) => {
+                        img.onload = resolve;
+                        img.onerror = reject;
+                        img.src = url;
+                    });
+
+                    ctx.drawImage(img, 0, 0, size, size);
+                    URL.revokeObjectURL(url);
+
+                    const dataUrl = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.href = dataUrl;
+                    link.download = `icon-${size}x${size}.png`;
+                    link.textContent = `Download icon-${size}x${size}.png`;
+                    link.style.display = 'block';
+                    link.style.margin = '10px 0';
+
+                    downloadsDiv.appendChild(link);
+                } catch (err) {
+                    console.error(`Failed to generate ${size}x${size}:`, err);
+                    downloadsDiv.innerHTML += `<p style="color: #d85656;">Error generating ${size}x${size}: ${err.message}</p>`;
+                }
+            }
+
+            downloadsDiv.innerHTML += '<p style="margin-top: 20px; color: #6aaa64;">✓ All icons ready! Right-click each link and "Save As" to the icons/ folder.</p>';
+        }
+    </script>
+</body>
+</html>
