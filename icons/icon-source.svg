@@ -14,19 +14,19 @@
   <rect x="176" y="8" width="160" height="160" rx="8" fill="#b59f3b"/>
   <text x="256" y="115" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">O</text>
 
-  <!-- R - Green (correct) -->
-  <rect x="344" y="8" width="160" height="160" rx="8" fill="#538d4e"/>
+  <!-- R - Red (locked) -->
+  <rect x="344" y="8" width="160" height="160" rx="8" fill="#8b2e2e"/>
   <text x="424" y="115" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">R</text>
 
   <!-- Row 2: D [LOCK] L -->
-  <!-- D - Yellow (present) -->
-  <rect x="8" y="176" width="160" height="160" rx="8" fill="#b59f3b"/>
+  <!-- D - Grey (absent) -->
+  <rect x="8" y="176" width="160" height="160" rx="8" fill="#3a3a3c"/>
   <text x="88" y="283" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">D</text>
 
-  <!-- Center - Red tile with Lock Icon -->
+  <!-- Center - Red tile with Lock Icon (positioned lower) -->
   <rect x="176" y="176" width="160" height="160" rx="8" fill="#8b2e2e"/>
-  <!-- Lock icon -->
-  <g transform="translate(256, 256)">
+  <!-- Lock icon - moved down 15px -->
+  <g transform="translate(256, 271)">
     <!-- Lock body -->
     <rect x="-35" y="-10" width="70" height="50" rx="6" fill="white"/>
     <!-- Lock shackle -->
@@ -43,11 +43,11 @@
   <rect x="8" y="344" width="160" height="160" rx="8" fill="#b59f3b"/>
   <text x="88" y="451" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">O</text>
 
-  <!-- C - Green (correct) -->
-  <rect x="176" y="344" width="160" height="160" rx="8" fill="#538d4e"/>
+  <!-- C - Grey (absent) -->
+  <rect x="176" y="344" width="160" height="160" rx="8" fill="#3a3a3c"/>
   <text x="256" y="451" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">C</text>
 
-  <!-- K - Green (correct) -->
-  <rect x="344" y="344" width="160" height="160" rx="8" fill="#538d4e"/>
+  <!-- K - Red (locked) -->
+  <rect x="344" y="344" width="160" height="160" rx="8" fill="#8b2e2e"/>
   <text x="424" y="451" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">K</text>
 </svg>
