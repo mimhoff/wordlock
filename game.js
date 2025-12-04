@@ -5,6 +5,13 @@
 const WORD_LENGTH = 5;
 const MAX_GUESSES = 8;
 
+// Animation and timing constants (in milliseconds)
+const TILE_FLIP_DURATION = 200;
+const MESSAGE_DISPLAY_DURATION = 2000;
+const LOCKED_LETTER_REVEAL_DELAY = 1000;
+const FIRST_TIME_MODAL_DELAY = 300;
+const STATS_MODAL_DELAY = 1500;
+
 // Seeded random number generator (Mulberry32)
 function seededRandom(seed) {
     return function() {
@@ -63,6 +70,7 @@ let gameOver = false;
 let lockedPositions = {}; // Maps row number to locked position index
 let previousGuesses = []; // Stores all previous guesses
 let guessResults = []; // Stores color results for sharing
+let tileCache = []; // Cache DOM references to tiles for performance
 
 // Statistics
 function getStats() {
@@ -111,6 +119,11 @@ const gameBoard = document.getElementById('game-board');
 const keyboard = document.getElementById('keyboard');
 const message = document.getElementById('message');
 
+// Set up accessibility
+message.setAttribute('role', 'status');
+message.setAttribute('aria-live', 'polite');
+message.setAttribute('aria-atomic', 'true');
+
 const keyboardLayout = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
@@ -156,8 +169,8 @@ function checkFirstTimeUser() {
         // Show How to Play modal after a short delay
         setTimeout(() => {
             const modal = document.getElementById('how-to-play-modal');
-            modal.style.display = 'block';
-        }, 300);
+            modal.classList.add('open');
+        }, FIRST_TIME_MODAL_DELAY);
     }
 }
 
@@ -174,6 +187,7 @@ function checkForSavedState(stateKey) {
         }
         return true;
     } catch (err) {
+        console.error('Failed to parse saved game state:', err);
         return false;
     }
 }
@@ -223,7 +237,7 @@ function restoreGameState(stateKey) {
 
             // Fill in the letters
             for (let i = 0; i < WORD_LENGTH; i++) {
-                const tile = document.getElementById(`tile-${rowIndex}-${i}`);
+                const tile = tileCache[rowIndex][i];
                 const letterSpan = tile.querySelector('.letter');
                 letterSpan.textContent = guess[i];
                 tile.classList.add('filled', result[i]);
@@ -290,15 +304,28 @@ function startGame(daily) {
 
 function initLockedPositions(rng) {
     // For rows 2-7 (indices 1-6), randomly pick one position to lock
+    // Ensure consecutive rows don't have the same locked position
+    let previousPos = -1;
     for (let row = 1; row <= 6; row++) {
-        lockedPositions[row] = Math.floor(rng() * WORD_LENGTH);
+        let newPos;
+        do {
+            newPos = Math.floor(rng() * WORD_LENGTH);
+        } while (newPos === previousPos);
+
+        lockedPositions[row] = newPos;
+        previousPos = newPos;
     }
 }
 
 function createBoard() {
+    // Initialize tile cache
+    tileCache = [];
+
     for (let i = 0; i < MAX_GUESSES; i++) {
         const row = document.createElement('div');
         row.className = 'row';
+        tileCache[i] = [];
+
         for (let j = 0; j < WORD_LENGTH; j++) {
             const tile = document.createElement('div');
             tile.className = 'tile';
@@ -321,6 +348,9 @@ function createBoard() {
             tile.appendChild(letter);
 
             row.appendChild(tile);
+
+            // Cache the tile reference
+            tileCache[i][j] = tile;
         }
         gameBoard.appendChild(row);
     }
@@ -351,7 +381,7 @@ function updateLockIndicators() {
         const lockedPos = lockedPositions[row];
         if (lockedPos !== undefined) {
             for (let col = 0; col < WORD_LENGTH; col++) {
-                const tile = document.getElementById(`tile-${row}-${col}`);
+                const tile = tileCache[row][col];
                 const lockIcon = tile.querySelector('.lock-icon');
                 if (col === lockedPos && row > 0) {
                     lockIcon.style.display = 'block';
@@ -369,7 +399,7 @@ function handleKeyPress(e) {
     // Don't process keyboard input if any modal is open
     const howToPlayModal = document.getElementById('how-to-play-modal');
     const statsModal = document.getElementById('stats-modal');
-    if (howToPlayModal.style.display === 'block' || statsModal.style.display === 'block') return;
+    if (howToPlayModal.classList.contains('open') || statsModal.classList.contains('open')) return;
 
     const key = e.key.toUpperCase();
 
@@ -416,7 +446,7 @@ function updateBoard() {
     let guessIndex = 0;
 
     for (let i = 0; i < WORD_LENGTH; i++) {
-        const tile = document.getElementById(`tile-${currentRow}-${i}`);
+        const tile = tileCache[currentRow][i];
         const letterSpan = tile.querySelector('.letter');
 
         // Check if this position is locked
@@ -469,7 +499,7 @@ function submitGuess() {
         markDailyComplete();
         saveGameState();
         if (isDailyMode) {
-            setTimeout(showStatsModal, 1500);
+            setTimeout(showStatsModal, STATS_MODAL_DELAY);
         }
         return;
     }
@@ -487,16 +517,15 @@ function submitGuess() {
         markDailyComplete();
         saveGameState();
         if (isDailyMode) {
-            setTimeout(showStatsModal, 1500);
+            setTimeout(showStatsModal, STATS_MODAL_DELAY);
         }
     } else {
         // Save in-progress game state
         saveGameState();
         // Show the locked letter after tile animations complete
-        // Animation time: (WORD_LENGTH - 1) * 200ms + small buffer
         setTimeout(() => {
             showNextLockedLetter();
-        }, 1000);
+        }, LOCKED_LETTER_REVEAL_DELAY);
     }
 }
 
@@ -504,7 +533,7 @@ function showNextLockedLetter() {
     const lockedPos = lockedPositions[currentRow];
     if (lockedPos !== undefined && currentRow > 0 && previousGuesses.length > 0) {
         const lockedLetter = previousGuesses[currentRow - 1][lockedPos];
-        const tile = document.getElementById(`tile-${currentRow}-${lockedPos}`);
+        const tile = tileCache[currentRow][lockedPos];
         const letterSpan = tile.querySelector('.letter');
         letterSpan.textContent = lockedLetter;
         tile.classList.add('filled', 'locked');
@@ -536,11 +565,11 @@ function buildCompleteGuess() {
     return completeGuess;
 }
 
-function checkGuess(guess) {
+function calculateGuessResult(guess, target) {
     const letterCount = {};
 
     // Count letters in target word
-    for (let letter of targetWord) {
+    for (let letter of target) {
         letterCount[letter] = (letterCount[letter] || 0) + 1;
     }
 
@@ -548,7 +577,7 @@ function checkGuess(guess) {
 
     // First pass: mark correct letters
     for (let i = 0; i < WORD_LENGTH; i++) {
-        if (guess[i] === targetWord[i]) {
+        if (guess[i] === target[i]) {
             result[i] = 'correct';
             letterCount[guess[i]]--;
         }
@@ -562,29 +591,40 @@ function checkGuess(guess) {
         }
     }
 
-    // Save results for sharing
-    guessResults.push([...result]);
+    return result;
+}
 
-    // Apply colors to tiles
+function animateGuessResult(guess, result, rowIndex) {
+    // Apply colors to tiles with animation
     for (let i = 0; i < WORD_LENGTH; i++) {
-        const tile = document.getElementById(`tile-${currentRow}-${i}`);
-        const lockedPos = lockedPositions[currentRow];
+        const tile = tileCache[rowIndex][i];
+        const lockedPos = lockedPositions[rowIndex];
 
         setTimeout(() => {
             tile.classList.add(result[i]);
             // Keep lock icon visible for locked positions, hide for others
             const lockIcon = tile.querySelector('.lock-icon');
-            if (lockIcon && i === lockedPos && currentRow > 0) {
+            if (lockIcon && i === lockedPos && rowIndex > 0) {
                 lockIcon.style.display = 'block';
                 // Add color class to lock icon based on result
                 lockIcon.className = 'lock-icon lock-' + result[i];
             } else if (lockIcon) {
                 lockIcon.style.display = 'none';
             }
-        }, i * 200);
+        }, i * TILE_FLIP_DURATION);
 
         updateKeyboard(guess[i], result[i]);
     }
+}
+
+function checkGuess(guess) {
+    const result = calculateGuessResult(guess, targetWord);
+
+    // Save results for sharing
+    guessResults.push([...result]);
+
+    // Animate the results
+    animateGuessResult(guess, result, currentRow);
 }
 
 function updateKeyboard(letter, status) {
@@ -606,7 +646,7 @@ function showMessage(text) {
     message.textContent = text;
     setTimeout(() => {
         message.textContent = '';
-    }, 2000);
+    }, MESSAGE_DISPLAY_DURATION);
 }
 
 function saveGameState() {
@@ -692,8 +732,9 @@ function copyToClipboard() {
                 shareBtn.textContent = originalText;
                 shareBtn.style.backgroundColor = '';
             }, 2000);
-        }).catch(() => {
+        }).catch((err) => {
             // Fallback for older browsers
+            console.warn('Clipboard API failed, using fallback:', err);
             fallbackCopyToClipboard(shareText);
         });
     } else {
@@ -796,6 +837,7 @@ function switchMode(daily) {
                 hasState = true;
             }
         } catch (err) {
+            console.error('Failed to parse game state during mode switch:', err);
             hasState = false;
         }
     }
@@ -908,7 +950,15 @@ function displayStats() {
 function showStatsModal() {
     displayStats();
     const statsModal = document.getElementById('stats-modal');
-    statsModal.style.display = 'block';
+    statsModal.classList.add('open');
+    // Focus management for accessibility
+    setTimeout(() => {
+        const modalContent = statsModal.querySelector('.modal-content');
+        const focusableElements = modalContent.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (focusableElements.length > 0) {
+            focusableElements[0].focus();
+        }
+    }, 100);
 }
 
 // Initialize the game
@@ -930,17 +980,21 @@ const howToPlayBtn = document.getElementById('how-to-play-btn');
 const closeBtn = document.querySelector('.close');
 
 howToPlayBtn.addEventListener('click', () => {
-    modal.style.display = 'block';
+    modal.classList.add('open');
+    // Focus management for accessibility
+    setTimeout(() => {
+        const modalContent = modal.querySelector('.modal-content');
+        const focusableElements = modalContent.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (focusableElements.length > 0) {
+            focusableElements[0].focus();
+        }
+    }, 100);
 });
 
 closeBtn.addEventListener('click', () => {
-    modal.style.display = 'none';
-});
-
-window.addEventListener('click', (event) => {
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
+    modal.classList.remove('open');
+    // Return focus to the button that opened the modal
+    howToPlayBtn.focus();
 });
 
 // Stats modal functionality
@@ -951,12 +1005,19 @@ const statsCloseBtn = document.querySelector('.stats-close');
 statsBtn.addEventListener('click', showStatsModal);
 
 statsCloseBtn.addEventListener('click', () => {
-    statsModal.style.display = 'none';
+    statsModal.classList.remove('open');
+    // Return focus to the button that opened the modal
+    statsBtn.focus();
 });
 
+// Consolidated window click handler for both modals
 window.addEventListener('click', (event) => {
-    if (event.target === statsModal) {
-        statsModal.style.display = 'none';
+    if (event.target === modal) {
+        modal.classList.remove('open');
+        howToPlayBtn.focus();
+    } else if (event.target === statsModal) {
+        statsModal.classList.remove('open');
+        statsBtn.focus();
     }
 });
 

@@ -229,6 +229,10 @@ h1 {
     background-color: rgba(0, 0, 0, 0.7);
 }
 
+.modal.open {
+    display: block;
+}
+
 .modal-content {
     background-color: var(--bg-secondary);
     margin: 10% auto;
@@ -265,6 +269,84 @@ h1 {
 
 .modal-content li {
     margin-bottom: 8px;
+}
+
+/* Example tiles in How to Play modal */
+.example-tiles {
+    margin: 20px 0;
+}
+
+.example-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.example-tile {
+    width: 70px;
+    height: 70px;
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: var(--tile-bg);
+    color: white;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.example-tile .letter {
+    z-index: 1;
+}
+
+.example-tile .lock-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+    pointer-events: none;
+    opacity: 1;
+}
+
+.example-tile .lock-icon svg {
+    display: block;
+    width: 45px;
+    height: 45px;
+}
+
+.example-tile.correct {
+    background-color: var(--tile-correct);
+    border-color: var(--tile-correct);
+}
+
+.example-tile.present {
+    background-color: var(--tile-present);
+    border-color: var(--tile-present);
+}
+
+.example-tile.absent {
+    background-color: var(--tile-absent);
+    border-color: var(--tile-absent);
+}
+
+.example-tile.locked {
+    background-color: var(--tile-locked);
+    border-color: var(--tile-locked);
+}
+
+.example-text {
+    flex: 1;
+    line-height: 1.5;
+}
+
+.example-text strong {
+    display: block;
+    margin-bottom: 3px;
 }
 
 .close {
@@ -676,6 +758,27 @@ h1 {
 
     .modal-content h3 {
         font-size: 16px;
+    }
+
+    /* Smaller example tiles on mobile */
+    .example-tile {
+        width: 55px;
+        height: 55px;
+        font-size: 28px;
+    }
+
+    .example-tile .lock-icon svg {
+        width: 35px;
+        height: 35px;
+    }
+
+    .example-row {
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .example-text {
+        font-size: 14px;
     }
 
     /* Stats grid - 2x2 on mobile */

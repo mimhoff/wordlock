@@ -40,30 +40,68 @@
         </div>
 
         <div class="game-container">
-            <div id="game-board"></div>
+            <div id="game-board" role="grid" aria-label="Word guessing grid"></div>
             <div id="message"></div>
         </div>
 
-        <div id="keyboard"></div>
+        <div id="keyboard" role="group" aria-label="Virtual keyboard"></div>
     </div>
 
-    <div id="how-to-play-modal" class="modal">
+    <div id="how-to-play-modal" class="modal" role="dialog" aria-labelledby="how-to-play-title" aria-modal="true">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>How to Play</h2>
+            <span class="close" aria-label="Close">&times;</span>
+            <h2 id="how-to-play-title">How to Play</h2>
             <p>Yes, it's another Wordle! I hope you like it.</p>
             <p>Guess the 5-letter word in 8 tries.</p>
 
             <h3>Color Feedback</h3>
             <p>After each guess, the tiles change color:</p>
-            <ul>
-                <li><strong style="color: #6aaa64;">Green:</strong> Letter is correct and in the right position</li>
-                <li><strong style="color: #c9b458;">Yellow:</strong> Letter is in the word but wrong position</li>
-                <li><strong style="color: #787c7e;">Gray:</strong> Letter is not in the word</li>
-                <li><strong style="color: #d85656;">Red:</strong> Locked letter - must be the same as the letter directly above it</li>
-            </ul>
 
-            <p style="margin-top: 15px;">Each row (starting from row 2) has one position that locks to your previous guess. A lock icon shows which position will be locked.</p>
+            <div class="example-tiles">
+                <div class="example-row">
+                    <div class="example-tile correct">
+                        <span class="letter">L</span>
+                    </div>
+                    <div class="example-text">
+                        <strong>Green:</strong> Letter is correct and in the right position
+                    </div>
+                </div>
+
+                <div class="example-row">
+                    <div class="example-tile present">
+                        <span class="letter">O</span>
+                    </div>
+                    <div class="example-text">
+                        <strong>Yellow:</strong> Letter is in the word but wrong position
+                    </div>
+                </div>
+
+                <div class="example-row">
+                    <div class="example-tile absent">
+                        <span class="letter">C</span>
+                    </div>
+                    <div class="example-text">
+                        <strong>Gray:</strong> Letter is not in the word
+                    </div>
+                </div>
+
+                <div class="example-row">
+                    <div class="example-tile locked">
+                        <span class="lock-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="6" y="10" width="12" height="10" rx="1" fill="#4a4a4a"/>
+                                <path d="M8 10V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V10" stroke="#4a4a4a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                            </svg>
+                        </span>
+                        <span class="letter">K</span>
+                    </div>
+                    <div class="example-text">
+                        <strong>Red with Lock:</strong> Must be the same as the letter directly above it
+                    </div>
+                </div>
+            </div>
+
+            <p style="margin-top: 20px;">Each row (starting from row 2) has one position that locks to your previous guess. A lock icon shows which position will be locked.</p>
 
             <h3>Tips</h3>
             <ul>
@@ -75,10 +113,10 @@
         </div>
     </div>
 
-    <div id="stats-modal" class="modal">
+    <div id="stats-modal" class="modal" role="dialog" aria-labelledby="stats-title" aria-modal="true">
         <div class="modal-content">
-            <span class="close stats-close">&times;</span>
-            <h2>Statistics</h2>
+            <span class="close stats-close" aria-label="Close">&times;</span>
+            <h2 id="stats-title">Statistics</h2>
             <div class="stats-grid">
                 <div class="stat-item">
                     <div class="stat-value" id="stat-played">0</div>
