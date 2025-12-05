@@ -1,0 +1,73 @@
+=== SHORT DESCRIPTION (80 characters max) ===
+Wordle with a strategic twist - locked letters add a new challenge!
+
+=== FULL DESCRIPTION ===
+
+🔒 WordLock - The Strategic Word Puzzle Game
+
+Think you've mastered Wordle? WordLock adds an exciting strategic twist that will test your word-guessing skills in a whole new way!
+
+🎮 HOW TO PLAY
+
+Guess the 5-letter word in 8 tries, just like your favorite word game. But here's the catch: starting from row 2, one position in each row "locks" - forcing you to use the same letter from your previous guess in that spot!
+
+• Green tiles: Correct letter in the right position
+• Yellow tiles: Letter is in the word but wrong position
+• Gray tiles: Letter is not in the word
+• Red tiles with lock: Must match the letter directly above it
+
+🎯 THE STRATEGY
+
+The lock mechanic transforms the game from pure deduction into strategic planning:
+• Your early guesses constrain your later options
+• Locking in a correct (green) letter is powerful
+• Locking in a wrong letter makes things challenging
+• Every guess matters more than ever!
+
+✨ FEATURES
+
+• Daily Challenge: New puzzle every day, compete with friends
+• Practice Mode: Unlimited games to hone your skills
+• Beautiful animations and intuitive design
+• Dark mode support for comfortable playing
+• Detailed statistics tracking
+• Share your results with friends
+
+🏆 PERFECT FOR
+
+• Wordle fans looking for a fresh challenge
+• Word puzzle enthusiasts
+• Anyone who loves strategic thinking
+• Players who want more depth in their daily word game
+
+💡 TIPS
+
+• Lock icons show which position will be locked on the next row
+• Plan ahead - your first guesses set up your later ones
+• Try to lock in correct (green) letters for an advantage
+• The best players think 2-3 moves ahead!
+
+🎲 TWO GAME MODES
+
+DAILY MODE: One puzzle per day, just like the classic. Compare scores with the community and track your streak!
+
+PRACTICE MODE: Unlimited games whenever you want. Perfect for learning strategies or just having fun.
+
+📊 TRACK YOUR PROGRESS
+
+• Games played and win percentage
+• Current and maximum streak
+• Guess distribution chart
+• See exactly how you solved each puzzle
+
+Start your WordLock journey today and discover why planning ahead makes all the difference!
+
+🔐 Privacy-Focused
+
+We respect your privacy. WordLock only collects minimal anonymous usage data to improve the game. No personal information is collected or shared.
+
+---
+
+Made with ❤️ by an indie developer who loves word puzzles.
+
+Support development: ko-fi.com/mimhoff
