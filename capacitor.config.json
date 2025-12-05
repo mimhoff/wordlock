@@ -1,5 +1,11 @@
 {
   "appId": "com.mimhoff.wordlock",
   "appName": "WordLock",
-  "webDir": "www"
+  "webDir": "www",
+  "plugins": {
+    "AdMob": {
+      "appId": "ca-app-pub-5632873189325776~1491981967",
+      "testingDevices": []
+    }
+  }
 }
