@@ -16,6 +16,7 @@ export class ModalManager {
     constructor() {
         this.howToPlayModal = document.getElementById('how-to-play-modal');
         this.statsModal = document.getElementById('stats-modal');
+        this.settingsModal = document.getElementById('settings-modal');
         this.setupEventListeners();
     }
 
@@ -47,12 +48,26 @@ export class ModalManager {
             this.closeStats();
         });
 
+        // Settings modal
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsCloseBtn = this.settingsModal.querySelector('.settings-close');
+
+        settingsBtn.addEventListener('click', () => {
+            this.openSettings();
+        });
+
+        settingsCloseBtn.addEventListener('click', () => {
+            this.closeSettings();
+        });
+
         // Click outside to close
         window.addEventListener('click', (event) => {
             if (event.target === this.howToPlayModal) {
                 this.closeHowToPlay();
             } else if (event.target === this.statsModal) {
                 this.closeStats();
+            } else if (event.target === this.settingsModal) {
+                this.closeSettings();
             }
         });
     }
@@ -100,12 +115,34 @@ export class ModalManager {
     }
 
     /**
+     * Open Settings modal with fade animation
+     */
+    openSettings() {
+        this.settingsModal.classList.add('open');
+        AnimationManager.fadeIn(this.settingsModal);
+        focusFirstElement(
+            this.settingsModal.querySelector('.modal-content'),
+            TIMING.FOCUS_DELAY
+        );
+    }
+
+    /**
+     * Close Settings modal with fade animation
+     */
+    async closeSettings() {
+        await AnimationManager.fadeOut(this.settingsModal);
+        this.settingsModal.classList.remove('open');
+        document.getElementById('settings-btn').focus();
+    }
+
+    /**
      * Check if any modal is currently open
      * @returns {boolean} True if a modal is open
      */
     isModalOpen() {
         return this.howToPlayModal.classList.contains('open') ||
-               this.statsModal.classList.contains('open');
+               this.statsModal.classList.contains('open') ||
+               this.settingsModal.classList.contains('open');
     }
 
     /**

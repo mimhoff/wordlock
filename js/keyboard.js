@@ -32,8 +32,20 @@ export class KeyboardManager {
             row.forEach(key => {
                 const button = document.createElement('button');
                 button.className = key.length > 1 ? 'key wide' : 'key';
-                button.textContent = key;
                 button.id = `key-${key}`;
+
+                // Display backspace SVG icon for BACK button
+                if (key === 'BACK') {
+                    button.innerHTML = `
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.66-7H22v14z" fill="currentColor"/>
+                            <path d="M17.59 8L15 10.59 12.41 8 11 9.41 13.59 12 11 14.59 12.41 16 15 13.41 17.59 16 19 14.59 16.41 12 19 9.41z" fill="currentColor"/>
+                        </svg>
+                    `;
+                } else {
+                    button.textContent = key;
+                }
+
                 button.addEventListener('click', () => this.handleKeyClick(key));
 
                 keyboardRow.appendChild(button);

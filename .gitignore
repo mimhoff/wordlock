@@ -28,6 +28,7 @@ captures/
 *.keystore
 *.jks
 key.properties
+keystore-info.txt
 
 # OS files
 .DS_Store

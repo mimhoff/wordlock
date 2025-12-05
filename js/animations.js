@@ -157,10 +157,11 @@ export class AnimationManager {
      * @param {HTMLElement} element - Element to slide in
      */
     static slideIn(element) {
-        element.style.animation = 'slideIn 0.3s ease-out';
+        element.style.animation = 'slideIn 0.5s ease-out forwards';
+        element.style.opacity = '1';
         setTimeout(() => {
             element.style.animation = '';
-        }, 300);
+        }, 500);
     }
 
     /**
@@ -170,11 +171,12 @@ export class AnimationManager {
      */
     static slideOut(element) {
         return new Promise(resolve => {
-            element.style.animation = 'slideOut 0.3s ease-in';
+            element.style.animation = 'slideOut 1s ease-out forwards';
             setTimeout(() => {
                 element.style.animation = '';
+                element.style.opacity = '0';
                 resolve();
-            }, 300);
+            }, 1000);
         });
     }
 

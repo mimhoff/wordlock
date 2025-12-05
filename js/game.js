@@ -162,7 +162,7 @@ class WordLockGame {
 
         // Validate guess length
         if (completeGuess.length !== GAME_CONFIG.WORD_LENGTH) {
-            this.showMessage('Not enough letters');
+            this.showMessage('Not enough letters', 'error');
             await this.boardManager.shakeRow(this.state.currentRow);
             return;
         }
@@ -170,7 +170,7 @@ class WordLockGame {
         // Validate word is in word list
         const guessLower = completeGuess.toLowerCase();
         if (!window.SOLUTION_WORDS.includes(guessLower) && !window.VALID_GUESSES.includes(guessLower)) {
-            this.showMessage('Not in word list');
+            this.showMessage('Not in word list', 'error');
             await this.boardManager.shakeRow(this.state.currentRow);
             return;
         }
@@ -257,7 +257,7 @@ class WordLockGame {
         // Bounce the winning row
         await this.boardManager.bounceRow(this.state.currentRow);
 
-        this.showMessage('You won!');
+        this.showMessage('You won!', 'success');
         this.state.endGame(true);
 
         if (this.state.isDailyMode) {
@@ -304,23 +304,36 @@ class WordLockGame {
      */
     showGameOverMessage() {
         if (this.state.isWon()) {
-            this.messageElement.textContent = 'You won!';
+            this.showMessage('You won!', 'success');
         } else {
-            this.messageElement.textContent = `Game over! The word was ${this.state.targetWord}`;
+            this.showMessage(`Game over! The word was ${this.state.targetWord}`);
         }
     }
 
     /**
      * Show a temporary message with animation
      * @param {string} text - Message text
+     * @param {string} type - Message type: 'error', 'success', or 'info' (default)
      */
-    showMessage(text) {
+    showMessage(text, type = 'info') {
         this.messageElement.textContent = text;
+
+        // Remove any existing type classes
+        this.messageElement.classList.remove('error', 'success');
+
+        // Add appropriate type class
+        if (type === 'error') {
+            this.messageElement.classList.add('error');
+        } else if (type === 'success') {
+            this.messageElement.classList.add('success');
+        }
+
         AnimationManager.slideIn(this.messageElement);
 
         setTimeout(async () => {
             await AnimationManager.slideOut(this.messageElement);
             this.messageElement.textContent = '';
+            this.messageElement.classList.remove('error', 'success');
         }, TIMING.MESSAGE_DISPLAY_DURATION);
     }
 
@@ -377,7 +390,7 @@ class WordLockGame {
 
         // Don't allow reset in daily mode
         if (this.state.isDailyMode) {
-            this.showMessage('Switch to Practice for unlimited games');
+            this.showMessage('Switch to Practice for unlimited games', 'error');
             return;
         }
 

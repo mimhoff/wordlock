@@ -13,19 +13,21 @@ import { loadFromStorage, saveToStorage } from './storage.js';
 export class ThemeManager {
     constructor() {
         this.currentTheme = this.loadTheme();
-        this.moonIcon = document.querySelector('.moon-icon');
-        this.sunIcon = document.querySelector('.sun-icon');
+        this.themeOptions = document.querySelectorAll('.theme-option');
         this.setupEventListeners();
         this.applyTheme(this.currentTheme);
     }
 
     /**
-     * Setup theme toggle event listener
+     * Setup theme toggle event listeners
      */
     setupEventListeners() {
-        const themeToggleBtn = document.getElementById('theme-toggle-btn');
-        themeToggleBtn.addEventListener('click', () => {
-            this.toggleTheme();
+        // Add click handler to each theme option
+        this.themeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const theme = option.getAttribute('data-theme');
+                this.applyTheme(theme);
+            });
         });
     }
 
@@ -46,22 +48,14 @@ export class ThemeManager {
         saveToStorage(STORAGE_KEYS.THEME, theme);
         document.documentElement.setAttribute('data-theme', theme);
 
-        // Update theme toggle button icon
-        if (theme === THEMES.LIGHT) {
-            this.moonIcon.style.display = 'block';
-            this.sunIcon.style.display = 'none';
-        } else {
-            this.moonIcon.style.display = 'none';
-            this.sunIcon.style.display = 'block';
-        }
-    }
-
-    /**
-     * Toggle between light and dark themes
-     */
-    toggleTheme() {
-        const newTheme = this.currentTheme === THEMES.DARK ? THEMES.LIGHT : THEMES.DARK;
-        this.applyTheme(newTheme);
+        // Update active state on theme options
+        this.themeOptions.forEach(option => {
+            if (option.getAttribute('data-theme') === theme) {
+                option.classList.add('active');
+            } else {
+                option.classList.remove('active');
+            }
+        });
     }
 
     /**
