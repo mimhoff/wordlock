@@ -1,25 +1,51 @@
 /**
  * Storage Module
- * Handles localStorage operations with error handling and fallbacks
+ * Handles storage operations with Capacitor Preferences on native platforms
+ * and localStorage on web, with error handling and fallbacks
  */
 
+// Get Preferences plugin if available
+const getPreferences = () => {
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Preferences) {
+        return window.Capacitor.Plugins.Preferences;
+    }
+    return null;
+};
+
+// Check if we're on a native platform
+const isNativePlatform = () => {
+    return window.Capacitor && window.Capacitor.getPlatform() !== 'web';
+};
+
 /**
- * Safely save data to localStorage
+ * Safely save data to storage (Preferences on native, localStorage on web)
  * @param {string} key - Storage key
  * @param {*} value - Value to store (will be JSON stringified)
- * @returns {boolean} True if save successful, false otherwise
+ * @returns {Promise<boolean>} True if save successful, false otherwise
  */
-export function saveToStorage(key, value) {
+export async function saveToStorage(key, value) {
     try {
         const serialized = JSON.stringify(value);
+
+        // Use Capacitor Preferences on native platforms
+        if (isNativePlatform()) {
+            const Preferences = getPreferences();
+            if (Preferences) {
+                await Preferences.set({ key, value: serialized });
+                console.log(`Saved to Preferences: ${key}`);
+                return true;
+            }
+        }
+
+        // Fall back to localStorage on web or if Preferences unavailable
         localStorage.setItem(key, serialized);
         return true;
     } catch (error) {
-        console.error(`Failed to save to localStorage (${key}):`, error);
+        console.error(`Failed to save to storage (${key}):`, error);
 
         // Handle quota exceeded error
         if (error.name === 'QuotaExceededError') {
-            console.warn('localStorage quota exceeded. Consider clearing old data.');
+            console.warn('Storage quota exceeded. Consider clearing old data.');
         }
 
         return false;
@@ -27,37 +53,60 @@ export function saveToStorage(key, value) {
 }
 
 /**
- * Safely load data from localStorage
+ * Safely load data from storage (Preferences on native, localStorage on web)
  * @param {string} key - Storage key
  * @param {*} defaultValue - Default value if key doesn't exist or parse fails
- * @returns {*} Parsed value or default value
+ * @returns {Promise<*>} Parsed value or default value
  */
-export function loadFromStorage(key, defaultValue = null) {
+export async function loadFromStorage(key, defaultValue = null) {
     try {
-        const item = localStorage.getItem(key);
+        let item;
 
-        if (item === null) {
+        // Use Capacitor Preferences on native platforms
+        if (isNativePlatform()) {
+            const Preferences = getPreferences();
+            if (Preferences) {
+                const result = await Preferences.get({ key });
+                item = result.value;
+                console.log(`Loaded from Preferences: ${key}`, item ? 'found' : 'not found');
+            }
+        } else {
+            // Use localStorage on web
+            item = localStorage.getItem(key);
+        }
+
+        if (item === null || item === undefined) {
             return defaultValue;
         }
 
         return JSON.parse(item);
     } catch (error) {
-        console.error(`Failed to load from localStorage (${key}):`, error);
+        console.error(`Failed to load from storage (${key}):`, error);
         return defaultValue;
     }
 }
 
 /**
- * Safely remove item from localStorage
+ * Safely remove item from storage (Preferences on native, localStorage on web)
  * @param {string} key - Storage key to remove
- * @returns {boolean} True if removal successful
+ * @returns {Promise<boolean>} True if removal successful
  */
-export function removeFromStorage(key) {
+export async function removeFromStorage(key) {
     try {
+        // Use Capacitor Preferences on native platforms
+        if (isNativePlatform()) {
+            const Preferences = getPreferences();
+            if (Preferences) {
+                await Preferences.remove({ key });
+                return true;
+            }
+        }
+
+        // Fall back to localStorage
         localStorage.removeItem(key);
         return true;
     } catch (error) {
-        console.error(`Failed to remove from localStorage (${key}):`, error);
+        console.error(`Failed to remove from storage (${key}):`, error);
         return false;
     }
 }
@@ -100,16 +149,17 @@ export function getStorageSize() {
 /**
  * Clear all game-related data from storage
  * @param {Array<string>} keys - Keys to clear
- * @returns {boolean} True if all clears successful
+ * @returns {Promise<boolean>} True if all clears successful
  */
-export function clearGameData(keys) {
+export async function clearGameData(keys) {
     let allSuccessful = true;
 
-    keys.forEach(key => {
-        if (!removeFromStorage(key)) {
+    for (const key of keys) {
+        const success = await removeFromStorage(key);
+        if (!success) {
             allSuccessful = false;
         }
-    });
+    }
 
     return allSuccessful;
 }

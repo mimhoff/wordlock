@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "start": "python3 -m http.server 8000",
-    "copy": "cp index.html game.js styles.css words.js manifest.json sw.js www/ && cp -r icons www/ 2>/dev/null || true",
+    "copy": "cp index.html styles.css words.js manifest.json sw.js www/ && cp -r icons js www/ 2>/dev/null || true",
     "sync": "node node_modules/@capacitor/cli/bin/capacitor sync",
     "sync:android": "node node_modules/@capacitor/cli/bin/capacitor sync android",
     "open:android": "node node_modules/@capacitor/cli/bin/capacitor open android",
@@ -25,6 +25,7 @@
     "@capacitor-community/admob": "^7.2.0",
     "@capacitor/android": "^6.2.1",
     "@capacitor/cli": "^6.2.1",
-    "@capacitor/core": "^6.2.1"
+    "@capacitor/core": "^6.2.1",
+    "@capacitor/preferences": "^6.0.4"
   }
 }

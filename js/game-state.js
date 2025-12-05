@@ -218,9 +218,9 @@ export class GameState {
 
     /**
      * Save current game state to storage
-     * @returns {boolean} True if save successful
+     * @returns {Promise<boolean>} True if save successful
      */
-    saveState() {
+    async saveState() {
         const gameState = {
             targetWord: this.targetWord,
             currentGuess: this.currentGuess,
@@ -239,19 +239,19 @@ export class GameState {
             gameState.dateKey = getTodaysSeed().toString();
         }
 
-        return saveToStorage(stateKey, gameState);
+        return await saveToStorage(stateKey, gameState);
     }
 
     /**
      * Load game state from storage
-     * @returns {boolean} True if state was loaded successfully
+     * @returns {Promise<boolean>} True if state was loaded successfully
      */
-    loadState() {
+    async loadState() {
         const stateKey = this.isDailyMode
             ? STORAGE_KEYS.DAILY_GAME_STATE
             : STORAGE_KEYS.PRACTICE_GAME_STATE;
 
-        const savedState = loadFromStorage(stateKey);
+        const savedState = await loadFromStorage(stateKey);
 
         if (!savedState) {
             return false;

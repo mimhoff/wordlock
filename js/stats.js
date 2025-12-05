@@ -10,9 +10,9 @@ import { AnimationManager } from './animations.js';
 
 /**
  * Get statistics from storage
- * @returns {Object} Statistics object
+ * @returns {Promise<Object>} Statistics object
  */
-export function getStats() {
+export async function getStats() {
     const defaultStats = {
         gamesPlayed: 0,
         gamesWon: 0,
@@ -21,7 +21,7 @@ export function getStats() {
         guessDistribution: new Array(GAME_CONFIG.MAX_GUESSES).fill(0)
     };
 
-    return loadFromStorage(STORAGE_KEYS.STATS, defaultStats);
+    return await loadFromStorage(STORAGE_KEYS.STATS, defaultStats);
 }
 
 /**
@@ -29,8 +29,8 @@ export function getStats() {
  * @param {boolean} won - Whether the game was won
  * @param {number} guessCount - Number of guesses taken (0 if lost)
  */
-export function updateStats(won, guessCount) {
-    const stats = getStats();
+export async function updateStats(won, guessCount) {
+    const stats = await getStats();
 
     stats.gamesPlayed++;
 
@@ -50,14 +50,14 @@ export function updateStats(won, guessCount) {
         stats.lastGameDate = getTodaysSeed().toString();
     }
 
-    saveToStorage(STORAGE_KEYS.STATS, stats);
+    await saveToStorage(STORAGE_KEYS.STATS, stats);
 }
 
 /**
  * Display statistics in the stats modal
  */
-export function displayStats() {
-    const stats = getStats();
+export async function displayStats() {
+    const stats = await getStats();
 
     // Update stat values
     document.getElementById('stat-played').textContent = stats.gamesPlayed;

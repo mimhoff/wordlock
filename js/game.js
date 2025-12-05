@@ -52,17 +52,17 @@ class WordLockGame {
     /**
      * Initialize the game
      */
-    initialize() {
+    async initialize() {
         // Check daily completion status
         this.state.checkDailyCompletion();
 
         // Try to restore saved game state
-        const hasState = this.state.loadState();
+        const hasState = await this.state.loadState();
 
         if (!hasState) {
             // No saved state, start new game
             this.state.initializeGame(true);
-            this.state.saveState();
+            await this.state.saveState();
         } else {
             // Restore board from saved state
             this.boardManager.restoreBoard(
@@ -203,10 +203,10 @@ class WordLockGame {
 
         // Check if game over
         if (this.state.isMaxGuessesReached()) {
-            this.handleLoss();
+            await this.handleLoss();
         } else {
             // Save in-progress state
-            this.state.saveState();
+            await this.state.saveState();
 
             // Show locked letter for next row after animation
             setTimeout(() => {
@@ -261,16 +261,16 @@ class WordLockGame {
         this.state.endGame(true);
 
         if (this.state.isDailyMode) {
-            updateStats(true, this.state.currentRow + 1);
+            await updateStats(true, this.state.currentRow + 1);
             this.state.markDailyComplete();
             this.updateModeButtons();
         }
 
-        this.state.saveState();
+        await this.state.saveState();
 
         if (this.state.isDailyMode) {
-            setTimeout(() => {
-                displayStats();
+            setTimeout(async () => {
+                await displayStats();
                 this.modalManager.openStats();
             }, TIMING.STATS_MODAL_DELAY);
         }
@@ -279,21 +279,21 @@ class WordLockGame {
     /**
      * Handle losing the game
      */
-    handleLoss() {
+    async handleLoss() {
         this.showMessage(`Game over! The word was ${this.state.targetWord}`);
         this.state.endGame(false);
 
         if (this.state.isDailyMode) {
-            updateStats(false, 0);
+            await updateStats(false, 0);
             this.state.markDailyComplete();
             this.updateModeButtons();
         }
 
-        this.state.saveState();
+        await this.state.saveState();
 
         if (this.state.isDailyMode) {
-            setTimeout(() => {
-                displayStats();
+            setTimeout(async () => {
+                await displayStats();
                 this.modalManager.openStats();
             }, TIMING.STATS_MODAL_DELAY);
         }
@@ -328,7 +328,7 @@ class WordLockGame {
      * Switch between daily and practice modes
      * @param {boolean} isDailyMode - True for daily, false for practice
      */
-    switchMode(isDailyMode) {
+    async switchMode(isDailyMode) {
         blurActiveElement();
 
         // Clear current board and keyboard
@@ -345,12 +345,12 @@ class WordLockGame {
         }
 
         // Try to load saved state for this mode
-        const hasState = this.state.loadState();
+        const hasState = await this.state.loadState();
 
         if (!hasState) {
             // No saved state, start new game
             this.state.initializeGame(isDailyMode);
-            this.state.saveState();
+            await this.state.saveState();
         } else {
             // Restore board from saved state
             this.boardManager.restoreBoard(
@@ -372,7 +372,7 @@ class WordLockGame {
     /**
      * Reset the game (practice mode only)
      */
-    resetGame() {
+    async resetGame() {
         blurActiveElement();
 
         // Don't allow reset in daily mode
@@ -388,7 +388,7 @@ class WordLockGame {
 
         // Start new game
         this.state.initializeGame(false);
-        this.state.saveState();
+        await this.state.saveState();
 
         // Update UI
         this.boardManager.updateLockIndicators(this.state);
