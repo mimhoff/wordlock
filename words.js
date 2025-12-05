@@ -12979,3 +12979,9 @@ const VALID_GUESSES = [
     "zymes",
     "zymic"
 ];
+
+// Make words available globally for ES6 modules
+if (typeof window !== 'undefined') {
+    window.SOLUTION_WORDS = SOLUTION_WORDS;
+    window.VALID_GUESSES = VALID_GUESSES;
+}

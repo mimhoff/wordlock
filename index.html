@@ -103,8 +103,8 @@
                     <div class="example-tile locked">
                         <span class="lock-icon">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="6" y="10" width="12" height="10" rx="1" fill="#4a4a4a"/>
-                                <path d="M8 10V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V10" stroke="#4a4a4a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                                <rect class="lock-body" x="6" y="10" width="12" height="10" rx="1" fill="#4a4a4a"/>
+                                <path class="lock-shackle" d="M8 10V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V10" stroke="#4a4a4a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
                             </svg>
                         </span>
                         <span class="letter">K</span>
@@ -162,14 +162,17 @@
         </div>
     </div>
 
+    <!-- Word lists -->
     <script src="words.js"></script>
-    <script src="game.js"></script>
+
+    <!-- Main game module -->
+    <script type="module" src="js/game.js"></script>
 
     <!-- Register Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
+                navigator.serviceWorker.register('./sw.js')
                     .then((registration) => {
                         console.log('Service Worker registered successfully:', registration.scope);
                     })
