@@ -32,16 +32,17 @@ export async function saveToStorage(key, value) {
             const Preferences = getPreferences();
             if (Preferences) {
                 await Preferences.set({ key, value: serialized });
-                console.log(`Saved to Preferences: ${key}`);
+                console.log(`✓ Saved to Preferences: ${key}`);
                 return true;
             }
         }
 
         // Fall back to localStorage on web or if Preferences unavailable
         localStorage.setItem(key, serialized);
+        console.log(`✓ Saved to localStorage: ${key}`, value);
         return true;
     } catch (error) {
-        console.error(`Failed to save to storage (${key}):`, error);
+        console.error(`✗ Failed to save to storage (${key}):`, error);
 
         // Handle quota exceeded error
         if (error.name === 'QuotaExceededError') {
@@ -68,20 +69,24 @@ export async function loadFromStorage(key, defaultValue = null) {
             if (Preferences) {
                 const result = await Preferences.get({ key });
                 item = result.value;
-                console.log(`Loaded from Preferences: ${key}`, item ? 'found' : 'not found');
+                console.log(`✓ Loaded from Preferences: ${key}`, item ? 'found' : 'not found');
             }
         } else {
             // Use localStorage on web
             item = localStorage.getItem(key);
+            console.log(`✓ Loaded from localStorage: ${key}`, item ? 'found' : 'not found');
         }
 
         if (item === null || item === undefined) {
+            console.log(`Using default value for ${key}`);
             return defaultValue;
         }
 
-        return JSON.parse(item);
+        const parsed = JSON.parse(item);
+        console.log(`Parsed ${key}:`, parsed);
+        return parsed;
     } catch (error) {
-        console.error(`Failed to load from storage (${key}):`, error);
+        console.error(`✗ Failed to load from storage (${key}):`, error);
         return defaultValue;
     }
 }

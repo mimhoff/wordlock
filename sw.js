@@ -1,24 +1,46 @@
-const CACHE_NAME = 'wordlock-v1';
-const ASSETS_TO_CACHE = [
-    '/',
-    '/index.html',
-    '/game.js',
-    '/styles.css',
-    '/words.js',
-    '/manifest.json'
+// Version changes with each deployment to force cache update
+const VERSION = '2025-12-06-v1';
+const CACHE_NAME = `wordlock-${VERSION}`;
+
+// Assets that rarely change - can use cache-first
+const STATIC_ASSETS = [
+    '/icons/icon-192x192.png',
+    '/icons/icon-512x512.png',
+    '/favicon.svg',
+    '/manifest.json',
+    '/words.js'
 ];
 
-// Install event - cache all assets
+// Dynamic assets that change frequently - use network-first
+const DYNAMIC_ASSETS = [
+    '/',
+    '/index.html',
+    '/styles.css',
+    '/js/game.js',
+    '/js/game-state.js',
+    '/js/board.js',
+    '/js/keyboard.js',
+    '/js/modals.js',
+    '/js/stats.js',
+    '/js/storage.js',
+    '/js/theme.js',
+    '/js/animations.js',
+    '/js/constants.js',
+    '/js/utils.js',
+    '/js/admob.js'
+];
+
+// Install event - cache static assets only
 self.addEventListener('install', (event) => {
-    console.log('Service Worker: Installing...');
+    console.log(`Service Worker ${VERSION}: Installing...`);
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log('Service Worker: Caching files');
-                return cache.addAll(ASSETS_TO_CACHE);
+                console.log(`Service Worker ${VERSION}: Caching static assets`);
+                return cache.addAll(STATIC_ASSETS);
             })
             .then(() => {
-                console.log('Service Worker: Installed');
+                console.log(`Service Worker ${VERSION}: Installed, activating immediately`);
                 return self.skipWaiting();
             })
             .catch((err) => {
@@ -29,45 +51,80 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-    console.log('Service Worker: Activating...');
+    console.log(`Service Worker ${VERSION}: Activating...`);
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.map((cache) => {
                     if (cache !== CACHE_NAME) {
-                        console.log('Service Worker: Deleting old cache', cache);
+                        console.log(`Service Worker ${VERSION}: Deleting old cache`, cache);
                         return caches.delete(cache);
                     }
                 })
             );
         }).then(() => {
-            console.log('Service Worker: Activated');
+            console.log(`Service Worker ${VERSION}: Activated, taking control of all pages`);
             return self.clients.claim();
         })
     );
 });
 
-// Fetch event - serve from cache, fallback to network
+// Helper: Check if URL is a static asset
+function isStaticAsset(url) {
+    const path = new URL(url).pathname;
+    return STATIC_ASSETS.some(asset => path.endsWith(asset) || path === asset);
+}
+
+// Fetch event - use different strategies for different asset types
 self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request)
-            .then((response) => {
-                // Return cached version or fetch from network
-                return response || fetch(event.request)
-                    .then((fetchResponse) => {
-                        // Cache the new response for future use
-                        return caches.open(CACHE_NAME).then((cache) => {
-                            // Only cache GET requests
-                            if (event.request.method === 'GET') {
-                                cache.put(event.request, fetchResponse.clone());
-                            }
-                            return fetchResponse;
-                        });
+    const { request } = event;
+
+    // Skip non-GET requests
+    if (request.method !== 'GET') {
+        return;
+    }
+
+    // Network-first for HTML/JS/CSS (always get latest, cache as backup)
+    if (!isStaticAsset(request.url)) {
+        event.respondWith(
+            fetch(request)
+                .then((response) => {
+                    // Cache the fresh response
+                    const responseClone = response.clone();
+                    caches.open(CACHE_NAME).then((cache) => {
+                        cache.put(request, responseClone);
                     });
-            })
-            .catch(() => {
-                // Could return a custom offline page here
-                console.log('Service Worker: Fetch failed, offline mode');
-            })
-    );
+                    return response;
+                })
+                .catch(() => {
+                    // Network failed, try cache
+                    return caches.match(request).then((cached) => {
+                        if (cached) {
+                            console.log('Service Worker: Serving from cache (offline):', request.url);
+                            return cached;
+                        }
+                        console.log('Service Worker: No cached version available:', request.url);
+                    });
+                })
+        );
+    }
+    // Cache-first for static assets (icons, images, etc.)
+    else {
+        event.respondWith(
+            caches.match(request)
+                .then((cached) => {
+                    if (cached) {
+                        return cached;
+                    }
+                    // Not in cache, fetch and cache it
+                    return fetch(request).then((response) => {
+                        const responseClone = response.clone();
+                        caches.open(CACHE_NAME).then((cache) => {
+                            cache.put(request, responseClone);
+                        });
+                        return response;
+                    });
+                })
+        );
+    }
 });

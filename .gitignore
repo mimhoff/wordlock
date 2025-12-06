@@ -33,3 +33,7 @@ keystore-info.txt
 # OS files
 .DS_Store
 Thumbs.db
+
+# Deployment (moved to site repo)
+landing.html
+deploy.sh

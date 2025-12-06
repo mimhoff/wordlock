@@ -96,7 +96,13 @@ export class ModalManager {
     /**
      * Open Stats modal with fade animation
      */
-    openStats() {
+    async openStats() {
+        // Import displayStats dynamically to avoid circular dependency
+        const { displayStats } = await import('./stats.js');
+
+        // Load and display stats
+        await displayStats();
+
         this.statsModal.classList.add('open');
         AnimationManager.fadeIn(this.statsModal);
         focusFirstElement(
