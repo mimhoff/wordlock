@@ -28,6 +28,7 @@ The lock mechanic transforms the game from pure deduction into strategic plannin
 
 • Daily Challenge: New puzzle every day, compete with friends
 • Practice Mode: Unlimited games to hone your skills
+• Three difficulty levels, from plan-ahead Standard to Expert
 • Beautiful animations and intuitive design
 • Dark mode support for comfortable playing
 • Detailed statistics tracking
@@ -51,7 +52,13 @@ The lock mechanic transforms the game from pure deduction into strategic plannin
 
 DAILY MODE: One puzzle per day, just like the classic. Compare scores with the community and track your streak!
 
-PRACTICE MODE: Unlimited games whenever you want. Perfect for learning strategies or just having fun.
+PRACTICE MODE: Unlimited games whenever you want. Perfect for learning strategies or just having fun. Share a puzzle's link and your friends can play the exact same one.
+
+🧠 THREE DIFFICULTIES
+
+STANDARD: See every lock from the start and plan your route.
+HIDDEN LOCKS: A lock only appears when you reach its row. No planning ahead!
+EXPERT: Hidden locks, plus every hint you've uncovered must be reused.
 
 📊 TRACK YOUR PROGRESS
 

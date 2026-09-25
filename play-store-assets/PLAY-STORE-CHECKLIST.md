@@ -193,9 +193,8 @@ When you make changes:
 versionCode 2
 versionName "1.1"
 
-# 2. Sync and rebuild
-npm run copy
-npx cap sync android
+# 2. Build the web app, sync and rebuild
+npm run cap:sync
 cd android
 ./gradlew bundleRelease
 

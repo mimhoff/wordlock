@@ -1,9 +1,13 @@
 # Dependencies
 node_modules/
-package-lock.json
 
 # Build outputs
-www/
+dist/
+dev-dist/
+tsconfig.tsbuildinfo
+.cache/
+.logs/
+*.local
 android/
 ios/
 

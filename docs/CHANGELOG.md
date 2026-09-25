@@ -1,5 +1,40 @@
 # WordLock Changelog
 
+## Version 3.0 - Rewrite
+
+Rebuilt with Vite, React and TypeScript. The game rules and daily/practice modes are unchanged; the
+same build now runs as the website (an installable, offline-capable PWA) and inside the Capacitor app.
+
+### New
+- **Difficulty levels**: Standard (locks visible ahead, as before), Hidden Locks (each lock appears
+  only when its row becomes active) and Expert (hidden locks + reuse every revealed hint).
+- **Shareable practice puzzles**: each has a code, and shared results link to the same puzzle.
+- **Practice statistics**, kept separately from daily stats.
+- Puzzle numbers (`WordLock #12`) instead of dates in shared results; 🔒 marks locked tiles.
+- Native share sheet on phones; clipboard on desktop.
+- Countdown to the next daily puzzle; daily rolls over at midnight even if the app stays open.
+- System theme option and a high-contrast (colour-blind) mode.
+- Vibration on key taps in the apps (can be turned off).
+- Google consent (GDPR) form before AdMob ads where required; adaptive banner that never covers
+  the keyboard.
+
+### Changed
+- New word lists built from open sources (ENABLE, SCOWL, word frequencies): 2,259 answers and about
+  8,800 accepted guesses, replacing the lists copied from Wordle. Rebuild with
+  `node scripts/build-wordlists.mjs`.
+- The daily puzzle is seeded from a hash of the date. v3's daily words differ from v2's.
+- The service worker is generated at build time; no more manual cache-version bumps.
+- The next row's lock appears after the previous row finishes flipping.
+
+### Fixed
+- Streaks now reset after a missed day (v2 only reset them on a loss).
+- The theme choice is saved (v2 stored an unresolved Promise, so it always reverted to dark).
+- The Share button is available for any finished game, not just a daily played today.
+
+### Migration
+- v2 stats, streak, "seen help" flag and (dark) theme are imported automatically on first launch;
+  a daily puzzle is never counted twice. See `DEPLOYMENT.md`.
+
 ## Version 2.0 - Animation & Refactoring Update
 
 ### Major Refactoring

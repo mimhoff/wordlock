@@ -1,82 +1,65 @@
-# WordLock Deployment Checklist
+# Deploying the website
 
-## Before Every Deployment
+The site is live at https://mimhoff.com/wordlock and deployed from the separate site repo
+(`/home/mimhoff/site`, via `./deploy.sh`).
 
-**IMPORTANT**: Update the service worker version to force cache invalidation!
+## Every deployment
 
-### 1. Update Service Worker Version
-
-Edit `sw.js` line 2 and change the VERSION:
-
-```javascript
-// Old
-const VERSION = '2025-12-06-v1';
-
-// New (use current date and increment)
-const VERSION = '2025-12-07-v1';  // or v2, v3, etc. on same day
+```bash
+npm test
+npm run build        # typecheck + production build into dist/
 ```
 
-### 2. Test Locally
+Then publish **the contents of `dist/`** as the `wordlock/` folder of the site, replacing what's
+there. From the site repo that's roughly:
 
-Open browser console and check for:
-- Service worker installing with new version
-- Old caches being deleted
-- Network requests for HTML/JS/CSS (not served from cache)
-
-### 3. Deploy
-
-From the `/home/mimhoff/site` directory:
 ```bash
-cd /home/mimhoff/site
+rsync -a --delete ~/projects/games/wordlock-old/dist/ ~/site/wordlock/
 ./deploy.sh
 ```
 
-### 4. Verify Deployment
+Asset paths are relative, so the build works under any path, no configuration needed.
 
-1. Visit https://mimhoff.com/wordlock in **incognito/private mode**
-2. Open DevTools Console
-3. Look for: `Service Worker 2025-12-XX-vX: Installing...`
-4. Verify new version is active
-5. Check that the site works correctly
+There's no service worker version to bump any more. `vite-plugin-pwa` generates `sw.js` with a
+content hash of every file, so each build is picked up automatically: returning visitors get the new
+version on their next visit, and it activates immediately.
 
-### 5. Clear Old User Caches (if needed)
+### Server caching
 
-If users report issues, ask them to:
-1. Go to https://mimhoff.com/wordlock
-2. Open DevTools (F12)
-3. Go to Application → Storage → Clear site data
-4. Refresh the page
+For updates to land promptly, `index.html` and `sw.js` must not be cached long by the server/CDN
+(browsers already revalidate `sw.js` at least every 24h). Everything under `assets/` has a hash
+in its filename and can be cached forever.
 
-## Caching Strategy
+## First deployment of v3 (replacing v2)
 
-### Network-First (Always Fresh)
-- HTML files (`index.html`)
-- JavaScript files (`/js/*.js`)
-- CSS files (`styles.css`)
+v2 was plain files (`index.html`, `styles.css`, `words.js`, `js/`, `sw.js`, `manifest.json`,
+`icons/`). The v3 build replaces them. Things to check:
 
-These files are **always fetched from the network** to ensure users get updates immediately.
-Cache is only used as offline backup.
+1. **Update `~/site/deploy.sh`** if it copies v2's individual files; it should copy `dist/` instead,
+   and delete the old `js/`, `words.js`, `styles.css` and `manifest.json` (the `--delete` above does this).
+2. **Switch at local midnight** if you can. v3 picks a different daily word than v2, so a player who
+   already played today's v2 puzzle would otherwise see a second, different daily. (Their stats are
+   safe: a day is only ever counted once.)
+3. **Verify** in a normal (not private) window that already had v2 cached:
+   - The new version loads after one refresh, and the old `wordlock-*` cache is gone
+     (DevTools → Application → Cache storage)
+   - Your stats, streak and theme carried over (Statistics dialog)
+   - Help doesn't pop up again for returning players
 
-### Cache-First (Rarely Change)
-- Icons and images (`/icons/*`)
-- Manifest (`manifest.json`)
-- Word list (`words.js`)
-- Favicon (`favicon.svg`)
+### What carries over from v2
 
-These files are served from cache for speed, only fetched if not cached.
+On first load, v3 imports v2's saved data (`src/migration.ts`), leaving the original keys untouched
+so a rollback to v2 still works:
 
-## Troubleshooting
+| v2 key | v3 |
+|---|---|
+| `stats` | Daily stats, including the streak (kept only if the last v2 game was yesterday or today) |
+| `theme` | Theme. v2 never saved this correctly (an un-awaited async call stored `"{}"`), so returning v2 players always saw dark mode; v3 keeps them on dark |
+| `hasVisited` | Don't show the help again |
 
-### Users see old version after deployment
-- Did you update the VERSION in sw.js?
-- Check browser console for service worker version
-- Ask users to hard refresh (Ctrl+Shift+R or Cmd+Shift+R)
+An in-progress v2 game isn't carried over, since v3's daily puzzle is different anyway.
 
-### Mixed old/new files
-- This should no longer happen with network-first strategy
-- If it does, clear cache and redeploy with updated VERSION
+### Rolling back
 
-### Service worker not updating
-- Ensure `skipWaiting()` is called in install event (it is)
-- Ensure `clients.claim()` is called in activate event (it is)
-- Close all tabs of the site and reopen
+Redeploy v2's files from the `master` branch. v2's data is still in place. Stats from games played
+on v3 in the meantime won't appear in v2.
