@@ -26,7 +26,7 @@ Vite + React + TypeScript, packaged as a PWA for the web and as native Android/i
 
 ```
 src/game/          Pure game logic (no React): puzzles, rules, stats, share text. Unit tested.
-src/game/words/    Generated word lists: answers.ts (2,259 solutions), allowed.ts (6,584 extra guesses).
+src/game/words/    Generated word lists: answers.ts (2,211 solutions), allowed.ts (6,574 extra guesses).
 src/components/    React UI.
 src/platform/      Web/native seams: storage, sharing, ads, haptics, Android back button.
 src/config.ts      Share URL, Ko-fi, AdSense and AdMob IDs (overridable with VITE_* env variables).
@@ -58,7 +58,10 @@ npm run build      # typecheck + production build into dist/
 
 Built from openly licensed sources: the ENABLE dictionary (public domain), SCOWL (common-word levels,
 which also filter out proper nouns) and OpenSubtitles word frequencies for ranking. Answers exclude plurals,
-past tenses and a small blocklist. Regenerate with `node scripts/build-wordlists.mjs`.
+past tenses, and offensive or unsuitable words. Slurs and explicit words are blocked outright; words with an
+ordinary meaning plus a slur, crude or loaded second meaning stay valid guesses but are never answers. Both lists
+are in [`scripts/wordlist-blocklist.json`](scripts/wordlist-blocklist.json) and enforced by a unit test.
+Regenerate with `node scripts/build-wordlists.mjs`.
 
 **Any change to `answers.ts` changes every daily puzzle**, including adding words at the end: the date
 hash picks a word by scaling across the whole list's length. Treat the list as frozen once players are on it.

@@ -28,13 +28,10 @@ const SOURCES = {
   'scowl.tar.gz': 'https://downloads.sourceforge.net/wordlist/scowl-2020.12.07.tar.gz',
 };
 
-// Words that are valid guesses but shouldn't be daily answers (offensive, crude, or name-like).
-const ANSWER_BLOCKLIST = new Set(
-  `bitch whore sluts pussy dicks dildo penis twats cunts cocks boner horny porno pimps rapes raped
-   bosom boobs titty kinky nazis wanks homos queer dykes gooks spics kikes chink paddy retard negro
-   semen sperm anals bongs sexed sexes alamo rouen perry vichy aggie wilco youse ganja hussy aline
-   levin senna willy matey actin aargh gonif lotsa nosed dopey enema grope`.split(/\s+/),
-);
+// Offensive and unsuitable words, reviewed by hand: see scripts/wordlist-blocklist.json.
+const blocklist = JSON.parse(fs.readFileSync(path.join(ROOT, 'scripts', 'wordlist-blocklist.json'), 'utf8'));
+const BLOCKED = new Set(Object.values(blocklist.blocked).flat());
+const NOT_ANSWERS = new Set([...BLOCKED, ...Object.values(blocklist.notAnswers).flat()]);
 
 const FIVE = /^[a-z]{5}$/;
 
@@ -82,14 +79,14 @@ const answers = [];
 for (const line of readLines(path.join(CACHE, 'freq.txt'))) {
   const w = line.split(' ')[0];
   if (!FIVE.test(w) || !dictionary.has(w) || !common.has(w)) continue;
-  if (ANSWER_BLOCKLIST.has(w) || isInflection(w) || answers.includes(w)) continue;
+  if (NOT_ANSWERS.has(w) || isInflection(w) || answers.includes(w)) continue;
   answers.push(w);
   if (answers.length >= ANSWER_TARGET) break;
 }
 answers.sort();
 
 const answerSet = new Set(answers);
-const allowed = [...dictionary].filter((w) => FIVE.test(w) && !answerSet.has(w)).sort();
+const allowed = [...dictionary].filter((w) => FIVE.test(w) && !answerSet.has(w) && !BLOCKED.has(w)).sort();
 
 function writeList(file, name, doc, words) {
   // One space-separated string per initial letter keeps the file compact and diff-friendly.
