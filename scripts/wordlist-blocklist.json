@@ -6,9 +6,9 @@
     "sexual": ["boner", "boobs", "clits", "cocks", "dicks", "dildo", "jisms", "milfs", "poons", "porno", "porns", "porny", "raped", "raper", "rapes", "titty", "wanks"]
   },
   "notAnswers": {
-    "derogatory": ["biddy", "butch", "cissy", "gayer", "gypsy", "idiot", "leper", "moron", "nappy", "paddy", "pansy", "pigmy", "pinko", "pygmy", "queer", "sissy", "spook", "wacko", "welch", "welsh", "wench"],
-    "sexualOrCrude": ["arses", "bimbo", "booby", "booty", "bosom", "busty", "enema", "fanny", "farts", "fecal", "grope", "horny", "hussy", "hymen", "kinky", "labia", "lusty", "nudes", "penis", "peter", "pinup", "prick", "pubes", "pubic", "randy", "roger", "semen", "sexed", "sexes", "skeet", "spank", "sperm", "spunk", "sucks", "turds", "tushy", "vulva"],
-    "sensitive": ["abort", "fetal", "fetus", "ganja", "gulag", "hadji", "hajji", "jihad", "lynch", "nazis", "noose", "slave", "trump"],
+    "derogatory": ["biddy", "butch", "cissy", "gayer", "gypsy", "moron", "nappy", "paddy", "pansy", "pigmy", "pinko", "pygmy", "queer", "sissy", "wacko", "welch", "welsh", "wench"],
+    "sexualOrCrude": ["arses", "bimbo", "busty", "enema", "fanny", "farts", "fecal", "grope", "horny", "hussy", "hymen", "kinky", "labia", "lusty", "nudes", "penis", "pinup", "prick", "pubes", "pubic", "randy", "semen", "sexed", "sexes", "skeet", "spank", "sperm", "spunk", "sucks", "turds", "tushy", "vulva"],
+    "sensitive": ["fetal", "fetus", "ganja", "gulag", "hadji", "hajji", "jihad", "lynch", "nazis", "noose", "slave"],
     "properNounLike": ["aggie", "alamo", "aline", "japan", "levin", "maria", "perry", "roman", "rouen", "senna", "vichy", "wilco", "willy", "youse"],
     "obscure": ["aargh", "actin", "dopey", "gonif", "lotsa", "matey", "nosed"]
   }

@@ -17,6 +17,6 @@ describe('word list blocklist', () => {
 
   it('keeps "not an answer" words valid as guesses, when they are in the dictionary', () => {
     // Spot-check ordinary words with a secondary meaning; players may mean the ordinary one.
-    for (const w of ['pansy', 'spook', 'slave', 'prick']) expect(isValidWord(w)).toBe(true);
+    for (const w of ['pansy', 'lynch', 'slave', 'prick']) expect(isValidWord(w)).toBe(true);
   });
 });

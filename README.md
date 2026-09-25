@@ -26,7 +26,7 @@ Vite + React + TypeScript, packaged as a PWA for the web and as native Android/i
 
 ```
 src/game/          Pure game logic (no React): puzzles, rules, stats, share text. Unit tested.
-src/game/words/    Generated word lists: answers.ts (2,211 solutions), allowed.ts (6,574 extra guesses).
+src/game/words/    Generated word lists: answers.ts (2,221 solutions), allowed.ts (6,564 extra guesses).
 src/components/    React UI.
 src/platform/      Web/native seams: storage, sharing, ads, haptics, Android back button.
 src/config.ts      Share URL, Ko-fi, AdSense and AdMob IDs (overridable with VITE_* env variables).

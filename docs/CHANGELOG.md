@@ -19,7 +19,7 @@ same build now runs as the website (an installable, offline-capable PWA) and ins
   the keyboard.
 
 ### Changed
-- New word lists built from open sources (ENABLE, SCOWL, word frequencies): 2,211 answers and about
+- New word lists built from open sources (ENABLE, SCOWL, word frequencies): 2,221 answers and about
   8,800 accepted guesses, replacing the lists copied from Wordle. Slurs and explicit words are
   blocked entirely, and crude or sensitive words are never answers (`scripts/wordlist-blocklist.json`). Rebuild with
   `node scripts/build-wordlists.mjs`.
