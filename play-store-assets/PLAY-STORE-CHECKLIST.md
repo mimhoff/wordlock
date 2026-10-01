@@ -8,7 +8,7 @@
 
 ### Graphics
 - ✅ `wordlock-icon-512.png` (App icon for Play Store)
-- ✅ `wordlock-feature-graphic.png` (1024x500 banner)
+- ✅ `feature-graphic.png` (1024x500 banner)
 
 ### Documentation
 - ✅ `app-description.txt` (Short and full descriptions)
@@ -73,7 +73,7 @@ Go to: https://play.google.com/console
 
 #### Graphics
 - **App icon**: Upload `wordlock-icon-512.png`
-- **Feature graphic**: Upload `wordlock-feature-graphic.png`
+- **Feature graphic**: Upload `feature-graphic.png`
 - **Screenshots**: Upload your captured screenshots (minimum 2)
 
 #### Store Settings

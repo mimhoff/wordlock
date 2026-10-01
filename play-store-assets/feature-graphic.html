@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>WordLock feature graphic</title>
+<!-- Source for feature-graphic.png (Play Store: 1024x500, no transparency).
+     Re-render by screenshotting this page at 1024x500 and flattening to RGB. -->
+<style>
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('../node_modules/@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2') format('woff2');
+  font-weight: 300 700;
+}
+html, body { margin: 0; }
+body {
+  width: 1024px; height: 500px; overflow: hidden;
+  background: #f6f5f1; color: #15171a;
+  font-family: 'Space Grotesk', sans-serif;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 72px 0 76px; box-sizing: border-box;
+}
+.copy { display: flex; flex-direction: column; gap: 22px; max-width: 470px; }
+.logo { display: flex; align-items: center; gap: 18px; font-size: 76px; font-weight: 700; letter-spacing: -0.035em; line-height: 1; }
+.mark { width: 78px; height: 78px; border-radius: 19px; background: #b3203a; display: grid; place-items: center; }
+.mark svg { width: 44px; height: 44px; }
+.tagline { font-size: 33px; font-weight: 600; line-height: 1.18; letter-spacing: -0.015em; margin: 0; }
+.tagline em { font-style: normal; color: #b3203a; }
+.sub { font-size: 21px; font-weight: 500; color: #5d6168; margin: 0; }
+.board {
+  display: grid; gap: 8px; padding: 22px; border-radius: 22px;
+  background: #ffffff; box-shadow: 0 18px 50px rgba(21, 23, 26, 0.13), 0 2px 6px rgba(21, 23, 26, 0.06);
+}
+.row { display: grid; grid-template-columns: repeat(5, 58px); gap: 8px; }
+.t {
+  position: relative; width: 58px; height: 58px; box-sizing: border-box; border-radius: 8px;
+  display: grid; place-items: center; font-size: 30px; font-weight: 700; text-transform: uppercase;
+  border: 2px solid #dcd9d0; background: #ffffff; color: #15171a;
+}
+.c { background: #13a06b; border-color: #13a06b; color: #fff; }
+.p { background: #f6c945; border-color: #f6c945; color: #2a2000; }
+.a { background: #6e7a8a; border-color: #6e7a8a; color: #fff; }
+.l { background: #b3203a; border-color: #b3203a; color: #fff; }
+.f { border-color: #8b877b; }
+.h { border-style: dashed; border-color: #cfcbc0; color: #a19c8f; background: transparent; }
+.badge { position: absolute; top: 4px; right: 4px; width: 13px; height: 13px; }
+.l .badge { color: #ffd56a; }
+.p .badge { color: #2a2000; }
+.h svg { width: 24px; height: 24px; }
+</style>
+</head>
+<body>
+<div class="copy">
+  <div class="logo">
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><rect x="4" y="11" width="16" height="11" rx="2.4" fill="#fff" stroke="none"></rect><path d="M8 11V7.5a4 4 0 0 1 8 0V11"></path></svg></span>
+    <span>wordlock</span>
+  </div>
+  <p class="tagline">Every row <em>locks in a letter</em> from your last guess.</p>
+  <p class="sub">A new daily word puzzle. Plan ahead.</p>
+</div>
+<div class="board" aria-label="Example game board">
+  <div class="row"><div class="t p">t</div><div class="t a">o</div><div class="t a">n</div><div class="t p">e</div><div class="t p">s</div></div>
+  <div class="row"><div class="t a">i</div><div class="t p">s</div><div class="t p">l</div><div class="t p">e<svg class="badge" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="11" width="16" height="11" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.6"></path></svg></div><div class="t p">t</div></div>
+  <div class="row"><div class="t a">u</div><div class="t p">s<svg class="badge" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="11" width="16" height="11" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.6"></path></svg></div><div class="t c">a</div><div class="t a">g</div><div class="t c">e</div></div>
+  <div class="row"><div class="t f">s</div><div class="t f">l</div><div class="t l">a<svg class="badge" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="11" width="16" height="11" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.6"></path></svg></div><div class="t"></div><div class="t"></div></div>
+  <div class="row"><div class="t h"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3" fill="none" stroke="currentColor" stroke-width="2.2"></path></svg></div><div class="t"></div><div class="t"></div><div class="t"></div><div class="t"></div></div>
+</div>
+</body>
+</html>
