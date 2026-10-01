@@ -10,13 +10,15 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Precache the bundled font and icons too, so the installed app looks right offline.
+      workbox: { globPatterns: ['**/*.{js,css,html,woff2,svg,png}'] },
       includeAssets: ['favicon.svg', 'icons/icon-152x152.png'],
       manifest: {
         name: 'WordLock - Daily Word Puzzle',
         short_name: 'WordLock',
-        description: 'Wordle with a strategic twist! Guess the 5-letter word with locked letter positions.',
-        theme_color: '#538d4e',
-        background_color: '#121213',
+        description: 'A daily word puzzle where every row locks in a letter from your last guess.',
+        theme_color: '#f6f5f1',
+        background_color: '#f6f5f1',
         display: 'standalone',
         orientation: 'portrait',
         categories: ['games', 'entertainment'],

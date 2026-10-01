@@ -1,53 +1,9 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="512" height="512" fill="#121213" rx="64"/>
-
-  <!-- Define tile size and spacing -->
-  <!-- 3x3 grid with 8px gaps, tiles are 160x160 -->
-
-  <!-- Row 1: W O R -->
-  <!-- W - Green (correct) -->
-  <rect x="8" y="8" width="160" height="160" rx="8" fill="#538d4e"/>
-  <text x="88" y="115" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">W</text>
-
-  <!-- O - Yellow (present) -->
-  <rect x="176" y="8" width="160" height="160" rx="8" fill="#b59f3b"/>
-  <text x="256" y="115" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">O</text>
-
-  <!-- R - Red (locked) -->
-  <rect x="344" y="8" width="160" height="160" rx="8" fill="#8b2e2e"/>
-  <text x="424" y="115" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">R</text>
-
-  <!-- Row 2: D [LOCK] L -->
-  <!-- D - Grey (absent) -->
-  <rect x="8" y="176" width="160" height="160" rx="8" fill="#3a3a3c"/>
-  <text x="88" y="283" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">D</text>
-
-  <!-- Center - Red tile with Lock Icon (positioned lower) -->
-  <rect x="176" y="176" width="160" height="160" rx="8" fill="#8b2e2e"/>
-  <!-- Lock icon - moved down 15px -->
-  <g transform="translate(256, 271)">
-    <!-- Lock body -->
-    <rect x="-35" y="-10" width="70" height="50" rx="6" fill="white"/>
-    <!-- Lock shackle -->
-    <path d="M -25,-10 L -25,-35 A 25,25 0 0,1 25,-35 L 25,-10"
-          stroke="white" stroke-width="12" fill="none" stroke-linecap="round"/>
-  </g>
-
-  <!-- L - Green (correct) -->
-  <rect x="344" y="176" width="160" height="160" rx="8" fill="#538d4e"/>
-  <text x="424" y="283" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">L</text>
-
-  <!-- Row 3: O C K -->
-  <!-- O - Yellow (present) -->
-  <rect x="8" y="344" width="160" height="160" rx="8" fill="#b59f3b"/>
-  <text x="88" y="451" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">O</text>
-
-  <!-- C - Grey (absent) -->
-  <rect x="176" y="344" width="160" height="160" rx="8" fill="#3a3a3c"/>
-  <text x="256" y="451" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">C</text>
-
-  <!-- K - Red (locked) -->
-  <rect x="344" y="344" width="160" height="160" rx="8" fill="#8b2e2e"/>
-  <text x="424" y="451" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">K</text>
+  <!-- WordLock app icon: crimson field (full-bleed so Android can mask it to any shape)
+       with a white padlock inside the central safe zone. -->
+  <rect width="512" height="512" fill="#b3203a"/>
+  <path d="M196 236v-46a60 60 0 0 1 120 0v46" fill="none" stroke="#ffffff" stroke-width="34" stroke-linecap="round"/>
+  <rect x="160" y="226" width="192" height="148" rx="26" fill="#ffffff"/>
+  <circle cx="256" cy="290" r="17" fill="#b3203a"/>
+  <rect x="247" y="296" width="18" height="40" rx="9" fill="#b3203a"/>
 </svg>

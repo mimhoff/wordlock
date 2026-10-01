@@ -1,11 +1,11 @@
 === SHORT DESCRIPTION (80 characters max) ===
-Wordle with a strategic twist - locked letters add a new challenge!
+The daily word puzzle where every row locks in a letter. Plan ahead!
 
 === FULL DESCRIPTION ===
 
 🔒 WordLock - The Strategic Word Puzzle Game
 
-Think you've mastered Wordle? WordLock adds an exciting strategic twist that will test your word-guessing skills in a whole new way!
+Think you've mastered daily word puzzles? WordLock adds a strategic twist that will test your word-guessing skills in a whole new way!
 
 🎮 HOW TO PLAY
 
@@ -14,7 +14,7 @@ Guess the 5-letter word in 8 tries, just like your favorite word game. But here'
 • Green tiles: Correct letter in the right position
 • Yellow tiles: Letter is in the word but wrong position
 • Gray tiles: Letter is not in the word
-• Red tiles with lock: Must match the letter directly above it
+• Red tiles with a padlock: Must match the letter directly above it
 
 🎯 THE STRATEGY
 
@@ -36,7 +36,7 @@ The lock mechanic transforms the game from pure deduction into strategic plannin
 
 🏆 PERFECT FOR
 
-• Wordle fans looking for a fresh challenge
+• Daily word-puzzle fans looking for a fresh challenge
 • Word puzzle enthusiasts
 • Anyone who loves strategic thinking
 • Players who want more depth in their daily word game

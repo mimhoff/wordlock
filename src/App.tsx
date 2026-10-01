@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Board } from './components/Board';
 import { HelpModal } from './components/HelpModal';
-import { HelpIcon, NewGameIcon, SettingsIcon, StatsIcon } from './components/icons';
+import { HelpIcon, LockIcon, NewGameIcon, SettingsIcon, StatsIcon } from './components/icons';
 import { Keyboard } from './components/Keyboard';
 import { SettingsModal } from './components/SettingsModal';
 import { StatsModal } from './components/StatsModal';
@@ -206,7 +206,12 @@ export default function App() {
           )}
         </div>
         <div className="title-block">
-          <h1>WordLock</h1>
+          <h1 aria-label="WordLock">
+            <span className="logo-mark" aria-hidden="true">
+              <LockIcon />
+            </span>
+            wordlock
+          </h1>
           <div className="subtitle">{subtitle}</div>
         </div>
         <div className="header-side right">

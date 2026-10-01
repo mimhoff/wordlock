@@ -6,6 +6,10 @@ Rebuilt with Vite, React and TypeScript. The game rules and daily/practice modes
 same build now runs as the website (an installable, offline-capable PWA) and inside the Capacitor app.
 
 ### New
+- **Own visual identity**: emerald / sunflower / slate tiles with a crimson lock, rounded tiles,
+  the Space Grotesk font (bundled, works offline), a lock-tile + "wordlock" logo, new win messages
+  and a new app icon. High-contrast mode uses cobalt and marigold. Nothing of Wordle's palette,
+  fonts or messages remains, and "Wordle" no longer appears in the page metadata or store listing.
 - **Difficulty levels**: Standard (locks visible ahead, as before), Hidden Locks (each lock appears
   only when its row becomes active) and Expert (hidden locks + reuse every revealed hint).
 - **Shareable practice puzzles**: each has a code, and shared results link to the same puzzle.

@@ -23,4 +23,5 @@ export const DIFFICULTIES: Record<Difficulty, { label: string; description: stri
   },
 };
 
-export const WIN_MESSAGES = ['Genius', 'Magnificent', 'Impressive', 'Splendid', 'Great', 'Nice', 'Phew', 'Clutch'];
+/** Toast after a win, indexed by guesses used (1–8). */
+export const WIN_MESSAGES = ['Picked it!', 'Brilliant', 'Sharp', 'Solid', 'Nice', 'Good', 'Close one', 'Just made it'];

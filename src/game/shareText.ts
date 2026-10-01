@@ -3,8 +3,8 @@ import type { GameState, TileState } from './engine';
 import { encodeSeed } from './puzzle';
 
 const SQUARES: Record<TileState, [normal: string, highContrast: string]> = {
-  correct: ['🟩', '🟧'],
-  present: ['🟨', '🟦'],
+  correct: ['🟩', '🟦'],
+  present: ['🟨', '🟨'],
   absent: ['⬛', '⬛'],
 };
 
