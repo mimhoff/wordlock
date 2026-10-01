@@ -1,5 +1,5 @@
 === SHORT DESCRIPTION (80 characters max) ===
-The daily word puzzle where every row locks in a letter. Plan ahead!
+The word game where you need to lock in.
 
 === FULL DESCRIPTION ===
 
