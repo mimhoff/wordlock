@@ -7,7 +7,7 @@ it's pre-filled (in red) with the letter from the same position in your previous
 changed. Locks never fall in the same position on two consecutive rows.
 
 - **Daily** mode: the date (`YYYY-MM-DD`, local time) is hashed to seed the answer and lock positions, so
-  everyone gets the same puzzle. Puzzle #1 is 2026-09-25 (`DAILY_EPOCH` in `src/game/constants.ts`).
+  everyone gets the same puzzle. Puzzle #1 is 2026-10-01, the v3 launch day (`DAILY_EPOCH` in `src/game/constants.ts`; never change it after launch, since saved streaks store puzzle numbers).
 - **Practice** mode: unlimited random puzzles. Each has a short code (e.g. `C3Y6KB`), and shared results
   include a `?practice=CODE` link that opens the same puzzle.
 - **Difficulties**: Standard (locks visible ahead of time), Hidden Locks (a lock only appears when its row

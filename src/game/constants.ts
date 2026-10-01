@@ -2,7 +2,7 @@ export const WORD_LENGTH = 5;
 export const MAX_GUESSES = 8;
 
 /** Local date of daily puzzle #1. Puzzle numbers count days from here. */
-export const DAILY_EPOCH = '2026-09-25';
+export const DAILY_EPOCH = '2026-10-01';
 
 export type GameMode = 'daily' | 'practice';
 
