@@ -56,7 +56,7 @@ Or create an emulator in **Device Manager** (a Pixel image with a recent API lev
 
 Gradle is much faster on the Windows filesystem than over `\\wsl$`. Either:
 
-- **Open directly**: in Android Studio, open `\\wsl$\Ubuntu\home\mimhoff\projects\games\wordlock-old\android`
+- **Open directly**: in Android Studio, open `\\wsl$\Ubuntu\home\mimhoff\projects\games\wordlock\android`
   (simple, slower builds), or
 - **Build on Windows**: clone the repo to e.g. `C:\Users\mimhoff\wordlock`, run `npm install` and
   `npm run cap:sync` there from PowerShell, and open its `android` folder.

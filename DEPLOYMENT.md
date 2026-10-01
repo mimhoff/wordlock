@@ -1,7 +1,7 @@
 # Deploying the website
 
 The site is live at https://mimhoff.com/wordlock and deployed from the separate site repo
-(`/home/mimhoff/site`, via `./deploy.sh`).
+(`~/projects/web/mimhoff-site`, via `./deploy.sh`).
 
 ## Every deployment
 
@@ -11,11 +11,10 @@ npm run build        # typecheck + production build into dist/
 ```
 
 Then publish **the contents of `dist/`** as the `wordlock/` folder of the site, replacing what's
-there. From the site repo that's roughly:
+there. The site repo's `deploy.sh` does all of this (test, build, rsync `dist/` with `--delete`):
 
 ```bash
-rsync -a --delete ~/projects/games/wordlock-old/dist/ ~/site/wordlock/
-./deploy.sh
+~/projects/web/mimhoff-site/deploy.sh wordlock             # add --dry-run to preview
 ```
 
 Asset paths are relative, so the build works under any path, no configuration needed.
@@ -35,8 +34,8 @@ in its filename and can be cached forever.
 v2 was plain files (`index.html`, `styles.css`, `words.js`, `js/`, `sw.js`, `manifest.json`,
 `icons/`). The v3 build replaces them. Things to check:
 
-1. **Update `~/site/deploy.sh`** if it copies v2's individual files; it should copy `dist/` instead,
-   and delete the old `js/`, `words.js`, `styles.css` and `manifest.json` (the `--delete` above does this).
+1. **`deploy.sh` copies `dist/`** with `--delete`, which removes v2's old `js/`, `words.js`,
+   `styles.css` and `manifest.json`.
 2. **Switch at local midnight** if you can. v3 picks a different daily word than v2, so a player who
    already played today's v2 puzzle would otherwise see a second, different daily. (Their stats are
    safe: a day is only ever counted once.)
