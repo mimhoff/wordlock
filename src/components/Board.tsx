@@ -1,5 +1,5 @@
 import { MAX_GUESSES, WORD_LENGTH } from '../game/constants';
-import { activeLock, activeRowLetters, canToggleLock, locksVisibleAhead, type GameState } from '../game/engine';
+import { activeLock, activeRowLetters, canToggleLock, cursorPosition, locksVisibleAhead, type GameState } from '../game/engine';
 import { Tile } from './Tile';
 
 interface BoardProps {
@@ -19,6 +19,7 @@ export function Board({ game, revealRow, shake, bounceRow, onToggleLock }: Board
   const activeRow = game.status === 'playing' && revealRow == null ? game.guesses.length : -1;
   const lock = activeLock(game);
   const activeLetters = activeRowLetters(game);
+  const cursor = activeRow === -1 ? null : cursorPosition(game);
   const showFutureLocks = locksVisibleAhead(game.difficulty);
 
   return (
@@ -54,6 +55,7 @@ export function Board({ game, revealRow, shake, bounceRow, onToggleLock }: Board
                     letter={activeLetters[c]}
                     locked={lock?.position === c}
                     picked={isLockTile && pickedHere}
+                    cursor={c === cursor}
                     onToggleLock={isLockTile ? toggle : undefined}
                   />
                 );

@@ -5,6 +5,7 @@ import {
   activeLock,
   activeRowLetters,
   canToggleLock,
+  cursorPosition,
   pickUsed,
   toggleLockPick,
   createGame,
@@ -184,6 +185,44 @@ describe('game engine', () => {
     const restored = createGame(played.puzzle, 'hidden', played.guesses, 'xy');
     expect(restored.evaluations).toEqual(played.evaluations);
     expect(restored.input).toBe('xy');
+  });
+});
+
+describe('cursor', () => {
+  it('moves through the free tiles and disappears when the row is full', () => {
+    let game = createGame(puzzle('stare', LOCKS), 'standard');
+    expect(cursorPosition(game)).toBe(0);
+    game = type(game, 'cr');
+    expect(cursorPosition(game)).toBe(2);
+    game = type(game, 'ane');
+    expect(cursorPosition(game)).toBeNull();
+  });
+
+  it('sits on the lock when the player reaches it', () => {
+    // Row 2 is locked at position 0 with P (from PLATE).
+    let game = play(createGame(puzzle('stare', LOCKS), 'standard'), 'crane', 'plate');
+    expect(cursorPosition(game)).toBe(0);
+    // Typing the locked letter passes through the lock...
+    expect(cursorPosition(typeLetter(game, 'p'))).toBe(1);
+    // ...and any other letter skips it.
+    expect(cursorPosition(typeLetter(game, 'r'))).toBe(2);
+    game = type(game, 'pa'); // P absorbed, A in tile 1
+    expect(activeRowLetters(game)).toEqual(['p', 'a', '', '', '']);
+    expect(cursorPosition(game)).toBe(2);
+  });
+
+  it('skips past a lock in the last tile once the free tiles are full', () => {
+    const game = type(play(createGame(puzzle('stare', LOCKS), 'standard'), 'crane'), 'plat'); // lock at 4
+    expect(cursorPosition(game)).toBeNull();
+  });
+
+  it('treats a picked lock as a free tile', () => {
+    const game = toggleLockPick(play(createGame(puzzle('stare', LOCKS), 'standard'), 'crane', 'plate'), 2);
+    // The carried P stays as an ordinary letter, so the cursor is on the next tile...
+    expect(activeRowLetters(game)).toEqual(['p', '', '', '', '']);
+    expect(cursorPosition(game)).toBe(1);
+    // ...and deleting it frees the first tile like any other.
+    expect(cursorPosition(deleteLetter(game))).toBe(0);
   });
 });
 

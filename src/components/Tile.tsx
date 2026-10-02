@@ -14,13 +14,15 @@ export interface TileProps {
   picked?: boolean;
   /** Evaluated tile whose lock was picked: keep an open-padlock badge. */
   wasPicked?: boolean;
+  /** The tile the next typed letter goes to. */
+  cursor?: boolean;
   /** Makes the tile a button that picks (or restores) its lock. */
   onToggleLock?: () => void;
   /** Index within a row that is currently flipping, for staggered animation. */
   revealIndex?: number;
 }
 
-export function Tile({ letter, state, lockHint, locked, wasLocked, picked, wasPicked, onToggleLock, revealIndex }: TileProps) {
+export function Tile({ letter, state, lockHint, locked, wasLocked, picked, wasPicked, cursor, onToggleLock, revealIndex }: TileProps) {
   const classes = ['tile'];
   if (letter) classes.push('filled');
   if (state) classes.push(state);
@@ -28,6 +30,7 @@ export function Tile({ letter, state, lockHint, locked, wasLocked, picked, wasPi
   if (lockHint) classes.push('lock-hint');
   if (picked) classes.push('picked');
   if (onToggleLock) classes.push('pickable');
+  if (cursor) classes.push('cursor');
   if (revealIndex != null) classes.push('reveal');
 
   const lockText = locked || wasLocked ? 'locked' : picked || wasPicked ? 'lock picked' : lockHint ? 'will be locked' : undefined;

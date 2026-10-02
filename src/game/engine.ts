@@ -132,6 +132,20 @@ export function typeLetter(state: GameState, letter: string): GameState {
   return { ...state, input: state.input + l };
 }
 
+/**
+ * The tile the next typed letter goes to, for the cursor outline (null when the row is full).
+ * When the player reaches the lock, the cursor sits on the locked tile itself: typing its letter
+ * passes through it (see typeLetter), and any other letter skips to the next free tile.
+ */
+export function cursorPosition(state: GameState): number | null {
+  if (state.status !== 'playing') return null;
+  const open = openPositions(state);
+  if (state.input.length >= open.length) return null;
+  const lock = activeLock(state);
+  if (lock && !state.absorbedLock && state.input.length === lock.position) return lock.position;
+  return open[state.input.length];
+}
+
 export function deleteLetter(state: GameState): GameState {
   if (state.status !== 'playing' || !state.input) return state;
   const input = state.input.slice(0, -1);

@@ -389,6 +389,13 @@ button.tile:focus-visible {
   }
 }
 
+/* The tile the next typed letter goes to. On the lock itself it means: type the locked
+   letter to pass through it, or any other letter to skip to the next free tile. */
+.tile.cursor {
+  outline: 2.5px solid var(--text);
+  outline-offset: 1.5px;
+}
+
 /* An opened (picked) lock that can still be restored. */
 .tile.picked {
   border: 2px dashed var(--locked);
