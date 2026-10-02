@@ -338,9 +338,16 @@ button.tile:focus-visible {
     display: block;
   }
 
+  /* The key is wider than the padlock, so it gets a touch more width at the same height. */
   .tile.pickable:hover .tile-badge.lock-key {
-    width: 32%;
-    height: 32%;
+    width: 26%;
+  }
+
+  /* On an empty future tile the key replaces the big padlock: full strength, matching weight. */
+  .tile.pickable:hover .tile-lock.lock-key {
+    width: 50%;
+    height: 50%;
+    opacity: 1;
   }
 
   .tile.pickable:not(.locked):hover {
@@ -359,14 +366,15 @@ button.tile:focus-visible {
     display: block;
     position: absolute;
     left: 3px;
-    bottom: 3px;
-    width: 20%;
-    height: 20%;
-    opacity: 0.85;
+    bottom: 2px;
+    width: 28%;
+    height: 28%;
+    color: var(--locked);
   }
 
+  /* Gold on the red current-row lock, matching its padlock badge. */
   .tile.pickable.locked .touch-key {
-    color: #fff;
+    color: #ffd54f;
   }
 }
 
