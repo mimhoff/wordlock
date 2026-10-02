@@ -96,7 +96,8 @@ export function StatsModal({ game, stats, todayNumber, onClose, onShare, onNewGa
         </div>
       )}
 
-      {KOFI_URL && Capacitor.getPlatform() !== 'ios' && (
+      {/* Website only: app stores require their own billing for payments in apps. */}
+      {KOFI_URL && !Capacitor.isNativePlatform() && (
         <div className="support">
           <span>Enjoying WordLock?</span>
           <a className="kofi-link" href={KOFI_URL} target="_blank" rel="noopener noreferrer">

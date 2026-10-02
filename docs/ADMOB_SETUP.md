@@ -4,13 +4,13 @@
 |---|---|---|---|
 | **AdSense** auto ads | Website only (production builds) | `ca-pub-5632873189325776` | `src/config.ts` (`VITE_ADSENSE_CLIENT`) |
 | **AdMob** banner | Android/iOS apps | App `ca-app-pub-5632873189325776~1491981967`, banner unit `ca-app-pub-5632873189325776/5646957190` | Unit: `src/config.ts` (`VITE_ADMOB_BANNER_ID`); app ID: native projects (below) |
-| **Ko-fi** link | Stats dialog on web and Android (hidden on iOS) | `https://ko-fi.com/mimhoff` | `src/config.ts` (`VITE_KOFI_URL`) |
+| **Ko-fi** link | Stats dialog on the website only (hidden in the apps) | `https://ko-fi.com/mimhoff` | `src/config.ts` (`VITE_KOFI_URL`) |
 
 Any of these can be overridden per build with an env variable (e.g. in `.env.production.local`).
 Setting the AdSense or Ko-fi value to an empty string turns it off.
 
-The Ko-fi link is hidden in the iOS app because App Store rules restrict links to outside payment
-for tips.
+The Ko-fi link is hidden in the Android and iOS apps, because app stores require their own billing
+for payments made in apps. See [MONETIZATION.md](MONETIZATION.md) for the in-app purchase plan.
 
 ## How the AdMob banner works
 

@@ -1,6 +1,7 @@
 import { AdMob, AdmobConsentStatus, BannerAdPluginEvents, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
 import { Capacitor } from '@capacitor/core';
 import { ADMOB_BANNER_ID, ADSENSE_CLIENT } from '../config';
+import { isPremium, onPremiumChange } from './entitlements';
 
 /** Web: Google AdSense auto ads (production builds only). */
 function loadAdSense(): void {
@@ -41,10 +42,21 @@ async function showAdMobBanner(): Promise<void> {
 }
 
 /** Ads are best-effort: failures are logged and never affect the game. */
+/** Takes the banner away straight after a purchase, and gives its space back to the game. */
+async function removeAdMobBanner(): Promise<void> {
+  await AdMob.removeBanner().catch(() => {});
+  document.documentElement.style.removeProperty('--ad-height');
+}
+
 export function initAds(): void {
   if (Capacitor.isNativePlatform()) {
+    // Premium (WordLock Plus) players never see the banner; buying it removes one already shown.
+    onPremiumChange((premium) => premium && void removeAdMobBanner());
+    if (isPremium()) return;
     // A short delay keeps the banner from competing with first paint, as in v2.
-    setTimeout(() => showAdMobBanner().catch((err) => console.warn('AdMob unavailable', err)), 2000);
+    setTimeout(() => {
+      if (!isPremium()) showAdMobBanner().catch((err) => console.warn('AdMob unavailable', err));
+    }, 2000);
   } else {
     loadAdSense();
   }
