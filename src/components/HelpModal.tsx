@@ -1,45 +1,31 @@
 import { MAX_GUESSES } from '../game/constants';
-import type { TileState } from '../game/engine';
 import { Modal } from './Modal';
-import { Tile, type TileProps } from './Tile';
-
-function ExampleRow({ word, tiles }: { word: string; tiles: Record<number, Partial<TileProps>> }) {
-  return (
-    <div className="row example">
-      {[...word].map((l, i) => (
-        <Tile key={i} letter={l} {...tiles[i]} />
-      ))}
-    </div>
-  );
-}
-
-const state = (s: TileState) => ({ state: s });
+import { Tile } from './Tile';
 
 export function HelpModal({ onClose }: { onClose: () => void }) {
   return (
     <Modal title="How to play" onClose={onClose}>
       <div className="help">
         <p>
-          Guess the word in {MAX_GUESSES} tries. Each guess must be a valid five-letter word. The tiles change colour to
-          show how close you were.
+          Find the hidden five-letter word in {MAX_GUESSES} guesses. After each guess, the tiles show how close you
+          were.
         </p>
-        <ExampleRow word="crane" tiles={{ 0: state('correct') }} />
+        <div className="row example">
+          <Tile letter="b" state="correct" />
+          <Tile letter="r" state="present" />
+          <Tile letter="a" state="absent" />
+          <Tile letter="k" state="absent" />
+          <Tile letter="e" state="absent" />
+        </div>
         <p>
-          <strong>C</strong> is in the word and in the right spot.
-        </p>
-        <ExampleRow word="pilot" tiles={{ 1: state('present') }} />
-        <p>
-          <strong>I</strong> is in the word but in the wrong spot.
-        </p>
-        <ExampleRow word="vague" tiles={{ 3: state('absent') }} />
-        <p>
-          <strong>U</strong> is not in the word.
+          <strong>B</strong> is in the right spot. <strong>R</strong> is in the word, but somewhere else.{' '}
+          <strong>A</strong>, <strong>K</strong> and <strong>E</strong> aren't in the word.
         </p>
 
-        <h3>The lock</h3>
+        <h3>Every row locks a letter</h3>
         <p>
-          On every row except the first and last, one tile is <strong>locked</strong>. A locked tile is filled in for
-          you with the letter from the same spot in your previous guess, and you can't change it.
+          From the second row on, one tile in each row is <strong>locked</strong>. It keeps the letter from the same
+          spot in your previous guess, and you can't change it.
         </p>
         <div className="row example">
           <Tile letter="c" state="absent" />
@@ -52,13 +38,15 @@ export function HelpModal({ onClose }: { onClose: () => void }) {
           <Tile letter="s" />
           <Tile letter="t" />
           <Tile letter="a" />
-          <Tile letter="" />
+          <Tile />
           <Tile letter="e" locked />
         </div>
         <p>
-          Here the last tile is locked, so your next guess must end in <strong>E</strong>, even though you know E
-          belongs somewhere else. Locks never fall in the same spot on two rows in a row.
+          Here the last spot is locked, so this guess has to end in <strong>E</strong>, even though E belongs somewhere
+          else. The first and last rows are always free, and a lock never lands in the same spot twice in a row.
         </p>
+
+        <h3>Plan ahead</h3>
         <div className="row example">
           <Tile />
           <Tile lockHint />
@@ -67,21 +55,27 @@ export function HelpModal({ onClose }: { onClose: () => void }) {
           <Tile />
         </div>
         <p>
-          On <strong>Standard</strong> difficulty you can see where upcoming locks are, so plan ahead. On{' '}
-          <strong>Hidden Locks</strong>, each lock only appears when its row becomes active.
+          On <strong>Standard</strong> you can see where the upcoming locks are, so pick guesses that leave useful
+          letters behind. On <strong>Hidden Locks</strong>, each lock only appears when you reach its row.
         </p>
 
-        <h3>The lock pick</h3>
+        <h3>Your lock pick</h3>
+        <div className="row example">
+          <Tile letter="s" />
+          <Tile letter="t" />
+          <Tile letter="a" />
+          <Tile letter="r" />
+          <Tile letter="e" picked />
+        </div>
         <p>
-          Once per game you can <strong>pick a lock</strong>: tap or click any lock you can see to open it, and that
-          row is all yours. Changed your mind? Tap it again to put the lock back, any time before you submit that row.
-          Shared results show 🔓 where you used it, and 🗝️ when you won without it.
+          Once per game, tap or click a lock to open it and play that row freely. Changed your mind? Tap it again to
+          put the lock back, any time before you submit. Shared results show 🔓 where you used it.
         </p>
 
-        <h3>Modes</h3>
+        <h3>Daily and practice</h3>
         <p>
-          <strong>Daily</strong>: everyone gets the same word and locks each day. <strong>Practice</strong>: play as
-          many random puzzles as you like, and share a link so friends can play the same one.
+          <strong>Daily</strong> is a new puzzle every midnight, with the same word and locks for everyone.{' '}
+          <strong>Practice</strong> is unlimited, and you can share a practice puzzle's link to challenge friends.
         </p>
       </div>
     </Modal>
