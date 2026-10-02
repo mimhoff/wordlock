@@ -76,9 +76,9 @@ describe('puzzles', () => {
   });
 
   it('numbers daily puzzles from the epoch', () => {
-    expect(dailyNumber('2026-10-01')).toBe(1);
-    expect(dailyNumber('2026-10-02')).toBe(2);
-    expect(dailyNumber('2027-10-01')).toBe(366);
+    expect(dailyNumber('2026-10-02')).toBe(1);
+    expect(dailyNumber('2026-10-03')).toBe(2);
+    expect(dailyNumber('2027-10-02')).toBe(366);
   });
 
   it('round-trips practice seeds', () => {
