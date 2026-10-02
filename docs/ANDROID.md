@@ -54,6 +54,12 @@ Or create an emulator in **Device Manager** (a Pixel image with a recent API lev
 
 ## Working from WSL
 
+If Android Studio runs on Windows with its own copy of the project
+(`C:\Users\mimhoff\AndroidProjects\wordlock\android`), run `npm run android:windows` in WSL before
+each build. It builds the game and copies the web build and the icon/splash resources across, without
+touching Gradle, version numbers or signing. Set `WORDLOCK_WINDOWS_ANDROID` if the project lives elsewhere.
+
+
 Gradle is much faster on the Windows filesystem than over `\\wsl$`. Either:
 
 - **Open directly**: in Android Studio, open `\\wsl$\Ubuntu\home\mimhoff\projects\games\wordlock\android`
