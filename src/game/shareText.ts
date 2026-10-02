@@ -17,14 +17,14 @@ export function buildShareText(state: GameState, opts: { highContrast: boolean; 
   const score = state.status === 'won' ? state.guesses.length : 'X';
   const title = puzzle.mode === 'daily' ? `WordLock #${puzzle.number}` : `WordLock Practice ${encodeSeed(puzzle.seed)}`;
   const mark = state.difficulty === 'standard' ? '' : ` (${DIFFICULTIES[state.difficulty].label})`;
-  // 🔓 = the lock pick was used; 🔒 = won with every lock kept.
+  // 🔑 = the lock pick was used (distinct from 🔒 at emoji size); 🔒 = won with every lock kept.
   const picked = pickUsed(state);
-  const pickMark = picked ? ' 🔓' : state.status === 'won' ? ' 🔒' : '';
+  const pickMark = picked ? ' 🔑' : state.status === 'won' ? ' 🔒' : '';
   const grid = state.evaluations.map((row, r) =>
     row
       .map((s, i) => {
         if (puzzle.locks[r] !== i) return SQUARES[s][opts.highContrast ? 1 : 0];
-        return picked && state.pickedRow === r ? '🔓' : '🔒';
+        return picked && state.pickedRow === r ? '🔑' : '🔒';
       })
       .join(''),
   );

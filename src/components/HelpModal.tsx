@@ -69,7 +69,7 @@ export function HelpModal({ onClose }: { onClose: () => void }) {
         </div>
         <p>
           Once per game, tap or click a lock to open it and play that row freely. Changed your mind? Tap it again to
-          put the lock back, any time before you submit. Shared results show 🔓 where you used it, or 🔒 if you won
+          put the lock back, any time before you submit. Shared results show 🔑 where you used it, or 🔒 if you won
           without it.
         </p>
 

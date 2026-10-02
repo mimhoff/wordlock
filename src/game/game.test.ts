@@ -245,7 +245,7 @@ describe('lock pick', () => {
   it('shows in shared results', () => {
     const won = play(toggleLockPick(fresh(), 1), 'stare');
     const text = buildShareText({ ...won, puzzle: { ...won.puzzle, mode: 'daily', number: 3 } }, { highContrast: false });
-    expect(text.split('\n')).toEqual(['WordLock #3 2/8 🔓', '', '⬛🟨🟩⬛🟩', '🟩🟩🟩🟩🔓']);
+    expect(text.split('\n')).toEqual(['WordLock #3 2/8 🔑', '', '⬛🟨🟩⬛🟩', '🟩🟩🟩🟩🔑']);
   });
 
   it('survives a save and reload', () => {
