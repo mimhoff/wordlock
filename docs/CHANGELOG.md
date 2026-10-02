@@ -10,8 +10,9 @@ same build now runs as the website (an installable, offline-capable PWA) and ins
   the Space Grotesk font (bundled, works offline), a lock-tile + "wordlock" logo, new win messages
   and a new app icon. High-contrast mode uses cobalt and marigold. Nothing of Wordle's palette,
   fonts or messages remains, and "Wordle" no longer appears in the page metadata or store listing.
-- **Difficulty levels**: Standard (locks visible ahead, as before), Hidden Locks (each lock appears
-  only when its row becomes active) and Expert (hidden locks + reuse every revealed hint).
+- **Difficulty levels**: Standard (locks visible ahead, as before) and Hidden Locks (each lock
+  appears only when its row becomes active). An Expert mode with a hard-mode rule was tried and
+  dropped: combined with the locks it often left only the previous guess as a legal word.
 - **Shareable practice puzzles**: each has a code, and shared results link to the same puzzle.
 - **Practice statistics**, kept separately from daily stats.
 - Puzzle numbers (`WordLock #12`) instead of dates in shared results; 🔒 marks locked tiles.

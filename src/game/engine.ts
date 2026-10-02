@@ -80,30 +80,6 @@ export function deleteLetter(state: GameState): GameState {
   return { ...state, input: state.input.slice(0, -1) };
 }
 
-/** Expert mode: every green must stay in place and every yellow must be reused. */
-export function hardModeViolation(state: GameState, guess: string): string | null {
-  const ordinal = (n: number) => ['1st', '2nd', '3rd', '4th', '5th'][n];
-  const required = new Map<string, number>();
-  for (let r = 0; r < state.guesses.length; r++) {
-    const prev = state.guesses[r];
-    const counts = new Map<string, number>();
-    for (let i = 0; i < WORD_LENGTH; i++) {
-      const s = state.evaluations[r][i];
-      if (s === 'correct' && guess[i] !== prev[i]) {
-        return `${ordinal(i)} letter must be ${prev[i].toUpperCase()}`;
-      }
-      if (s !== 'absent') counts.set(prev[i], (counts.get(prev[i]) ?? 0) + 1);
-    }
-    for (const [l, c] of counts) required.set(l, Math.max(required.get(l) ?? 0, c));
-  }
-  for (const [letter, count] of required) {
-    if ([...guess].filter((l) => l === letter).length < count) {
-      return `Guess must contain ${letter.toUpperCase()}`;
-    }
-  }
-  return null;
-}
-
 export type SubmitResult = { ok: true; state: GameState } | { ok: false; error: string };
 
 export function submitGuess(state: GameState): SubmitResult {
@@ -112,10 +88,6 @@ export function submitGuess(state: GameState): SubmitResult {
   if (letters.some((l) => !l)) return { ok: false, error: 'Not enough letters' };
   const guess = letters.join('');
   if (!isValidWord(guess)) return { ok: false, error: 'Not in word list' };
-  if (state.difficulty === 'expert') {
-    const violation = hardModeViolation(state, guess);
-    if (violation) return { ok: false, error: violation };
-  }
   return { ok: true, state: createGame(state.puzzle, state.difficulty, [...state.guesses, guess]) };
 }
 

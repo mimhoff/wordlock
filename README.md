@@ -10,9 +10,8 @@ changed. Locks never fall in the same position on two consecutive rows.
   everyone gets the same puzzle. Puzzle #1 is 2026-10-01, the v3 launch day (`DAILY_EPOCH` in `src/game/constants.ts`; never change it after launch, since saved streaks store puzzle numbers).
 - **Practice** mode: unlimited random puzzles. Each has a short code (e.g. `C3Y6KB`), and shared results
   include a `?practice=CODE` link that opens the same puzzle.
-- **Difficulties**: Standard (locks visible ahead of time), Hidden Locks (a lock only appears when its row
-  becomes active), Expert (hidden locks + Wordle "hard mode": greens stay put, yellows must be reused).
-  Difficulty can only change before the first guess of a game.
+- **Difficulties**: Standard (locks visible ahead of time) and Hidden Locks (a lock only appears when its row
+  becomes active). Difficulty can only change before the first guess of a game.
 - **Statistics** (played, win %, streaks, guess distribution) are kept separately for daily and practice.
   Results share as an emoji grid (🔒 marks locked tiles) via the share sheet on phones or the clipboard
   on desktop.

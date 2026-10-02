@@ -6,7 +6,7 @@ export const DAILY_EPOCH = '2026-10-01';
 
 export type GameMode = 'daily' | 'practice';
 
-export type Difficulty = 'standard' | 'hidden' | 'expert';
+export type Difficulty = 'standard' | 'hidden';
 
 export const DIFFICULTIES: Record<Difficulty, { label: string; description: string }> = {
   standard: {
@@ -17,11 +17,16 @@ export const DIFFICULTIES: Record<Difficulty, { label: string; description: stri
     label: 'Hidden Locks',
     description: 'A lock is only revealed when its row becomes active. No planning ahead.',
   },
-  expert: {
-    label: 'Expert',
-    description: 'Hidden locks, plus revealed hints must be used: green letters stay put and yellow letters must be reused.',
-  },
 };
+
+/**
+ * Reads a saved difficulty. An earlier build had an 'expert' mode (hidden locks plus a
+ * hard-mode rule); it maps to its closest remaining mode, Hidden Locks.
+ */
+export function toDifficulty(value: unknown): Difficulty {
+  if (value === 'standard' || value === 'hidden') return value;
+  return value === 'expert' ? 'hidden' : 'standard';
+}
 
 /** Toast after a win, indexed by guesses used (1–8). */
 export const WIN_MESSAGES = ['Picked it!', 'Brilliant', 'Sharp', 'Solid', 'Nice', 'Good', 'Close one', 'Just made it'];

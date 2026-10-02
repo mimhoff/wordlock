@@ -68,7 +68,7 @@ export function HelpModal({ onClose }: { onClose: () => void }) {
         </div>
         <p>
           On <strong>Standard</strong> difficulty you can see where upcoming locks are, so plan ahead. On{' '}
-          <strong>Hidden Locks</strong> and <strong>Expert</strong>, they only appear when the row becomes active.
+          <strong>Hidden Locks</strong>, each lock only appears when its row becomes active.
         </p>
 
         <h3>Modes</h3>

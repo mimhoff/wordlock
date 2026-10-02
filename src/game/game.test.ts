@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MAX_GUESSES } from './constants';
+import { MAX_GUESSES, toDifficulty } from './constants';
 import { ANSWERS, isValidWord } from './dictionary';
 import {
   activeLock,
@@ -133,14 +133,11 @@ describe('game engine', () => {
     expect(submitGuess(game)).toEqual({ ok: false, error: 'Game over' });
   });
 
-  it('expert mode requires reusing revealed hints', () => {
-    // CRANE vs STARE: A and E are green, R is yellow. Row 2 locks position 0 ('c').
-    const game = play(createGame(puzzle('stare', [null, 0, 1, 0, 1, 0, 1, null]), 'expert'), 'crane');
-    expect(submitGuess(type(game, 'lose'))).toEqual({ ok: false, error: '3rd letter must be A' }); // CLOSE
-    expect(submitGuess(type(game, 'hase'))).toEqual({ ok: false, error: 'Guess must contain R' }); // CHASE
-    expect(submitGuess(type(game, 'rate'))).toMatchObject({ ok: true }); // CRATE
-    // The same guesses are fine outside expert mode.
-    expect(submitGuess(type({ ...game, difficulty: 'hidden' }, 'hase'))).toMatchObject({ ok: true });
+  it('maps difficulties saved by older builds, including the removed Expert mode', () => {
+    expect(toDifficulty('standard')).toBe('standard');
+    expect(toDifficulty('hidden')).toBe('hidden');
+    expect(toDifficulty('expert')).toBe('hidden');
+    expect(toDifficulty(undefined)).toBe('standard');
   });
 
   it('colours the keyboard with the best known state', () => {

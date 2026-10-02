@@ -1,4 +1,4 @@
-import type { Difficulty, GameMode } from './game/constants';
+import { toDifficulty, type Difficulty, type GameMode } from './game/constants';
 import { createGame, type GameState } from './game/engine';
 import { createDailyPuzzle, createPracticePuzzle } from './game/puzzle';
 import { randomSeed } from './game/rng';
@@ -23,7 +23,7 @@ function toSaved(game: GameState): SavedGame {
 export function loadDailyGame(dateKey: string, difficulty: Difficulty): GameState {
   const saved = load<SavedGame | null>('game:daily', null);
   const puzzle = createDailyPuzzle(dateKey);
-  if (saved?.dateKey === dateKey) return createGame(puzzle, saved.difficulty, saved.guesses, saved.input);
+  if (saved?.dateKey === dateKey) return createGame(puzzle, toDifficulty(saved.difficulty), saved.guesses, saved.input);
   return createGame(puzzle, difficulty);
 }
 
@@ -35,7 +35,7 @@ export function newPracticeGame(difficulty: Difficulty, seed = randomSeed()): Ga
 export function loadPracticeGame(difficulty: Difficulty, requestedSeed: number | null): GameState {
   const saved = load<SavedGame | null>('game:practice', null);
   if (saved && (requestedSeed == null || requestedSeed === saved.seed)) {
-    return createGame(createPracticePuzzle(saved.seed), saved.difficulty, saved.guesses, saved.input);
+    return createGame(createPracticePuzzle(saved.seed), toDifficulty(saved.difficulty), saved.guesses, saved.input);
   }
   return newPracticeGame(difficulty, requestedSeed ?? undefined);
 }
@@ -45,7 +45,10 @@ export const saveGame = (game: GameState) => save(`game:${game.puzzle.mode}`, to
 export const loadStats = (mode: GameMode) => ({ ...emptyStats(), ...load<Partial<Stats>>(`stats:${mode}`, {}) });
 export const saveStats = (mode: GameMode, stats: Stats) => save(`stats:${mode}`, stats);
 
-export const loadSettings = (): Settings => ({ ...DEFAULT_SETTINGS, ...load<Partial<Settings>>('settings', {}) });
+export function loadSettings(): Settings {
+  const settings = { ...DEFAULT_SETTINGS, ...load<Partial<Settings>>('settings', {}) };
+  return { ...settings, difficulty: toDifficulty(settings.difficulty) };
+}
 export const saveSettings = (settings: Settings) => save('settings', settings);
 
 export const loadMode = () => load<GameMode>('mode', 'daily');
