@@ -122,8 +122,6 @@ export default function App() {
         setBounceRow(rows - 1);
         setTimeout(() => setBounceRow(null), 1000);
         showToast(WIN_MESSAGES[rows - 1]);
-        // Winning without the lock pick is the bragging right; say so.
-        if (!pickUsed(finished) && rows > 1) showToast('🗝️ Solved without the lock pick', 2200);
         buzz('win');
       } else {
         showToast(finished.puzzle.answer.toUpperCase(), 1900);
