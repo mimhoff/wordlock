@@ -228,29 +228,40 @@ h1 {
 .pick-pill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 11px;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px 0 10px;
   border-radius: 999px;
-  border: 1px solid var(--border);
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text);
+  background: #15171a;
+  /* Keeps the black pill distinct from the dark-mode background. */
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+  color: #f6c945;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
 .pick-pill svg {
-  width: 15px;
-  height: 15px;
+  width: 20px;
+  height: 20px;
 }
 
+.pick-pill span {
+  color: #f6f5f1;
+}
+
+/* A lock is open but can still be put back: the pick is spoken for. */
 .pick-pill.active {
-  border-color: var(--locked);
-  color: var(--locked);
+  box-shadow: 0 0 0 2px var(--locked);
 }
 
 .pick-pill.used {
-  color: var(--muted);
-  text-decoration: line-through;
+  color: #6b6f76;
+}
+
+.pick-pill.used span {
+  color: #8b8f96;
 }
 
 /* ----------------------------------------------------------------- board */

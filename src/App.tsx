@@ -29,7 +29,7 @@ import type { Settings } from './settings';
 type ModalKind = 'help' | 'stats' | 'settings' | null;
 
 type PickState = 'ready' | 'active' | 'used';
-const PICK_LABELS: Record<PickState, string> = { ready: '1 pick', active: 'Picking', used: 'Picked' };
+const PICK_COUNTS: Record<PickState, number> = { ready: 1, active: 0, used: 0 };
 const PICK_TITLES: Record<PickState, string> = {
   ready: 'Lock pick: tap any lock to open it. One per game.',
   active: 'A lock is open. Tap it again to restore it before you submit that row.',
@@ -269,9 +269,14 @@ export default function App() {
             </button>
           ))}
         </nav>
-        <span className={`pick-pill ${pickState}`} title={PICK_TITLES[pickState]}>
+        <span
+          className={`pick-pill ${pickState}`}
+          title={PICK_TITLES[pickState]}
+          aria-label={`Lock picks left: ${PICK_COUNTS[pickState]}. ${PICK_TITLES[pickState]}`}
+          role="status"
+        >
           <KeyIcon />
-          {PICK_LABELS[pickState]}
+          <span aria-hidden="true">{PICK_COUNTS[pickState]}</span>
         </span>
       </div>
 

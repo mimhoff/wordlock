@@ -13,7 +13,7 @@ changed. Locks never fall in the same position on two consecutive rows.
 - **Difficulties**: Standard (locks visible ahead of time) and Hidden Locks (a lock only appears when its row
   becomes active). Difficulty can only change before the first guess of a game.
 - **Lock pick**: once per game, tap or click any visible lock to open it (again to restore it, until that
-  row is submitted). Shared results show 🔓 where it was used, or 🗝️ for a win without it.
+  row is submitted). Shared results show 🔓 where it was used, or 🔒 for a win without it.
 - **Statistics** (played, win %, streaks, guess distribution) are kept separately for daily and practice.
   Results share as an emoji grid (🔒 marks locked tiles) via the share sheet on phones or the clipboard
   on desktop.

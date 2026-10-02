@@ -250,7 +250,7 @@ describe('share text', () => {
   it('renders the grid with locks and no letters', () => {
     const game = play(createGame({ ...puzzle('stare', LOCKS), mode: 'daily', number: 7 }, 'standard'), 'crane', 'stare');
     expect(buildShareText(game, { highContrast: false, url: 'https://example.com/wordlock/' })).toBe(
-      ['WordLock #7 2/8 🗝️', '', '⬛🟨🟩⬛🟩', '🟩🟩🟩🟩🔒', '', 'https://example.com/wordlock/'].join('\n'),
+      ['WordLock #7 2/8 🔒', '', '⬛🟨🟩⬛🟩', '🟩🟩🟩🟩🔒', '', 'https://example.com/wordlock/'].join('\n'),
     );
   });
 
