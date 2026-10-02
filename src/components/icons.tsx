@@ -15,10 +15,19 @@ const base = (props: IconProps) => ({
   ...props,
 });
 
+/*
+ * Padlock geometry traced from the app icon (public/icons/icon-source.svg), scaled to 24px:
+ * a rounded body with the keyhole cut out, so the tile colour shows through it.
+ */
+const PADLOCK_BODY =
+  'M6.65 10.66h10.71a2 2 0 0 1 2 2v7.34a2 2 0 0 1-2 2H6.65a2 2 0 0 1-2-2v-7.34a2 2 0 0 1 2-2z' +
+  'M12 14.26a1.3 1.3 0 1 0 0 2.6a1.3 1.3 0 1 0 0-2.6z' +
+  'M11.31 16.02h1.38v2.37a.69.69 0 0 1-1.38 0z';
+
 export const LockIcon = (props: IconProps) => (
   <svg {...base(props)}>
-    <rect x="4" y="11" width="16" height="10" rx="2" fill="currentColor" />
-    <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+    <path d="M7.41 11.4V7.9a4.6 4.6 0 0 1 9.19 0v3.5" strokeWidth={2.6} />
+    <path d={PADLOCK_BODY} fill="currentColor" fillRule="evenodd" stroke="none" />
   </svg>
 );
 
@@ -60,16 +69,24 @@ export const CloseIcon = (props: IconProps) => (
   </svg>
 );
 
+/** The app-icon padlock with its shackle lifted out of the body on the left. */
 export const LockOpenIcon = (props: IconProps) => (
   <svg {...base(props)}>
-    <rect x="4" y="11" width="16" height="10" rx="2" fill="currentColor" />
-    <path d="M8 11V7a4 4 0 0 1 7.5-2" />
+    <path d="M7.41 7.2V5.4a4.6 4.6 0 0 1 9.19 0v6" strokeWidth={2.6} />
+    <path d={PADLOCK_BODY} fill="currentColor" fillRule="evenodd" stroke="none" />
   </svg>
 );
 
+/** A solid key in the same chunky style as the padlock: round bow with a hole, shaft and two teeth. */
 export const KeyIcon = (props: IconProps) => (
   <svg {...base(props)}>
-    <circle cx="7.5" cy="15.5" r="4" />
-    <path d="M10.5 12.5 20 3M16 7l2.5 2.5M14 9l2 2" />
+    <path
+      d="M7 7a5 5 0 1 1 0 10A5 5 0 1 1 7 7zM7 10.3a1.7 1.7 0 1 0 0 3.4a1.7 1.7 0 1 0 0-3.4z"
+      fill="currentColor"
+      fillRule="evenodd"
+      stroke="none"
+    />
+    <path d="M11.5 10.8h9a1.2 1.2 0 0 1 0 2.4h-9z" fill="currentColor" stroke="none" />
+    <path d="M15.6 13h2.2v3.2a1.1 1.1 0 0 1-2.2 0zM19.2 13h2.2v2.4a1.1 1.1 0 0 1-2.2 0z" fill="currentColor" stroke="none" />
   </svg>
 );
