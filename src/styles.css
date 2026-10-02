@@ -591,7 +591,6 @@ button.tile:focus-visible {
 
 .toasts {
   position: fixed;
-  top: calc(env(safe-area-inset-top) + 110px);
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
@@ -600,6 +599,19 @@ button.tile:focus-visible {
   align-items: center;
   gap: 8px;
   pointer-events: none;
+}
+
+.toasts.top {
+  top: calc(env(safe-area-inset-top) + 110px);
+}
+
+/* Three 56px key rows with 8px gaps, plus the keyboard's 8px bottom padding and a 12px margin. */
+.toasts.bottom {
+  bottom: calc(env(safe-area-inset-bottom) + var(--ad-height, 0px) + 212px);
+}
+
+@media (max-height: 640px) {
+  .toasts.bottom { bottom: calc(env(safe-area-inset-bottom) + var(--ad-height, 0px) + 182px); }
 }
 
 .toast {

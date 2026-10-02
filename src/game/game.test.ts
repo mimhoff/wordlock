@@ -117,6 +117,34 @@ describe('game engine', () => {
     expect(activeRowLetters(game)).toEqual(['p', '', '', '', '']);
   });
 
+  it('absorbs the locked letter when the whole word is typed', () => {
+    const game = play(createGame(puzzle('stare', [null, 2, null, null, null, null, null, null]), 'standard'), 'crane');
+    expect(activeRowLetters(type(game, 'shake'))).toEqual(['s', 'h', 'a', 'k', 'e']);
+    // A lock at the start or end works the same way.
+    const start = play(createGame(puzzle('stare', LOCKS), 'standard'), 'crane', 'plate');
+    expect(activeRowLetters(type(start, 'prize'))).toEqual(['p', 'r', 'i', 'z', 'e']);
+    const end = play(createGame(puzzle('stare', LOCKS), 'standard'), 'crane');
+    expect(activeRowLetters(type(end, 'stare'))).toEqual(['s', 't', 'a', 'r', 'e']);
+  });
+
+  it('handles a repeated letter right after the lock, typed either way', () => {
+    // WORLD carries O down into the second tile; BOOKS repeats it in the third.
+    const game = play(createGame(puzzle('stare', [null, 1, null, null, null, null, null, null]), 'standard'), 'world');
+    expect(activeRowLetters(type(game, 'books'))).toEqual(['b', 'o', 'o', 'k', 's']);
+    // Typing only the free tiles absorbs the second O too, but Enter puts it back.
+    const short = type(game, 'boks');
+    expect(activeRowLetters(short)).toEqual(['b', 'o', 'k', 's', '']);
+    const res = submitGuess(short);
+    expect(res.ok && res.state.guesses[1]).toBe('books');
+  });
+
+  it('forgets an absorbed letter once you delete back past the lock', () => {
+    const game = play(createGame(puzzle('stare', [null, 2, null, null, null, null, null, null]), 'standard'), 'crane');
+    const typed = deleteLetter(type(game, 'sha'));
+    expect(typed.absorbedLock).toBe(false);
+    expect(activeRowLetters(type(typed, 'hake'))).toEqual(['s', 'h', 'a', 'k', 'e']);
+  });
+
   it('rejects incomplete rows and unknown words', () => {
     const game = createGame(puzzle('stare', LOCKS), 'standard');
     expect(submitGuess(type(game, 'cra'))).toEqual({ ok: false, error: 'Not enough letters' });

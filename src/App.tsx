@@ -173,7 +173,8 @@ export default function App() {
     if (modal || revealRow != null || game.status !== 'playing' || persist.hasSeenPickTip()) return;
     if (!activeLock(game) && game.pickedRow == null) return;
     persist.markPickTipSeen();
-    showToast('Tip: tap a lock to pick it. You get one per game.', 4500);
+    // Above the keyboard, so it doesn't cover the row that has just been revealed.
+    showToast('Tip: tap a lock to pick it. You get one per game.', 4500, 'bottom');
   }, [modal, revealRow, game, showToast]);
 
   // Physical keyboard. Read the latest handler through a ref so the listener is attached once.

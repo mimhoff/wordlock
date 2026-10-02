@@ -18,6 +18,11 @@ export interface GameState {
    * row is submitted the pick can be undone; afterwards it is spent.
    */
   pickedRow: number | null;
+  /**
+   * The player typed the locked letter on reaching the locked tile, and it was absorbed into
+   * the lock (they were typing the whole word). Not saved; see typeLetter and submitGuess.
+   */
+  absorbedLock?: boolean;
 }
 
 /** Standard Wordle scoring, handling repeated letters. */
@@ -109,17 +114,29 @@ export function toggleLockPick(state: GameState, row: number): GameState {
   const letters = activeRowLetters(state);
   const kept = opening ? letters : letters.filter((_, i) => i !== lockPosition);
   const firstEmpty = kept.indexOf('');
-  return { ...next, input: (firstEmpty === -1 ? kept : kept.slice(0, firstEmpty)).join('') };
+  return { ...next, input: (firstEmpty === -1 ? kept : kept.slice(0, firstEmpty)).join(''), absorbedLock: false };
 }
 
+/**
+ * Types a letter into the next unlocked tile. Players on a physical keyboard often type the whole
+ * word, including the locked letter, so the locked letter typed just as the cursor reaches the
+ * lock is absorbed into it rather than pushed into the next tile (SHAKE, not SHAAK).
+ */
 export function typeLetter(state: GameState, letter: string): GameState {
   if (state.status !== 'playing' || state.input.length >= openPositions(state).length) return state;
-  return { ...state, input: state.input + letter.toLowerCase() };
+  const l = letter.toLowerCase();
+  const lock = activeLock(state);
+  if (lock && !state.absorbedLock && state.input.length === lock.position && l === lock.letter) {
+    return { ...state, absorbedLock: true };
+  }
+  return { ...state, input: state.input + l };
 }
 
 export function deleteLetter(state: GameState): GameState {
   if (state.status !== 'playing' || !state.input) return state;
-  return { ...state, input: state.input.slice(0, -1) };
+  const input = state.input.slice(0, -1);
+  const lock = activeLock(state);
+  return { ...state, input, absorbedLock: state.absorbedLock && lock != null && input.length >= lock.position };
 }
 
 export type SubmitResult = { ok: true; state: GameState } | { ok: false; error: string };
@@ -127,7 +144,17 @@ export type SubmitResult = { ok: true; state: GameState } | { ok: false; error: 
 export function submitGuess(state: GameState): SubmitResult {
   if (state.status !== 'playing') return { ok: false, error: 'Game over' };
   const letters = activeRowLetters(state);
-  if (letters.some((l) => !l)) return { ok: false, error: 'Not enough letters' };
+  if (letters.some((l) => !l)) {
+    // Typing only the free tiles of a word like BOOKS (O locked second) absorbs the second O as
+    // if it were the locked one, leaving the row one short. Put it back if that makes a word.
+    const lock = activeLock(state);
+    if (state.absorbedLock && lock && state.input.length === openPositions(state).length - 1) {
+      const input = state.input.slice(0, lock.position) + lock.letter + state.input.slice(lock.position);
+      const retry = submitGuess({ ...state, input, absorbedLock: false });
+      if (retry.ok) return retry;
+    }
+    return { ok: false, error: 'Not enough letters' };
+  }
   const guess = letters.join('');
   if (!isValidWord(guess)) return { ok: false, error: 'Not in word list' };
   return { ok: true, state: createGame(state.puzzle, state.difficulty, [...state.guesses, guess], '', state.pickedRow) };
