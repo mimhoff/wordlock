@@ -21,8 +21,9 @@ const base = (props: IconProps) => ({
  */
 const PADLOCK_BODY =
   'M6.65 10.66h10.71a2 2 0 0 1 2 2v7.34a2 2 0 0 1-2 2H6.65a2 2 0 0 1-2-2v-7.34a2 2 0 0 1 2-2z' +
-  'M12 14.26a1.3 1.3 0 1 0 0 2.6a1.3 1.3 0 1 0 0-2.6z' +
-  'M11.31 16.02h1.38v2.37a.69.69 0 0 1-1.38 0z';
+  // Keyhole as one outline (round top flowing into the slot): two overlapping shapes would
+  // cancel out under the even-odd rule and leave a dot where they cross.
+  'M11.31 16.66A1.3 1.3 0 1 1 12.69 16.66V18.39A.69 .69 0 0 1 11.31 18.39Z';
 
 export const LockIcon = (props: IconProps) => (
   <svg {...base(props)}>
