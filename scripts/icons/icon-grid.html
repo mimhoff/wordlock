@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>WordLock grid icon</title>
+<!-- Source for the WOR / D🔒L / OCK grid app icon. Render at 512x512 (see README.md).
+     Open with ?maskable for the padded variant that survives Android's circular masks. -->
+<style>
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('../../node_modules/@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2') format('woff2');
+  font-weight: 300 700;
+}
+html, body { margin: 0; }
+body {
+  width: 512px; height: 512px; overflow: hidden;
+  background: #15171a; /* full-bleed so launchers can mask it to any shape */
+  display: grid; place-items: center;
+}
+.grid {
+  display: grid; grid-template-columns: repeat(3, 148px); grid-auto-rows: 148px; gap: 12px;
+}
+.t {
+  border-radius: 20px; display: grid; place-items: center;
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 104px; line-height: 1;
+  color: #fff;
+}
+.c { background: #13a06b; }
+.p { background: #f6c945; color: #2a2000; }
+.a { background: #6e7a8a; }
+.l { background: #b3203a; }
+.l svg { width: 92px; height: 92px; }
+/* Maskable: shrink the grid so circle and squircle masks only clip the dark background. */
+body.maskable .grid { transform: scale(0.66); }
+</style>
+</head>
+<body>
+<script>if (location.search.includes('maskable')) document.body.classList.add('maskable');</script>
+<div class="grid">
+  <div class="t c">W</div><div class="t p">O</div><div class="t a">R</div>
+  <div class="t a">D</div>
+  <div class="t l">
+    <!-- The app-icon padlock (public/icons/icon-source.svg), keyhole cut out. -->
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M7.41 11.4V7.9a4.6 4.6 0 0 1 9.19 0v3.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"></path>
+      <path fill="#fff" fill-rule="evenodd" d="M6.65 10.66h10.71a2 2 0 0 1 2 2v7.34a2 2 0 0 1-2 2H6.65a2 2 0 0 1-2-2v-7.34a2 2 0 0 1 2-2zM12 14.26a1.3 1.3 0 1 0 0 2.6a1.3 1.3 0 1 0 0-2.6zM11.31 16.02h1.38v2.37a.69.69 0 0 1-1.38 0z"></path>
+    </svg>
+  </div>
+  <div class="t c">L</div>
+  <div class="t p">O</div><div class="t a">C</div><div class="t c">K</div>
+</div>
+</body>
+</html>

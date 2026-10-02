@@ -16,7 +16,7 @@ const base = (props: IconProps) => ({
 });
 
 /*
- * Padlock geometry traced from the app icon (public/icons/icon-source.svg), scaled to 24px:
+ * Padlock geometry traced from scripts/icons/padlock.svg (also the favicon), scaled to 24px:
  * a rounded body with the keyhole cut out, so the tile colour shows through it.
  */
 const PADLOCK_BODY =

@@ -32,7 +32,7 @@ src/components/    React UI.
 src/platform/      Web/native seams: storage, sharing, ads, haptics, Android back button.
 src/config.ts      Share URL, Ko-fi, AdSense and AdMob IDs (overridable with VITE_* env variables).
 src/migration.ts   One-time import of data saved by v2.
-public/icons/      App icons; regenerate from icon-source.svg with scripts/icons/generate-icons.sh.
+public/icons/      App icons (the WOR / D🔒L / OCK grid); sources and re-render notes in scripts/icons/.
 scripts/           Word list and icon generators.
 play-store-assets/ Store listing, feature graphic, privacy policy.
 ```

@@ -22,12 +22,21 @@ export default defineConfig({
         display: 'standalone',
         orientation: 'portrait',
         categories: ['games', 'entertainment'],
-        icons: [72, 96, 128, 144, 152, 192, 384, 512].map((size) => ({
-          src: `icons/icon-${size}x${size}.png`,
-          sizes: `${size}x${size}`,
-          type: 'image/png',
-          purpose: 'any maskable',
-        })),
+        icons: [
+          ...[72, 96, 128, 144, 152, 192, 384, 512].map((size) => ({
+            src: `icons/icon-${size}x${size}.png`,
+            sizes: `${size}x${size}`,
+            type: 'image/png',
+            purpose: 'any',
+          })),
+          // Padded so Android's circle/squircle masks don't clip the corner tiles.
+          ...[192, 512].map((size) => ({
+            src: `icons/icon-maskable-${size}.png`,
+            sizes: `${size}x${size}`,
+            type: 'image/png',
+            purpose: 'maskable',
+          })),
+        ],
       },
     }),
   ],
