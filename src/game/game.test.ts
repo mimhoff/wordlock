@@ -141,8 +141,10 @@ describe('game engine', () => {
 
   it('forgets an absorbed letter once you delete back past the lock', () => {
     const game = play(createGame(puzzle('stare', [null, 2, null, null, null, null, null, null]), 'standard'), 'crane');
-    const typed = deleteLetter(type(game, 'sha'));
+    // Backspace steps back onto the lock first, then deletes the H before it.
+    const typed = deleteLetter(deleteLetter(type(game, 'sha')));
     expect(typed.absorbedLock).toBe(false);
+    expect(activeRowLetters(typed)).toEqual(['s', '', 'a', '', '']);
     expect(activeRowLetters(type(typed, 'hake'))).toEqual(['s', 'h', 'a', 'k', 'e']);
   });
 
@@ -209,6 +211,31 @@ describe('cursor', () => {
     game = type(game, 'pa'); // P absorbed, A in tile 1
     expect(activeRowLetters(game)).toEqual(['p', 'a', '', '', '']);
     expect(cursorPosition(game)).toBe(2);
+  });
+
+  it('steps back onto the lock on backspace after passing through it', () => {
+    let game = play(createGame(puzzle('stare', [null, 4, 2, 1, 2, 3, 4, null]), 'standard'), 'crane', 'plate');
+    // Row 2 is locked at position 2 with A: type S, H, then the locked A, then K.
+    game = type(game, 'shak');
+    expect(activeRowLetters(game)).toEqual(['s', 'h', 'a', 'k', '']);
+    expect(cursorPosition(game)).toBe(4);
+    game = deleteLetter(game); // removes K
+    expect(cursorPosition(game)).toBe(3);
+    game = deleteLetter(game); // steps back onto the lock, deleting nothing
+    expect(activeRowLetters(game)).toEqual(['s', 'h', 'a', '', '']);
+    expect(cursorPosition(game)).toBe(2);
+    game = deleteLetter(game); // now removes H
+    expect(activeRowLetters(game)).toEqual(['s', '', 'a', '', '']);
+    expect(cursorPosition(game)).toBe(1);
+  });
+
+  it('steps back onto a lock in the first tile', () => {
+    let game = play(createGame(puzzle('stare', LOCKS), 'standard'), 'crane', 'plate'); // row 2 locked at 0 (P)
+    game = typeLetter(game, 'p'); // pass through the lock
+    expect(cursorPosition(game)).toBe(1);
+    game = deleteLetter(game);
+    expect(cursorPosition(game)).toBe(0);
+    expect(deleteLetter(game)).toEqual(game); // nothing further to delete
   });
 
   it('skips past a lock in the last tile once the free tiles are full', () => {

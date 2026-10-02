@@ -146,10 +146,19 @@ export function cursorPosition(state: GameState): number | null {
   return open[state.input.length];
 }
 
+/**
+ * Deletes the last typed letter. Backspace steps back through the lock the same way typing went
+ * forward: if the locked letter was typed (absorbed), the first backspace just moves the cursor
+ * back onto the lock, and the next one deletes the letter before it.
+ */
 export function deleteLetter(state: GameState): GameState {
-  if (state.status !== 'playing' || !state.input) return state;
-  const input = state.input.slice(0, -1);
+  if (state.status !== 'playing') return state;
   const lock = activeLock(state);
+  if (lock && state.absorbedLock && state.input.length === lock.position) {
+    return { ...state, absorbedLock: false };
+  }
+  if (!state.input) return state;
+  const input = state.input.slice(0, -1);
   return { ...state, input, absorbedLock: state.absorbedLock && lock != null && input.length >= lock.position };
 }
 
