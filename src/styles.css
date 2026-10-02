@@ -216,9 +216,41 @@ h1 {
   color: var(--bg);
 }
 
-.mode-toggle {
-  align-self: center;
+.mode-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   margin-top: 8px;
+}
+
+/* Lock pick indicator next to the mode switch. */
+.pick-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.pick-pill svg {
+  width: 15px;
+  height: 15px;
+}
+
+.pick-pill.active {
+  border-color: var(--locked);
+  color: var(--locked);
+}
+
+.pick-pill.used {
+  color: var(--muted);
+  text-decoration: line-through;
 }
 
 /* ----------------------------------------------------------------- board */
@@ -279,6 +311,82 @@ h1 {
   width: 40%;
   height: 40%;
   opacity: 0.8;
+}
+
+/* ---- lock pick: lock tiles are buttons; hovering swaps the padlock for a key ---- */
+button.tile {
+  font-family: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+
+button.tile:focus-visible {
+  outline: 3px solid var(--text);
+  outline-offset: 2px;
+}
+
+.tile .lock-key {
+  display: none;
+}
+
+@media (hover: hover) {
+  .tile.pickable:hover .lock-shut {
+    display: none;
+  }
+
+  .tile.pickable:hover .lock-key {
+    display: block;
+  }
+
+  .tile.pickable:hover .tile-badge.lock-key {
+    width: 32%;
+    height: 32%;
+  }
+
+  .tile.pickable:not(.locked):hover {
+    border-color: var(--locked);
+    color: var(--locked);
+  }
+}
+
+/* Touch screens have no hover: a small key in the corner marks a pickable lock. */
+.touch-key {
+  display: none;
+}
+
+@media (hover: none) {
+  .tile.pickable .touch-key {
+    display: block;
+    position: absolute;
+    left: 3px;
+    bottom: 3px;
+    width: 20%;
+    height: 20%;
+    opacity: 0.85;
+  }
+
+  .tile.pickable.locked .touch-key {
+    color: #fff;
+  }
+}
+
+/* An opened (picked) lock that can still be restored. */
+.tile.picked {
+  border: 2px dashed var(--locked);
+  color: var(--text);
+}
+
+.tile.picked .tile-lock,
+.tile.picked .tile-badge {
+  color: var(--locked);
+  opacity: 1;
+  animation: unlock-pop 450ms ease-out;
+}
+
+@keyframes unlock-pop {
+  0% { transform: scale(0.6) rotate(-12deg); }
+  60% { transform: scale(1.2) rotate(6deg); }
+  100% { transform: scale(1) rotate(0); }
 }
 
 .tile.locked {
@@ -393,6 +501,7 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
   .tile,
   .tile-badge,
+  .tile-lock,
   .row {
     animation: none !important;
     transition: none !important;

@@ -1,5 +1,5 @@
 import { DIFFICULTIES, MAX_GUESSES } from './constants';
-import type { GameState, TileState } from './engine';
+import { pickUsed, type GameState, type TileState } from './engine';
 import { encodeSeed } from './puzzle';
 
 const SQUARES: Record<TileState, [normal: string, highContrast: string]> = {
@@ -17,12 +17,20 @@ export function buildShareText(state: GameState, opts: { highContrast: boolean; 
   const score = state.status === 'won' ? state.guesses.length : 'X';
   const title = puzzle.mode === 'daily' ? `WordLock #${puzzle.number}` : `WordLock Practice ${encodeSeed(puzzle.seed)}`;
   const mark = state.difficulty === 'standard' ? '' : ` (${DIFFICULTIES[state.difficulty].label})`;
+  // 🔓 = the lock pick was used; 🗝️ = won with the pick unused.
+  const picked = pickUsed(state);
+  const pickMark = picked ? ' 🔓' : state.status === 'won' ? ' 🗝️' : '';
   const grid = state.evaluations.map((row, r) =>
-    row.map((s, i) => (puzzle.locks[r] === i ? '🔒' : SQUARES[s][opts.highContrast ? 1 : 0])).join(''),
+    row
+      .map((s, i) => {
+        if (puzzle.locks[r] !== i) return SQUARES[s][opts.highContrast ? 1 : 0];
+        return picked && state.pickedRow === r ? '🔓' : '🔒';
+      })
+      .join(''),
   );
   let url = opts.url;
   if (url && puzzle.mode === 'practice') {
     url += `${url.includes('?') ? '&' : '?'}practice=${encodeSeed(puzzle.seed)}`;
   }
-  return [`${title} ${score}/${MAX_GUESSES}${mark}`, '', ...grid, ...(url ? ['', url] : [])].join('\n');
+  return [`${title} ${score}/${MAX_GUESSES}${pickMark}${mark}`, '', ...grid, ...(url ? ['', url] : [])].join('\n');
 }

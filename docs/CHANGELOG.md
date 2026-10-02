@@ -6,6 +6,10 @@ Rebuilt with Vite, React and TypeScript. The game rules and daily/practice modes
 same build now runs as the website (an installable, offline-capable PWA) and inside the Capacitor app.
 
 ### New
+- **Lock pick**: once per game, tap or click any visible lock (current row, or a future row in
+  Standard) to open it; tap again to restore it until that row is submitted. Shares show 🔓 where it
+  was used and 🗝️ for a win without it; stats track Clean Wins. Simulated on 1,000 puzzles, a
+  well-timed pick saves about 1.5 guesses, while spending it early often makes the result worse.
 - **Own visual identity**: emerald / sunflower / slate tiles with a crimson lock, rounded tiles,
   the Space Grotesk font (bundled, works offline), a lock-tile + "wordlock" logo, new win messages
   and a new app icon. High-contrast mode uses cobalt and marigold. Nothing of Wordle's palette,

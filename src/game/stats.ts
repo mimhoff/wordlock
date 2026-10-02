@@ -3,6 +3,8 @@ import { MAX_GUESSES } from './constants';
 export interface Stats {
   played: number;
   won: number;
+  /** Wins without using the lock pick. */
+  cleanWins: number;
   currentStreak: number;
   maxStreak: number;
   /** distribution[i] = games won in i + 1 guesses. */
@@ -14,6 +16,7 @@ export interface Stats {
 export const emptyStats = (): Stats => ({
   played: 0,
   won: 0,
+  cleanWins: 0,
   currentStreak: 0,
   maxStreak: 0,
   distribution: Array(MAX_GUESSES).fill(0),
@@ -23,6 +26,8 @@ export interface GameResult {
   won: boolean;
   guesses: number;
   dailyNumber?: number;
+  /** Whether the lock pick was used. */
+  usedPick?: boolean;
 }
 
 export function recordResult(stats: Stats, result: GameResult): Stats {
@@ -35,6 +40,7 @@ export function recordResult(stats: Stats, result: GameResult): Stats {
   return {
     played: stats.played + 1,
     won: stats.won + (result.won ? 1 : 0),
+    cleanWins: stats.cleanWins + (result.won && !result.usedPick ? 1 : 0),
     currentStreak,
     maxStreak: Math.max(stats.maxStreak, currentStreak),
     distribution,

@@ -13,17 +13,18 @@ interface SavedGame {
   difficulty: Difficulty;
   guesses: string[];
   input: string;
+  pickedRow?: number | null;
 }
 
 function toSaved(game: GameState): SavedGame {
-  const { puzzle, difficulty, guesses, input } = game;
-  return { dateKey: puzzle.dateKey, seed: puzzle.seed, difficulty, guesses, input };
+  const { puzzle, difficulty, guesses, input, pickedRow } = game;
+  return { dateKey: puzzle.dateKey, seed: puzzle.seed, difficulty, guesses, input, pickedRow };
 }
 
 export function loadDailyGame(dateKey: string, difficulty: Difficulty): GameState {
   const saved = load<SavedGame | null>('game:daily', null);
   const puzzle = createDailyPuzzle(dateKey);
-  if (saved?.dateKey === dateKey) return createGame(puzzle, toDifficulty(saved.difficulty), saved.guesses, saved.input);
+  if (saved?.dateKey === dateKey) return createGame(puzzle, toDifficulty(saved.difficulty), saved.guesses, saved.input, saved.pickedRow ?? null);
   return createGame(puzzle, difficulty);
 }
 
@@ -35,14 +36,18 @@ export function newPracticeGame(difficulty: Difficulty, seed = randomSeed()): Ga
 export function loadPracticeGame(difficulty: Difficulty, requestedSeed: number | null): GameState {
   const saved = load<SavedGame | null>('game:practice', null);
   if (saved && (requestedSeed == null || requestedSeed === saved.seed)) {
-    return createGame(createPracticePuzzle(saved.seed), toDifficulty(saved.difficulty), saved.guesses, saved.input);
+    return createGame(createPracticePuzzle(saved.seed), toDifficulty(saved.difficulty), saved.guesses, saved.input, saved.pickedRow ?? null);
   }
   return newPracticeGame(difficulty, requestedSeed ?? undefined);
 }
 
 export const saveGame = (game: GameState) => save(`game:${game.puzzle.mode}`, toSaved(game));
 
-export const loadStats = (mode: GameMode) => ({ ...emptyStats(), ...load<Partial<Stats>>(`stats:${mode}`, {}) });
+export function loadStats(mode: GameMode): Stats {
+  const saved = load<Partial<Stats>>(`stats:${mode}`, {});
+  // Stats saved before the lock pick existed: every win was a clean win.
+  return { ...emptyStats(), ...saved, cleanWins: saved.cleanWins ?? saved.won ?? 0 };
+}
 export const saveStats = (mode: GameMode, stats: Stats) => save(`stats:${mode}`, stats);
 
 export function loadSettings(): Settings {
@@ -56,3 +61,6 @@ export const saveMode = (mode: GameMode) => save('mode', mode);
 
 export const hasSeenHelp = () => load('seenHelp', false);
 export const markHelpSeen = () => save('seenHelp', true);
+
+export const hasSeenPickTip = () => load('seenPickTip', false);
+export const markPickTipSeen = () => save('seenPickTip', true);

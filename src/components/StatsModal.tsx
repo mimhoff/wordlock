@@ -42,6 +42,7 @@ export function StatsModal({ game, stats, todayNumber, onClose, onShare, onNewGa
     [winPct, 'Win %'],
     [displayedStreak(stats, isDaily ? todayNumber : undefined), 'Current Streak'],
     [stats.maxStreak, 'Max Streak'],
+    [stats.cleanWins, 'Clean Wins'],
   ];
 
   return (

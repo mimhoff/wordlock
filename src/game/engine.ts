@@ -13,6 +13,11 @@ export interface GameState {
   /** Letters typed into the active row's unlocked tiles, in order. */
   input: string;
   status: GameStatus;
+  /**
+   * Row whose lock the player opened with the game's single lock pick, or null. Until that
+   * row is submitted the pick can be undone; afterwards it is spent.
+   */
+  pickedRow: number | null;
 }
 
 /** Standard Wordle scoring, handling repeated letters. */
@@ -33,11 +38,17 @@ export function evaluateGuess(guess: string, answer: string): TileState[] {
   return result;
 }
 
-export function createGame(puzzle: Puzzle, difficulty: Difficulty, guesses: string[] = [], input = ''): GameState {
+export function createGame(
+  puzzle: Puzzle,
+  difficulty: Difficulty,
+  guesses: string[] = [],
+  input = '',
+  pickedRow: number | null = null,
+): GameState {
   const evaluations = guesses.map((g) => evaluateGuess(g, puzzle.answer));
   const won = guesses.at(-1) === puzzle.answer;
   const status: GameStatus = won ? 'won' : guesses.length >= MAX_GUESSES ? 'lost' : 'playing';
-  return { puzzle, difficulty, guesses, evaluations, input: status === 'playing' ? input : '', status };
+  return { puzzle, difficulty, guesses, evaluations, input: status === 'playing' ? input : '', status, pickedRow };
 }
 
 export const locksVisibleAhead = (d: Difficulty) => d === 'standard';
@@ -51,7 +62,7 @@ export interface ActiveLock {
 export function activeLock(state: GameState): ActiveLock | null {
   const row = state.guesses.length;
   const position = state.puzzle.locks[row];
-  if (state.status !== 'playing' || position == null || row === 0) return null;
+  if (state.status !== 'playing' || position == null || row === 0 || state.pickedRow === row) return null;
   return { position, letter: state.guesses[row - 1][position] };
 }
 
@@ -68,6 +79,37 @@ export function activeRowLetters(state: GameState): string[] {
   if (lock) letters[lock.position] = lock.letter;
   openPositions(state).forEach((pos, i) => (letters[pos] = state.input[i] ?? ''));
   return letters;
+}
+
+/** The lock pick has been spent: the row it opened was submitted. */
+export const pickUsed = (state: GameState) => state.pickedRow != null && state.pickedRow < state.guesses.length;
+
+/**
+ * Whether the lock on `row` can be picked now, or restored if it is the one already picked.
+ * Any lock the player can see qualifies: the active row's, and in Standard also future rows'.
+ */
+export function canToggleLock(state: GameState, row: number): boolean {
+  const active = state.guesses.length;
+  if (state.status !== 'playing' || row < active || state.puzzle.locks[row] == null || row === 0) return false;
+  if (row > active && !locksVisibleAhead(state.difficulty)) return false;
+  return state.pickedRow == null || state.pickedRow === row;
+}
+
+/**
+ * Opens the lock on `row` with the lock pick, or restores it. On the active row the letters
+ * already typed stay in their tiles as far as possible (the carried letter stays as a normal,
+ * editable letter when the player has typed past it).
+ */
+export function toggleLockPick(state: GameState, row: number): GameState {
+  if (!canToggleLock(state, row)) return state;
+  const opening = state.pickedRow !== row;
+  const next: GameState = { ...state, pickedRow: opening ? row : null };
+  if (row !== state.guesses.length) return next;
+  const lockPosition = state.puzzle.locks[row]!;
+  const letters = activeRowLetters(state);
+  const kept = opening ? letters : letters.filter((_, i) => i !== lockPosition);
+  const firstEmpty = kept.indexOf('');
+  return { ...next, input: (firstEmpty === -1 ? kept : kept.slice(0, firstEmpty)).join('') };
 }
 
 export function typeLetter(state: GameState, letter: string): GameState {
@@ -88,7 +130,7 @@ export function submitGuess(state: GameState): SubmitResult {
   if (letters.some((l) => !l)) return { ok: false, error: 'Not enough letters' };
   const guess = letters.join('');
   if (!isValidWord(guess)) return { ok: false, error: 'Not in word list' };
-  return { ok: true, state: createGame(state.puzzle, state.difficulty, [...state.guesses, guess]) };
+  return { ok: true, state: createGame(state.puzzle, state.difficulty, [...state.guesses, guess], '', state.pickedRow) };
 }
 
 const RANK: Record<TileState, number> = { absent: 0, present: 1, correct: 2 };

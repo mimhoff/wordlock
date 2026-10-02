@@ -71,6 +71,13 @@ export function HelpModal({ onClose }: { onClose: () => void }) {
           <strong>Hidden Locks</strong>, each lock only appears when its row becomes active.
         </p>
 
+        <h3>The lock pick</h3>
+        <p>
+          Once per game you can <strong>pick a lock</strong>: tap or click any lock you can see to open it, and that
+          row is all yours. Changed your mind? Tap it again to put the lock back, any time before you submit that row.
+          Shared results show 🔓 where you used it, and 🗝️ when you won without it.
+        </p>
+
         <h3>Modes</h3>
         <p>
           <strong>Daily</strong>: everyone gets the same word and locks each day. <strong>Practice</strong>: play as

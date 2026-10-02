@@ -1,13 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Board } from './components/Board';
 import { HelpModal } from './components/HelpModal';
-import { HelpIcon, LockIcon, NewGameIcon, SettingsIcon, StatsIcon } from './components/icons';
+import { HelpIcon, KeyIcon, LockIcon, NewGameIcon, SettingsIcon, StatsIcon } from './components/icons';
 import { Keyboard } from './components/Keyboard';
 import { SettingsModal } from './components/SettingsModal';
 import { StatsModal } from './components/StatsModal';
 import { Toasts, useToasts } from './components/Toasts';
 import { DIFFICULTIES, WIN_MESSAGES, WORD_LENGTH, type GameMode } from './game/constants';
-import { deleteLetter, keyboardStates, submitGuess, typeLetter, type GameState } from './game/engine';
+import {
+  activeLock,
+  deleteLetter,
+  keyboardStates,
+  pickUsed,
+  submitGuess,
+  toggleLockPick,
+  typeLetter,
+  type GameState,
+} from './game/engine';
 import { dailyNumber, decodeSeed, encodeSeed, toDateKey } from './game/puzzle';
 import { buildShareText } from './game/shareText';
 import { recordResult } from './game/stats';
@@ -18,6 +27,14 @@ import { shareText, shareUrl } from './platform/share';
 import type { Settings } from './settings';
 
 type ModalKind = 'help' | 'stats' | 'settings' | null;
+
+type PickState = 'ready' | 'active' | 'used';
+const PICK_LABELS: Record<PickState, string> = { ready: '1 pick', active: 'Picking', used: 'Picked' };
+const PICK_TITLES: Record<PickState, string> = {
+  ready: 'Lock pick: tap any lock to open it. One per game.',
+  active: 'A lock is open. Tap it again to restore it before you submit that row.',
+  used: 'Your lock pick has been used this game.',
+};
 
 const FLIP_STAGGER_MS = 250;
 const FLIP_MS = 500;
@@ -96,6 +113,7 @@ export default function App() {
           won: finished.status === 'won',
           guesses: rows,
           dailyNumber: finished.puzzle.number,
+          usedPick: pickUsed(finished),
         });
         persist.saveStats(m, updated);
         return { ...s, [m]: updated };
@@ -104,6 +122,8 @@ export default function App() {
         setBounceRow(rows - 1);
         setTimeout(() => setBounceRow(null), 1000);
         showToast(WIN_MESSAGES[rows - 1]);
+        // Winning without the lock pick is the bragging right; say so.
+        if (!pickUsed(finished) && rows > 1) showToast('🗝️ Solved without the lock pick', 2200);
         buzz('win');
       } else {
         showToast(finished.puzzle.answer.toUpperCase(), 1900);
@@ -140,6 +160,23 @@ export default function App() {
     },
     [modal, revealRow, game, setGame, submit],
   );
+
+  const toggleLock = useCallback(
+    (row: number) => {
+      if (modal || revealRow != null) return;
+      buzz('key');
+      setGame(toggleLockPick(game, row));
+    },
+    [modal, revealRow, game, setGame, buzz],
+  );
+
+  // One-time tip the first time a lock is in play.
+  useEffect(() => {
+    if (modal || revealRow != null || game.status !== 'playing' || persist.hasSeenPickTip()) return;
+    if (!activeLock(game) && game.pickedRow == null) return;
+    persist.markPickTipSeen();
+    showToast('Tip: tap a lock to pick it. You get one per game.', 4500);
+  }, [modal, revealRow, game, showToast]);
 
   // Physical keyboard. Read the latest handler through a ref so the listener is attached once.
   const handleKeyRef = useRef(handleKey);
@@ -188,6 +225,8 @@ export default function App() {
     else if (outcome === 'failed') showToast('Unable to share results');
   };
 
+  const pickState: PickState = pickUsed(game) ? 'used' : game.pickedRow != null ? 'active' : 'ready';
+
   const subtitle =
     (game.puzzle.mode === 'daily' ? `Daily #${game.puzzle.number}` : `Practice ${encodeSeed(game.puzzle.seed)}`) +
     ` · ${DIFFICULTIES[game.difficulty].label}`;
@@ -224,16 +263,22 @@ export default function App() {
         </div>
       </header>
 
-      <nav className="mode-toggle segmented" aria-label="Game mode">
-        {(['daily', 'practice'] as const).map((m) => (
-          <button key={m} className={mode === m ? 'active' : ''} onClick={() => switchMode(m)}>
-            {m === 'daily' ? 'Daily' : 'Practice'}
-          </button>
-        ))}
-      </nav>
+      <div className="mode-row">
+        <nav className="mode-toggle segmented" aria-label="Game mode">
+          {(['daily', 'practice'] as const).map((m) => (
+            <button key={m} className={mode === m ? 'active' : ''} onClick={() => switchMode(m)}>
+              {m === 'daily' ? 'Daily' : 'Practice'}
+            </button>
+          ))}
+        </nav>
+        <span className={`pick-pill ${pickState}`} title={PICK_TITLES[pickState]}>
+          <KeyIcon />
+          {PICK_LABELS[pickState]}
+        </span>
+      </div>
 
       <main className="board-container">
-        <Board game={game} revealRow={revealRow} shake={shake} bounceRow={bounceRow} />
+        <Board game={game} revealRow={revealRow} shake={shake} bounceRow={bounceRow} onToggleLock={toggleLock} />
       </main>
 
       <Keyboard

@@ -24,6 +24,7 @@ export function convertLegacyStats(old: LegacyStats): Stats {
   return {
     played: old.gamesPlayed ?? 0,
     won: old.gamesWon ?? 0,
+    cleanWins: old.gamesWon ?? 0, // v2 had no lock pick
     currentStreak: old.currentStreak ?? 0,
     maxStreak: old.maxStreak ?? 0,
     distribution,

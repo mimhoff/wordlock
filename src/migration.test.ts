@@ -19,6 +19,7 @@ describe('convertLegacyStats', () => {
     expect(convertLegacyStats(V2_STATS)).toEqual({
       played: 12,
       won: 10,
+      cleanWins: 10,
       currentStreak: 4,
       maxStreak: 6,
       distribution: [0, 1, 3, 2, 2, 1, 1, 0],
@@ -37,6 +38,7 @@ describe('convertLegacyStats', () => {
     expect(convertLegacyStats({ guessDistribution: [1, 2] })).toEqual({
       played: 0,
       won: 0,
+      cleanWins: 0,
       currentStreak: 0,
       maxStreak: 0,
       distribution: [1, 2, 0, 0, 0, 0, 0, 0],

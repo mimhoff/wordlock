@@ -59,3 +59,17 @@ export const CloseIcon = (props: IconProps) => (
     <path d="M18 6 6 18M6 6l12 12" />
   </svg>
 );
+
+export const LockOpenIcon = (props: IconProps) => (
+  <svg {...base(props)}>
+    <rect x="4" y="11" width="16" height="10" rx="2" fill="currentColor" />
+    <path d="M8 11V7a4 4 0 0 1 7.5-2" />
+  </svg>
+);
+
+export const KeyIcon = (props: IconProps) => (
+  <svg {...base(props)}>
+    <circle cx="7.5" cy="15.5" r="4" />
+    <path d="M10.5 12.5 20 3M16 7l2.5 2.5M14 9l2 2" />
+  </svg>
+);

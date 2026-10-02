@@ -4,6 +4,9 @@ import { ANSWERS, isValidWord } from './dictionary';
 import {
   activeLock,
   activeRowLetters,
+  canToggleLock,
+  pickUsed,
+  toggleLockPick,
   createGame,
   deleteLetter,
   evaluateGuess,
@@ -156,6 +159,74 @@ describe('game engine', () => {
   });
 });
 
+describe('lock pick', () => {
+  const fresh = () => play(createGame(puzzle('stare', LOCKS), 'standard'), 'crane'); // row 1 locked at 4 ('e')
+
+  it('opens the active lock so every tile can be typed', () => {
+    const game = toggleLockPick(fresh(), 1);
+    expect(activeLock(game)).toBeNull();
+    expect(activeRowLetters(type(game, 'stare'))).toEqual(['s', 't', 'a', 'r', 'e']);
+    expect(submitGuess(type(game, 'stare'))).toMatchObject({ ok: true, state: { status: 'won' } });
+  });
+
+  it('keeps typed letters in place when opening and restoring', () => {
+    let game = type(fresh(), 'pla'); // P L A _ [E]
+    game = toggleLockPick(game, 1);
+    expect(activeRowLetters(game)).toEqual(['p', 'l', 'a', '', '']); // carried E not reached yet
+    game = type(game, 'te');
+    game = toggleLockPick(game, 1); // restore: E comes back locked
+    expect(activeRowLetters(game)).toEqual(['p', 'l', 'a', 't', 'e']);
+    expect(activeLock(game)).toEqual({ position: 4, letter: 'e' });
+    expect(game.pickedRow).toBeNull();
+  });
+
+  it('keeps the carried letter as a normal letter when opened after typing past it', () => {
+    let game = play(createGame(puzzle('stare', LOCKS), 'standard'), 'crane', 'plate'); // row 2 locked at 0 ('p')
+    game = type(game, 'ar'); // [P] A R _ _
+    game = toggleLockPick(game, 2);
+    expect(activeRowLetters(game)).toEqual(['p', 'a', 'r', '', '']);
+    game = deleteLetter(deleteLetter(deleteLetter(game)));
+    expect(activeRowLetters(game)).toEqual(['', '', '', '', '']);
+  });
+
+  it('allows one pick per game, spent once its row is submitted', () => {
+    let game = toggleLockPick(fresh(), 1);
+    expect(canToggleLock(game, 3)).toBe(false); // already holding the pick on row 1
+    game = play(game, 'stale');
+    expect(pickUsed(game)).toBe(true);
+    expect(canToggleLock(game, 2)).toBe(false);
+    expect(toggleLockPick(game, 2)).toBe(game);
+  });
+
+  it('can pick a future lock in Standard but not with Hidden Locks', () => {
+    const standard = toggleLockPick(fresh(), 4);
+    expect(standard.pickedRow).toBe(4);
+    expect(pickUsed(standard)).toBe(false); // not spent until row 4 is submitted
+    const hidden = play(createGame(puzzle('stare', LOCKS), 'hidden'), 'crane');
+    expect(canToggleLock(hidden, 4)).toBe(false);
+    expect(canToggleLock(hidden, 1)).toBe(true);
+  });
+
+  it('never applies to unlocked rows or past rows', () => {
+    const game = play(fresh(), 'plate');
+    expect(canToggleLock(game, 0)).toBe(false);
+    expect(canToggleLock(game, 1)).toBe(false);
+    expect(canToggleLock(game, 7)).toBe(false);
+  });
+
+  it('shows in shared results', () => {
+    const won = play(toggleLockPick(fresh(), 1), 'stare');
+    const text = buildShareText({ ...won, puzzle: { ...won.puzzle, mode: 'daily', number: 3 } }, { highContrast: false });
+    expect(text.split('\n')).toEqual(['WordLock #3 2/8 🔓', '', '⬛🟨🟩⬛🟩', '🟩🟩🟩🟩🔓']);
+  });
+
+  it('survives a save and reload', () => {
+    const game = toggleLockPick(fresh(), 1);
+    const restored = createGame(game.puzzle, game.difficulty, game.guesses, game.input, game.pickedRow);
+    expect(activeLock(restored)).toBeNull();
+  });
+});
+
 describe('stats', () => {
   it('tracks wins, distribution and daily streaks', () => {
     let s = emptyStats();
@@ -169,6 +240,9 @@ describe('stats', () => {
     expect(s).toMatchObject({ currentStreak: 1, maxStreak: 2 });
     s = recordResult(s, { won: false, guesses: 8, dailyNumber: 6 });
     expect(s).toMatchObject({ played: 4, won: 3, currentStreak: 0 });
+    expect(s.cleanWins).toBe(3);
+    s = recordResult(s, { won: true, guesses: 4, dailyNumber: 7, usedPick: true });
+    expect(s).toMatchObject({ won: 4, cleanWins: 3 });
   });
 });
 
@@ -176,7 +250,7 @@ describe('share text', () => {
   it('renders the grid with locks and no letters', () => {
     const game = play(createGame({ ...puzzle('stare', LOCKS), mode: 'daily', number: 7 }, 'standard'), 'crane', 'stare');
     expect(buildShareText(game, { highContrast: false, url: 'https://example.com/wordlock/' })).toBe(
-      ['WordLock #7 2/8', '', '⬛🟨🟩⬛🟩', '🟩🟩🟩🟩🔒', '', 'https://example.com/wordlock/'].join('\n'),
+      ['WordLock #7 2/8 🗝️', '', '⬛🟨🟩⬛🟩', '🟩🟩🟩🟩🔒', '', 'https://example.com/wordlock/'].join('\n'),
     );
   });
 

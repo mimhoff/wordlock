@@ -1,5 +1,5 @@
 import { MAX_GUESSES, WORD_LENGTH } from '../game/constants';
-import { activeLock, activeRowLetters, locksVisibleAhead, type GameState } from '../game/engine';
+import { activeLock, activeRowLetters, canToggleLock, locksVisibleAhead, type GameState } from '../game/engine';
 import { Tile } from './Tile';
 
 interface BoardProps {
@@ -9,11 +9,12 @@ interface BoardProps {
   shake: boolean;
   /** Row to celebrate with a bounce after a win. */
   bounceRow: number | null;
+  onToggleLock: (row: number) => void;
 }
 
 const COLUMNS = [...Array(WORD_LENGTH).keys()];
 
-export function Board({ game, revealRow, shake, bounceRow }: BoardProps) {
+export function Board({ game, revealRow, shake, bounceRow, onToggleLock }: BoardProps) {
   // The next row (and its lock) only activates once the previous row has finished flipping.
   const activeRow = game.status === 'playing' && revealRow == null ? game.guesses.length : -1;
   const lock = activeLock(game);
@@ -27,25 +28,45 @@ export function Board({ game, revealRow, shake, bounceRow }: BoardProps) {
         if (r === activeRow && shake) rowClasses.push('shake');
         if (r === bounceRow) rowClasses.push('bounce');
         const lockPos = game.puzzle.locks[r];
+        const pickedHere = game.pickedRow === r;
+        const toggle = revealRow == null && canToggleLock(game, r) ? () => onToggleLock(r) : undefined;
 
         return (
           <div key={r} className={rowClasses.join(' ')} role="row">
             {COLUMNS.map((c) => {
+              const isLockTile = lockPos === c;
               if (r < game.guesses.length) {
                 return (
                   <Tile
                     key={c}
                     letter={game.guesses[r][c]}
                     state={game.evaluations[r][c]}
-                    wasLocked={lockPos === c}
+                    wasLocked={isLockTile && !pickedHere}
+                    wasPicked={isLockTile && pickedHere}
                     revealIndex={r === revealRow ? c : undefined}
                   />
                 );
               }
               if (r === activeRow) {
-                return <Tile key={c} letter={activeLetters[c]} locked={lock?.position === c} />;
+                return (
+                  <Tile
+                    key={c}
+                    letter={activeLetters[c]}
+                    locked={lock?.position === c}
+                    picked={isLockTile && pickedHere}
+                    onToggleLock={isLockTile ? toggle : undefined}
+                  />
+                );
               }
-              return <Tile key={c} lockHint={showFutureLocks && lockPos === c} />;
+              const visible = isLockTile && (showFutureLocks || pickedHere);
+              return (
+                <Tile
+                  key={c}
+                  lockHint={visible && !pickedHere}
+                  picked={visible && pickedHere}
+                  onToggleLock={visible ? toggle : undefined}
+                />
+              );
             })}
           </div>
         );
