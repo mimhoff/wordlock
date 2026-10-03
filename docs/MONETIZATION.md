@@ -64,8 +64,7 @@ To do in RevenueCat (https://app.revenuecat.com), after the Play Console product
       creating it in Google Cloud and granting it access in Play Console → Users and permissions).
 - [ ] **Entitlement** `plus` (the ID the app checks), with the `wordlock_plus` product attached.
 - [ ] **Offering** `default` (current), with one package containing `wordlock_plus`.
-- [ ] Copy the Android **public SDK key** (starts `goog_`) into `src/config.ts` as the default for
-      `REVENUECAT_ANDROID_KEY` (it's safe to commit), or set `VITE_REVENUECAT_ANDROID_KEY`.
+- [x] Android **public SDK key** (`goog_…`) is in `src/config.ts` as `REVENUECAT_ANDROID_KEY`.
 - [ ] Test with a licence-tester account: buy, uninstall, reinstall, **Restore purchase**.
 - [ ] Re-check the store listing ("Contains ads · In-app purchases") and the Data safety form.
 

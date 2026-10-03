@@ -19,11 +19,11 @@ export const ADMOB_BANNER_ID: string = env.VITE_ADMOB_BANNER_ID ?? 'ca-app-pub-5
 export const ADMOB_BANNER_ID_IOS: string = env.VITE_ADMOB_BANNER_ID_IOS ?? '';
 
 /**
- * RevenueCat public SDK keys (safe to ship in the app; they only identify the project). Empty until
- * the RevenueCat project exists: with no key for the platform, purchases are switched off and the
- * WordLock Plus section is hidden. See docs/MONETIZATION.md.
+ * RevenueCat public SDK keys (safe to ship in the app; they only identify the project). With no key
+ * for a platform, purchases are switched off there and the WordLock Plus section is hidden (iOS until
+ * its key exists). See docs/MONETIZATION.md.
  */
-export const REVENUECAT_ANDROID_KEY: string = env.VITE_REVENUECAT_ANDROID_KEY ?? '';
+export const REVENUECAT_ANDROID_KEY: string = env.VITE_REVENUECAT_ANDROID_KEY ?? 'goog_bnNXTXQreMGKcXkkdBKpwHwpPIj';
 export const REVENUECAT_IOS_KEY: string = env.VITE_REVENUECAT_IOS_KEY ?? '';
 
 /** The RevenueCat entitlement that WordLock Plus grants. */
