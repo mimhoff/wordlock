@@ -9,6 +9,7 @@
 | [IOS.md](IOS.md) | iOS release checklist: Apple accounts, IAP, ads/ATT, Xcode project, Codemagic + TestFlight, App Store listing |
 | [ADMOB_SETUP.md](ADMOB_SETUP.md) | AdMob, AdSense and Ko-fi configuration, consent, native IDs, `app-ads.txt` |
 | [../play-store-assets/](../play-store-assets/) | Store listing text, feature graphic, privacy policy, Play Console checklist |
+| [BACKLOG.md](BACKLOG.md) | Ideas and open questions parked until after playtesting |
 | [CHANGELOG.md](CHANGELOG.md) | Version history |
 
 Older guides written for v2's plain-JS build (code structure, animations, the `www/` copy workflow)

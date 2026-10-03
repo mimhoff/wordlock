@@ -24,9 +24,19 @@ function toSaved(game: GameState): SavedGame {
 
 export function loadDailyGame(dateKey: string, difficulty: Difficulty): GameState {
   const saved = load<SavedGame | null>('game:daily', null);
-  const puzzle = createDailyPuzzle(dateKey);
-  if (saved?.dateKey === dateKey) return createGame(puzzle, toDifficulty(saved.difficulty), saved.guesses, saved.input, saved.pickedRow ?? null);
-  return createGame(puzzle, difficulty);
+  if (saved?.dateKey === dateKey) {
+    const savedDifficulty = toDifficulty(saved.difficulty);
+    const puzzle = createDailyPuzzle(dateKey, savedDifficulty);
+    // A different seed means the save belongs to another puzzle (e.g. Expert before it had its own).
+    if (saved.seed === puzzle.seed) return createGame(puzzle, savedDifficulty, saved.guesses, saved.input, saved.pickedRow ?? null);
+  }
+  return createGame(createDailyPuzzle(dateKey, difficulty), difficulty);
+}
+
+/** An unstarted game rebuilt for another difficulty. Expert's daily is a different puzzle. */
+export function changeDifficulty(game: GameState, difficulty: Difficulty): GameState {
+  const { puzzle } = game;
+  return createGame(puzzle.mode === 'daily' ? createDailyPuzzle(puzzle.dateKey!, difficulty) : puzzle, difficulty);
 }
 
 export function newPracticeGame(difficulty: Difficulty, seed = randomSeed()): GameState {

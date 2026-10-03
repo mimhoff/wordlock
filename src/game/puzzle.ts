@@ -1,4 +1,4 @@
-import { DAILY_EPOCH, MAX_GUESSES, WORD_LENGTH, type GameMode } from './constants';
+import { DAILY_EPOCH, MAX_GUESSES, WORD_LENGTH, type Difficulty, type GameMode } from './constants';
 import { ANSWERS } from './dictionary';
 import { hashString, mulberry32, randomInt } from './rng';
 
@@ -49,9 +49,18 @@ export function dailyNumber(dateKey: string): number {
   return Math.round((toUtc(dateKey) - toUtc(DAILY_EPOCH)) / 86_400_000) + 1;
 }
 
-/** The daily puzzle is seeded by a hash of the date, so every player gets the same one. */
-export function createDailyPuzzle(dateKey: string): Puzzle {
-  return { ...buildPuzzle('daily', hashString(`wordlock:${dateKey}`)), dateKey, number: dailyNumber(dateKey) };
+/**
+ * The daily puzzle is seeded by a hash of the date, so every player gets the same one.
+ * Expert has its own daily puzzle with a different answer: its given first word is free
+ * information, which would otherwise help with the Standard puzzle the same day.
+ */
+export function createDailyPuzzle(dateKey: string, difficulty: Difficulty = 'standard'): Puzzle {
+  const daily = (key: string) => ({ ...buildPuzzle('daily', hashString(key)), dateKey, number: dailyNumber(dateKey) });
+  const standard = daily(`wordlock:${dateKey}`);
+  if (difficulty !== 'expert') return standard;
+  let expert = daily(`wordlock:expert:${dateKey}`);
+  for (let salt = 1; expert.answer === standard.answer; salt++) expert = daily(`wordlock:expert:${dateKey}:${salt}`);
+  return expert;
 }
 
 export function createPracticePuzzle(seed: number): Puzzle {

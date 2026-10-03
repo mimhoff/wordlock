@@ -9,7 +9,6 @@ import { Toasts, useToasts } from './components/Toasts';
 import { DIFFICULTIES, WIN_MESSAGES, WORD_LENGTH, type GameMode } from './game/constants';
 import {
   activeLock,
-  createGame,
   deleteLetter,
   keyboardStates,
   pickUsed,
@@ -216,8 +215,8 @@ export default function App() {
     setSettings(next);
     if (next.difficulty !== settings.difficulty) {
       // Difficulty is fixed once a game has started, like Wordle's hard mode.
-      // Rebuilt rather than patched, so Expert's given first word is added (or removed).
-      const apply = (g: GameState) => (playerGuesses(g) === 0 ? createGame(g.puzzle, next.difficulty) : g);
+      // Rebuilt rather than patched: Expert has its own daily puzzle and a given first word.
+      const apply = (g: GameState) => (playerGuesses(g) === 0 ? persist.changeDifficulty(g, next.difficulty) : g);
       setDaily(apply);
       setPractice(apply);
     }

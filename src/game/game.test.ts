@@ -78,6 +78,18 @@ describe('puzzles', () => {
     expect(answers.size).toBeGreaterThan(25);
   });
 
+  it('gives Expert its own daily answer, and leaves the Standard and Hidden ones unchanged', () => {
+    for (let d = 1; d <= 60; d++) {
+      const key = `2026-12-${String((d % 28) + 1).padStart(2, '0')}`;
+      const standard = createDailyPuzzle(key);
+      expect(createDailyPuzzle(key, 'hidden')).toEqual(standard);
+      const expert = createDailyPuzzle(key, 'expert');
+      expect(expert).toEqual(createDailyPuzzle(key, 'expert'));
+      expect(expert.answer).not.toBe(standard.answer);
+      expect(expert.number).toBe(standard.number);
+    }
+  });
+
   it('numbers daily puzzles from the epoch', () => {
     expect(dailyNumber('2026-10-01')).toBe(1);
     expect(dailyNumber('2026-10-02')).toBe(2);

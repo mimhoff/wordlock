@@ -1,10 +1,25 @@
 import { MAX_GUESSES } from '../game/constants';
+import { LockIcon } from './icons';
 import { Modal } from './Modal';
 import { Tile } from './Tile';
 
 export function HelpModal({ onClose }: { onClose: () => void }) {
   return (
-    <Modal title="How to play" onClose={onClose}>
+    <Modal
+      title="How to play"
+      heading={
+        <div className="help-heading">
+          <div className="brand" aria-hidden="true">
+            <span className="logo-mark">
+              <LockIcon />
+            </span>
+            wordlock
+          </div>
+          <h2>How to play</h2>
+        </div>
+      }
+      onClose={onClose}
+    >
       <div className="help">
         <p>
           Find the hidden five-letter word in {MAX_GUESSES} guesses. After each guess, the tiles show how close you

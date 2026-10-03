@@ -3,11 +3,13 @@ import { CloseIcon } from './icons';
 
 interface ModalProps {
   title: string;
+  /** Replaces the plain title heading (the title is still the dialog's accessible name). */
+  heading?: ReactNode;
   onClose: () => void;
   children: ReactNode;
 }
 
-export function Modal({ title, onClose, children }: ModalProps) {
+export function Modal({ title, heading, onClose, children }: ModalProps) {
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div
@@ -20,7 +22,7 @@ export function Modal({ title, onClose, children }: ModalProps) {
         <button className="icon-button modal-close" onClick={onClose} aria-label="Close">
           <CloseIcon />
         </button>
-        <h2>{title}</h2>
+        {heading ?? <h2>{title}</h2>}
         {children}
       </div>
     </div>
