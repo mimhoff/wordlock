@@ -1,6 +1,7 @@
 import { MAX_GUESSES, WORD_LENGTH, type Difficulty } from './constants';
-import { isValidWord } from './dictionary';
+import { ANSWERS, isValidWord } from './dictionary';
 import type { Puzzle } from './puzzle';
+import { mulberry32, randomInt } from './rng';
 
 export type TileState = 'correct' | 'present' | 'absent';
 export type GameStatus = 'playing' | 'won' | 'lost';
@@ -43,6 +44,31 @@ export function evaluateGuess(guess: string, answer: string): TileState[] {
   return result;
 }
 
+/**
+ * Expert's given first word. It is chosen so the row-2 lock lands on a yellow letter (in the
+ * word, but locked in the wrong spot), without giving much else away: at most one green and three
+ * coloured tiles. Deterministic per puzzle, so everyone playing the same puzzle gets the same start.
+ */
+export function expertStarter(puzzle: Puzzle): string {
+  const lockPosition = puzzle.locks[1] ?? 0;
+  const rng = mulberry32((puzzle.seed ^ 0x5eedbeef) >>> 0);
+  const scored = ANSWERS.filter((w) => w !== puzzle.answer).map((w) => ({ w, ev: evaluateGuess(w, puzzle.answer) }));
+  const yellowAtLock = scored.filter(({ ev }) => ev[lockPosition] === 'present');
+  const gentle = yellowAtLock.filter(({ ev }) => {
+    const greens = ev.filter((s) => s === 'correct').length;
+    const coloured = ev.filter((s) => s !== 'absent').length;
+    return greens <= 1 && coloured <= 3;
+  });
+  const pool = gentle.length ? gentle : yellowAtLock.length ? yellowAtLock : scored;
+  return pool[randomInt(rng, pool.length)].w;
+}
+
+/** Rows given to the player before they start (Expert's first word). */
+export const givenRows = (state: GameState) => (state.difficulty === 'expert' ? 1 : 0);
+
+/** Guesses the player has actually made. */
+export const playerGuesses = (state: GameState) => state.guesses.length - givenRows(state);
+
 export function createGame(
   puzzle: Puzzle,
   difficulty: Difficulty,
@@ -50,13 +76,14 @@ export function createGame(
   input = '',
   pickedRow: number | null = null,
 ): GameState {
+  if (difficulty === 'expert' && guesses.length === 0) guesses = [expertStarter(puzzle)];
   const evaluations = guesses.map((g) => evaluateGuess(g, puzzle.answer));
   const won = guesses.at(-1) === puzzle.answer;
   const status: GameStatus = won ? 'won' : guesses.length >= MAX_GUESSES ? 'lost' : 'playing';
   return { puzzle, difficulty, guesses, evaluations, input: status === 'playing' ? input : '', status, pickedRow };
 }
 
-export const locksVisibleAhead = (d: Difficulty) => d === 'standard';
+export const locksVisibleAhead = (d: Difficulty) => d !== 'hidden';
 
 export interface ActiveLock {
   position: number;
@@ -95,6 +122,7 @@ export const pickUsed = (state: GameState) => state.pickedRow != null && state.p
  */
 export function canToggleLock(state: GameState, row: number): boolean {
   const active = state.guesses.length;
+  if (state.difficulty === 'expert') return false; // Expert has no lock pick
   if (state.status !== 'playing' || row < active || state.puzzle.locks[row] == null || row === 0) return false;
   if (row > active && !locksVisibleAhead(state.difficulty)) return false;
   return state.pickedRow == null || state.pickedRow === row;

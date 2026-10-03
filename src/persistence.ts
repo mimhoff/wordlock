@@ -3,6 +3,7 @@ import { createGame, type GameState } from './game/engine';
 import { createDailyPuzzle, createPracticePuzzle } from './game/puzzle';
 import { randomSeed } from './game/rng';
 import { emptyStats, type Stats } from './game/stats';
+import { plusUnlocked } from './platform/entitlements';
 import { load, save } from './platform/storage';
 import { DEFAULT_SETTINGS, type Settings } from './settings';
 
@@ -52,7 +53,9 @@ export const saveStats = (mode: GameMode, stats: Stats) => save(`stats:${mode}`,
 
 export function loadSettings(): Settings {
   const settings = { ...DEFAULT_SETTINGS, ...load<Partial<Settings>>('settings', {}) };
-  return { ...settings, difficulty: toDifficulty(settings.difficulty) };
+  const difficulty = toDifficulty(settings.difficulty);
+  // Plus difficulties fall back to Standard when Plus isn't unlocked (e.g. after a preview build).
+  return { ...settings, difficulty: difficulty === 'expert' && !plusUnlocked() ? 'standard' : difficulty };
 }
 export const saveSettings = (settings: Settings) => save('settings', settings);
 

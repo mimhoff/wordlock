@@ -6,6 +6,8 @@ import {
   activeRowLetters,
   canToggleLock,
   cursorPosition,
+  expertStarter,
+  playerGuesses,
   pickUsed,
   toggleLockPick,
   createGame,
@@ -167,10 +169,10 @@ describe('game engine', () => {
     expect(submitGuess(game)).toEqual({ ok: false, error: 'Game over' });
   });
 
-  it('maps difficulties saved by older builds, including the removed Expert mode', () => {
+  it('reads saved difficulties, falling back to Standard', () => {
     expect(toDifficulty('standard')).toBe('standard');
     expect(toDifficulty('hidden')).toBe('hidden');
-    expect(toDifficulty('expert')).toBe('hidden');
+    expect(toDifficulty('expert')).toBe('expert');
     expect(toDifficulty(undefined)).toBe('standard');
   });
 
@@ -187,6 +189,53 @@ describe('game engine', () => {
     const restored = createGame(played.puzzle, 'hidden', played.guesses, 'xy');
     expect(restored.evaluations).toEqual(played.evaluations);
     expect(restored.input).toBe('xy');
+  });
+});
+
+describe('expert', () => {
+  it('starts from a given word whose row-2 lock carries a yellow letter', () => {
+    for (let seed = 1; seed <= 300; seed++) {
+      const game = createGame(createPracticePuzzle(seed), 'expert');
+      const starter = game.guesses[0];
+      expect(game.guesses).toHaveLength(1);
+      expect(playerGuesses(game)).toBe(0);
+      expect(starter).not.toBe(game.puzzle.answer);
+      const lock = activeLock(game)!;
+      expect(lock.letter).toBe(starter[lock.position]);
+      expect(game.evaluations[0][lock.position]).toBe('present');
+    }
+  });
+
+  it('gives little else away, and is the same for everyone', () => {
+    let gentle = 0;
+    for (let seed = 1; seed <= 300; seed++) {
+      const puzzle = createPracticePuzzle(seed);
+      expect(expertStarter(puzzle)).toBe(expertStarter(createPracticePuzzle(seed)));
+      const ev = evaluateGuess(expertStarter(puzzle), puzzle.answer);
+      if (ev.filter((s) => s === 'correct').length <= 1 && ev.filter((s) => s !== 'absent').length <= 3) gentle++;
+    }
+    expect(gentle).toBeGreaterThan(295); // the fallbacks should almost never be needed
+  });
+
+  it('has no lock pick, but locks stay visible ahead', () => {
+    const game = createGame(createPracticePuzzle(7), 'expert');
+    expect(canToggleLock(game, 1)).toBe(false);
+    expect(canToggleLock(game, 3)).toBe(false);
+    expect(toggleLockPick(game, 1)).toBe(game);
+  });
+
+  it('keeps the given word when restored from a save', () => {
+    const game = createGame(createPracticePuzzle(7), 'expert');
+    const restored = createGame(game.puzzle, 'expert', game.guesses, '');
+    expect(restored.guesses).toEqual(game.guesses);
+  });
+
+  it('shares with the Expert label and no lock-pick mark', () => {
+    const puzzle = createPracticePuzzle(7);
+    const game = createGame(puzzle, 'expert', [expertStarter(puzzle), puzzle.answer]);
+    expect(buildShareText(game, { highContrast: false }).split('\n')[0]).toBe(
+      `WordLock Practice ${encodeSeed(7)} 2/8 (Expert)`,
+    );
   });
 });
 

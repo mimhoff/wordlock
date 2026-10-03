@@ -10,6 +10,7 @@ puzzle and the 🔒/🔑 share grid are how the game grows, so nothing gets in f
 |---|---|---|
 | Daily, practice, difficulties, lock pick, stats, sharing | ✅ | ✅ |
 | Banner ad (Android, below the keyboard) | shown | **removed** |
+| **Expert** difficulty: start from a given word whose row-2 lock carries a yellow letter; no lock pick | — | ✅ |
 | Extras (e.g. the Heist / Dig / Frozen themes, a puzzle archive) | — | ✅ |
 
 - **Price:** around $2.99–$4.99, one-time. No subscription.
@@ -26,6 +27,9 @@ Done:
 - [x] Ko-fi shown on the website only: app stores require their own billing for payments in apps
 - [x] A single premium switch, `isPremium()` / `setPremium()` in `src/platform/entitlements.ts`.
       The banner already respects it, and buying removes a banner that's showing.
+- [x] Expert difficulty, gated by `plusUnlocked()`. Unlocked on the dev server and in preview test
+      builds (`WORDLOCK_PLUS_PREVIEW=1 npm run android:windows`); never in normal website or release
+      builds. Don't upload a preview build to production.
 
 To do, in your accounts:
 - [ ] **AdMob → Privacy & messaging:** create and publish the GDPR (and optionally US states)

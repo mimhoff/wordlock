@@ -1,4 +1,5 @@
 import { DIFFICULTIES, type Difficulty } from '../game/constants';
+import { plusUnlocked } from '../platform/entitlements';
 import { hapticsSupported } from '../platform/haptics';
 import type { Settings, Theme } from '../settings';
 import { Modal } from './Modal';
@@ -19,20 +20,30 @@ export function SettingsModal({ settings, gameInProgress, onChange, onClose }: S
       <section className="setting">
         <h3>Difficulty</h3>
         <div className="difficulty-options" role="radiogroup" aria-label="Difficulty">
-          {(Object.keys(DIFFICULTIES) as Difficulty[]).map((d) => (
-            <label key={d} className={`difficulty-option ${settings.difficulty === d ? 'selected' : ''}`}>
-              <input
-                type="radio"
-                name="difficulty"
-                checked={settings.difficulty === d}
-                onChange={() => onChange({ ...settings, difficulty: d })}
-              />
-              <span>
-                <strong>{DIFFICULTIES[d].label}</strong>
-                <small>{DIFFICULTIES[d].description}</small>
-              </span>
-            </label>
-          ))}
+          {(Object.keys(DIFFICULTIES) as Difficulty[]).map((d) => {
+            const locked = DIFFICULTIES[d].plus && !plusUnlocked();
+            return (
+              <label
+                key={d}
+                className={`difficulty-option ${settings.difficulty === d ? 'selected' : ''} ${locked ? 'locked-option' : ''}`}
+              >
+                <input
+                  type="radio"
+                  name="difficulty"
+                  checked={settings.difficulty === d}
+                  disabled={locked}
+                  onChange={() => onChange({ ...settings, difficulty: d })}
+                />
+                <span>
+                  <strong>
+                    {DIFFICULTIES[d].label}
+                    {DIFFICULTIES[d].plus && <span className="plus-badge">Plus</span>}
+                  </strong>
+                  <small>{DIFFICULTIES[d].description}</small>
+                </span>
+              </label>
+            );
+          })}
         </div>
         {gameInProgress && <p className="setting-note">Changes to difficulty apply from your next game.</p>}
       </section>

@@ -19,7 +19,7 @@ export function buildShareText(state: GameState, opts: { highContrast: boolean; 
   const mark = state.difficulty === 'standard' ? '' : ` (${DIFFICULTIES[state.difficulty].label})`;
   // 🔑 = the lock pick was used (distinct from 🔒 at emoji size); 🔒 = won with every lock kept.
   const picked = pickUsed(state);
-  const pickMark = picked ? ' 🔑' : state.status === 'won' ? ' 🔒' : '';
+  const pickMark = state.difficulty === 'expert' ? '' : picked ? ' 🔑' : state.status === 'won' ? ' 🔒' : '';
   const grid = state.evaluations.map((row, r) =>
     row
       .map((s, i) => {

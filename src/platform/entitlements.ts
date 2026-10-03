@@ -15,6 +15,14 @@ const listeners = new Set<Listener>();
 
 export const isPremium = (): boolean => load(KEY, false);
 
+/**
+ * Plus features (e.g. Expert) are unlocked for premium players, and for previews: the dev server,
+ * and test builds made with VITE_PLUS_PREVIEW=true (`WORDLOCK_PLUS_PREVIEW=1 npm run android:windows`).
+ * Ordinary website and release builds never get them for free.
+ */
+const PLUS_PREVIEW = import.meta.env.DEV || import.meta.env.VITE_PLUS_PREVIEW === 'true';
+export const plusUnlocked = (): boolean => PLUS_PREVIEW || isPremium();
+
 export function setPremium(value: boolean): void {
   if (value === isPremium()) return;
   save(KEY, value);

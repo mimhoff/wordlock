@@ -9,9 +9,11 @@ import { Toasts, useToasts } from './components/Toasts';
 import { DIFFICULTIES, WIN_MESSAGES, WORD_LENGTH, type GameMode } from './game/constants';
 import {
   activeLock,
+  createGame,
   deleteLetter,
   keyboardStates,
   pickUsed,
+  playerGuesses,
   submitGuess,
   toggleLockPick,
   typeLetter,
@@ -171,7 +173,7 @@ export default function App() {
   // One-time tip the first time a lock is in play.
   useEffect(() => {
     if (modal || revealRow != null || game.status !== 'playing' || persist.hasSeenPickTip()) return;
-    if (!activeLock(game) && game.pickedRow == null) return;
+    if (game.difficulty === 'expert' || (!activeLock(game) && game.pickedRow == null)) return;
     persist.markPickTipSeen();
     // Above the keyboard, so it doesn't cover the row that has just been revealed.
     showToast('Tip: tap a lock to pick it. You get one per game.', 4500, 'bottom');
@@ -211,7 +213,8 @@ export default function App() {
     setSettings(next);
     if (next.difficulty !== settings.difficulty) {
       // Difficulty is fixed once a game has started, like Wordle's hard mode.
-      const apply = (g: GameState) => (g.guesses.length === 0 ? { ...g, difficulty: next.difficulty } : g);
+      // Rebuilt rather than patched, so Expert's given first word is added (or removed).
+      const apply = (g: GameState) => (playerGuesses(g) === 0 ? createGame(g.puzzle, next.difficulty) : g);
       setDaily(apply);
       setPractice(apply);
     }
@@ -270,6 +273,7 @@ export default function App() {
             </button>
           ))}
         </nav>
+        {game.difficulty !== 'expert' && (
         <span
           className={`pick-pill ${pickState}`}
           title={PICK_TITLES[pickState]}
@@ -279,6 +283,7 @@ export default function App() {
           <KeyIcon />
           <span aria-hidden="true">{PICK_COUNTS[pickState]}</span>
         </span>
+        )}
       </div>
 
       <main className="board-container">
@@ -309,7 +314,7 @@ export default function App() {
       {modal === 'settings' && (
         <SettingsModal
           settings={settings}
-          gameInProgress={game.guesses.length > 0}
+          gameInProgress={playerGuesses(game) > 0}
           onChange={updateSettings}
           onClose={closeModal}
         />

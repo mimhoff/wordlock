@@ -3,6 +3,7 @@
 # opens, so a native build there always has the latest web code, icons and splash.
 #
 # Usage: npm run android:windows
+#        WORDLOCK_PLUS_PREVIEW=1 npm run android:windows   (test build with Plus features unlocked)
 # Target: $WORDLOCK_WINDOWS_ANDROID, default C:\Users\mimhoff\AndroidProjects\wordlock\android
 #
 # Only app/src/main/res (icons, splash, colours) and app/src/main/assets (the web build) are
@@ -22,8 +23,13 @@ if [ ! -d "$DST" ]; then
 fi
 
 cd "$ROOT"
-echo "→ Building the game"
-npm run build
+if [ "${WORDLOCK_PLUS_PREVIEW:-}" = "1" ]; then
+  echo "→ Building the game (Plus PREVIEW: Plus features unlocked; don't release this build)"
+  VITE_PLUS_PREVIEW=true npm run build
+else
+  echo "→ Building the game"
+  npm run build
+fi
 
 echo "→ Copying the web build into android/ (cap copy: web assets and config only)"
 npx cap copy android
