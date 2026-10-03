@@ -4,6 +4,7 @@ import '@fontsource-variable/space-grotesk';
 import App from './App';
 import { migrateLegacyData } from './migration';
 import { initAds } from './platform/ads';
+import { initBilling } from './platform/billing';
 import { initStorage } from './platform/storage';
 import './styles.css';
 
@@ -28,6 +29,8 @@ async function start() {
   );
 
   initAds();
+  // Restores WordLock Plus from the store (native apps with RevenueCat configured; otherwise a no-op).
+  void initBilling();
 }
 
 void start();

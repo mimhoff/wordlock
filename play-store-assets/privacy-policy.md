@@ -1,6 +1,6 @@
 # Privacy Policy for WordLock
 
-**Last Updated: December 5, 2024**
+**Last Updated: October 3, 2026**
 
 ## Introduction
 
@@ -29,6 +29,14 @@ WordLock uses the following third-party services that may collect information:
 - The web version displays advertisements through Google AdSense
 - AdSense uses cookies and similar technologies to serve ads based on your browsing activity
 - You can learn more at: https://policies.google.com/technologies/ads
+
+#### RevenueCat (In-App Purchases, Android and iOS Apps)
+- Optional in-app purchases (WordLock Plus) are processed by Google Play or the Apple App Store and
+  managed through RevenueCat
+- RevenueCat receives purchase information (such as the product bought, a transaction ID and an
+  anonymous app user ID) so the app can confirm and restore your purchase. WordLock does not ask
+  for your name or email address
+- You can learn more at: https://www.revenuecat.com/privacy
 
 ## How We Use Information
 

@@ -6,8 +6,10 @@
 #        WORDLOCK_PLUS_PREVIEW=1 npm run android:windows   (test build with Plus features unlocked)
 # Target: $WORDLOCK_WINDOWS_ANDROID, default C:\Users\mimhoff\AndroidProjects\wordlock\android
 #
-# Only app/src/main/res (icons, splash, colours) and app/src/main/assets (the web build) are
-# copied. Gradle files, version numbers and signing settings on the Windows side are never touched.
+# Copied: app/src/main/res (icons, splash, colours), app/src/main/assets (the web build), the
+# Gradle files Capacitor generates (capacitor.settings.gradle, app/capacitor.build.gradle, marked
+# "DO NOT EDIT"), and the native plugin packages they point to in node_modules. Your own Gradle
+# files, version numbers and signing settings on the Windows side are never touched.
 
 set -euo pipefail
 
@@ -31,12 +33,27 @@ else
   npm run build
 fi
 
-echo "→ Copying the web build into android/ (cap copy: web assets and config only)"
-npx cap copy android
+echo "→ Syncing android/ (cap sync: web build, config and native plugin registrations)"
+npx cap sync android
 
 echo "→ Copying resources (icons, splash) to $TARGET"
 # No --delete: resources added on the Windows side (e.g. by Android Studio) are kept.
 rsync -r --checksum --itemize-changes "$SRC/res/" "$DST/res/" | grep -v '^\.' || true
+
+echo "→ Copying Capacitor's generated Gradle files to $TARGET"
+cp "$ROOT/android/capacitor.settings.gradle" "$TARGET/capacitor.settings.gradle"
+cp "$ROOT/android/app/capacitor.build.gradle" "$TARGET/app/capacitor.build.gradle"
+
+echo "→ Copying native plugin packages to the Windows node_modules"
+# capacitor.settings.gradle points at ../node_modules/<package>/<android dir>; mirror each package.
+WIN_MODULES="$(dirname "$TARGET")/node_modules"
+grep -o "'\.\./node_modules/[^']*'" "$ROOT/android/capacitor.settings.gradle" | tr -d "'" | sed 's#^\.\./node_modules/##' |
+  while read -r dir; do
+    pkg=$(echo "$dir" | awk -F/ '{ if ($1 ~ /^@/) print $1"/"$2; else print $1 }')
+    mkdir -p "$WIN_MODULES/$pkg"
+    rsync -r --checksum --delete --exclude node_modules "$ROOT/node_modules/$pkg/" "$WIN_MODULES/$pkg/"
+    echo "   $pkg"
+  done
 
 echo "→ Copying the web build to $TARGET"
 # --delete: the web build is generated, so stale hashed files from older builds are removed.

@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react';
 import { DIFFICULTIES, type Difficulty } from '../game/constants';
-import { plusUnlocked } from '../platform/entitlements';
+import { isPremium, onPremiumChange, plusUnlocked } from '../platform/entitlements';
 import { hapticsSupported } from '../platform/haptics';
 import type { Settings, Theme } from '../settings';
 import { Modal } from './Modal';
+import { PlusSection } from './PlusSection';
 
 interface SettingsModalProps {
   settings: Settings;
@@ -15,8 +17,14 @@ interface SettingsModalProps {
 const THEMES: Theme[] = ['system', 'light', 'dark'];
 
 export function SettingsModal({ settings, gameInProgress, onChange, onClose }: SettingsModalProps) {
+  // Re-render when a purchase or restore completes, so Expert unlocks straight away.
+  const [premium, setPremiumState] = useState(isPremium);
+  useEffect(() => onPremiumChange(setPremiumState), []);
+
   return (
     <Modal title="Settings" onClose={onClose}>
+      <PlusSection premium={premium} />
+
       <section className="setting">
         <h3>Difficulty</h3>
         <div className="difficulty-options" role="radiogroup" aria-label="Difficulty">

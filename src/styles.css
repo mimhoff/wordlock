@@ -881,6 +881,35 @@ button.tile:focus-visible {
   vertical-align: 2px;
 }
 
+.plus-section p {
+  margin: 4px 0 12px;
+  font-size: 0.9rem;
+}
+
+.plus-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.link-button {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.button:disabled,
+.link-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .difficulty-option.locked-option {
   opacity: 0.55;
   cursor: not-allowed;

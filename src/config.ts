@@ -14,3 +14,14 @@ export const ADSENSE_CLIENT: string = env.VITE_ADSENSE_CLIENT ?? 'ca-pub-5632873
  * (ca-app-pub-5632873189325776~1491981967) goes in the native projects; see docs/ADMOB_SETUP.md.
  */
 export const ADMOB_BANNER_ID: string = env.VITE_ADMOB_BANNER_ID ?? 'ca-app-pub-5632873189325776/5646957190';
+
+/**
+ * RevenueCat public SDK keys (safe to ship in the app; they only identify the project). Empty until
+ * the RevenueCat project exists: with no key for the platform, purchases are switched off and the
+ * WordLock Plus section is hidden. See docs/MONETIZATION.md.
+ */
+export const REVENUECAT_ANDROID_KEY: string = env.VITE_REVENUECAT_ANDROID_KEY ?? '';
+export const REVENUECAT_IOS_KEY: string = env.VITE_REVENUECAT_IOS_KEY ?? '';
+
+/** The RevenueCat entitlement that WordLock Plus grants. */
+export const PLUS_ENTITLEMENT = 'plus';

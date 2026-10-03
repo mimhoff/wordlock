@@ -41,14 +41,23 @@ To do, in your accounts:
 - [ ] **Play Console → App content → Data safety:** declare ads (AdMob SDK) and in-app purchases.
 - [ ] **Play Console → App content → Ads:** "Yes, my app contains ads".
 
-To do, in code (once the product exists):
-- [ ] Add a billing plugin. **RevenueCat** (`@revenuecat/purchases-capacitor`) is the easiest:
-      it handles receipts and restores, and covers iOS later; free up to a revenue threshold.
-      The alternative is a direct Play Billing plugin with no third party, but more code.
-- [ ] On start-up, restore purchases and call `setPremium()` with the result.
-- [ ] Settings: a "WordLock Plus" row with the price, **Buy** and **Restore purchases**.
-- [ ] Gate the extras on `isPremium()`.
-- [ ] Re-check the store listing text once Plus exists ("Contains ads · In-app purchases").
+Done in code (RevenueCat, `@revenuecat/purchases-capacitor`):
+- [x] `src/platform/billing.ts`: configures RevenueCat in the native app, restores the player's Plus
+      status on start-up, and keeps `isPremium()` in sync with the store.
+- [x] Settings → **WordLock Plus**: the store price, **Get Plus** and **Restore purchase**; a thank-you
+      once bought. Hidden on the website and until a RevenueCat key is configured.
+- [x] Privacy policy mentions RevenueCat (re-publish the hosted copy).
+
+To do in RevenueCat (https://app.revenuecat.com), after the Play Console product exists:
+- [ ] Create a project and add the **Android app** (package `com.mimhoff.wordlock`).
+- [ ] Connect it to Play Console with a **service account JSON key** (RevenueCat's docs walk through
+      creating it in Google Cloud and granting it access in Play Console → Users and permissions).
+- [ ] **Entitlement** `plus` (the ID the app checks), with the `wordlock_plus` product attached.
+- [ ] **Offering** `default` (current), with one package containing `wordlock_plus`.
+- [ ] Copy the Android **public SDK key** (starts `goog_`) into `src/config.ts` as the default for
+      `REVENUECAT_ANDROID_KEY` (it's safe to commit), or set `VITE_REVENUECAT_ANDROID_KEY`.
+- [ ] Test with a licence-tester account: buy, uninstall, reinstall, **Restore purchase**.
+- [ ] Re-check the store listing ("Contains ads · In-app purchases") and the Data safety form.
 
 ## Measuring
 
