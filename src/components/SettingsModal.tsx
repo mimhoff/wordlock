@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DIFFICULTIES, type Difficulty } from '../game/constants';
+import { onPrivacyOptionsChange, openPrivacyOptions, privacyOptionsRequired } from '../platform/ads';
 import { isPremium, onPremiumChange, plusUnlocked } from '../platform/entitlements';
 import { hapticsSupported } from '../platform/haptics';
 import type { Settings, Theme } from '../settings';
@@ -20,6 +21,9 @@ export function SettingsModal({ settings, gameInProgress, onChange, onClose }: S
   // Re-render when a purchase or restore completes, so Expert unlocks straight away.
   const [premium, setPremiumState] = useState(isPremium);
   useEffect(() => onPremiumChange(setPremiumState), []);
+  // Google's privacy options: shown only when the SDK says this player needs them.
+  const [privacyNeeded, setPrivacyNeeded] = useState(privacyOptionsRequired);
+  useEffect(() => onPrivacyOptionsChange(setPrivacyNeeded), []);
 
   return (
     <Modal title="Settings" onClose={onClose}>
@@ -87,6 +91,18 @@ export function SettingsModal({ settings, gameInProgress, onChange, onClose }: S
           <span className="slider" />
         </label>
       </section>
+
+      {privacyNeeded && !premium && (
+        <section className="setting row-setting">
+          <span>
+            <strong>Privacy</strong>
+            <small>Review or change how ads use your data</small>
+          </span>
+          <button className="link-button" onClick={() => void openPrivacyOptions()}>
+            Ad privacy choices
+          </button>
+        </section>
+      )}
 
       {hapticsSupported && (
         <section className="setting row-setting">

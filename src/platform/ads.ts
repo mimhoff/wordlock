@@ -30,23 +30,35 @@ function bannerUnit(): string | null {
   return null;
 }
 
-/**
- * Native: AdMob banner pinned to the bottom of the screen. The app reserves space for it
- * through the --ad-height CSS variable so it never covers the keyboard.
- */
-async function showAdMobBanner(): Promise<void> {
-  const adId = bannerUnit();
-  if (!adId) return;
-  const testing = adTesting();
-  await AdMob.initialize({ initializeForTesting: testing });
+// --- Privacy options (Google's UMP) -----------------------------------------------------
+// Where the law requires it (e.g. some US states, and changing a GDPR choice later), Google expects
+// an in-app way to reopen the privacy message. The SDK says when; Settings shows the button then.
+let privacyRequired = false;
+const privacyListeners = new Set<(required: boolean) => void>();
 
-  // Google's UMP consent form (GDPR/EEA and US state privacy laws), shown only where required.
-  let consent = await AdMob.requestConsentInfo();
-  if (consent.status === AdmobConsentStatus.REQUIRED && consent.isConsentFormAvailable) {
-    consent = await AdMob.showConsentForm();
-  }
-  if (!consent.canRequestAds) return;
+function setPrivacyRequired(status: string | undefined): void {
+  // The plugin doesn't export its PrivacyOptionsRequirementStatus enum, so compare the value.
+  const required = status === 'REQUIRED';
+  if (required === privacyRequired) return;
+  privacyRequired = required;
+  privacyListeners.forEach((listener) => listener(required));
+}
 
+/** Whether Settings should offer "Ad privacy choices" for this player. */
+export const privacyOptionsRequired = () => privacyRequired;
+
+export function onPrivacyOptionsChange(listener: (required: boolean) => void): () => void {
+  privacyListeners.add(listener);
+  return () => privacyListeners.delete(listener);
+}
+
+// --- Banner --------------------------------------------------------------------------------
+let bannerShown = false;
+
+/** Shows the banner once consent allows it. The app reserves --ad-height so it never covers the keyboard. */
+async function showBannerNow(adId: string): Promise<void> {
+  if (bannerShown || isPremium()) return;
+  bannerShown = true;
   await AdMob.addListener(BannerAdPluginEvents.SizeChanged, ({ height }) =>
     document.documentElement.style.setProperty('--ad-height', `${height}px`),
   );
@@ -55,8 +67,42 @@ async function showAdMobBanner(): Promise<void> {
     adSize: BannerAdSize.ADAPTIVE_BANNER,
     position: BannerAdPosition.BOTTOM_CENTER,
     margin: 0,
-    isTesting: testing,
+    isTesting: adTesting(),
   });
+}
+
+/** Native: AdMob with Google's consent flow, then the banner pinned below the keyboard. */
+async function showAdMobBanner(): Promise<void> {
+  const adId = bannerUnit();
+  if (!adId) return;
+  await AdMob.initialize({ initializeForTesting: adTesting() });
+
+  // Google's UMP consent form (GDPR/EEA and US state privacy laws), shown only where required.
+  let consent = await AdMob.requestConsentInfo();
+  if (consent.status === AdmobConsentStatus.REQUIRED && consent.isConsentFormAvailable) {
+    consent = await AdMob.showConsentForm();
+  }
+  // Recorded even if ads are declined: the player must be able to change their mind later.
+  setPrivacyRequired(consent.privacyOptionsRequirementStatus);
+  if (!consent.canRequestAds) return;
+  await showBannerNow(adId);
+}
+
+/**
+ * Settings → "Ad privacy choices": reopens Google's privacy message, then applies the new choice
+ * straight away (banner removed if ads are no longer allowed, shown if newly allowed).
+ */
+export async function openPrivacyOptions(): Promise<void> {
+  try {
+    await AdMob.showPrivacyOptionsForm();
+    const consent = await AdMob.requestConsentInfo();
+    setPrivacyRequired(consent.privacyOptionsRequirementStatus);
+    const adId = bannerUnit();
+    if (!consent.canRequestAds) await removeAdMobBanner();
+    else if (adId) await showBannerNow(adId);
+  } catch (err) {
+    console.warn('Privacy options unavailable', err);
+  }
 }
 
 let trackingAsked = false;
@@ -79,6 +125,7 @@ export async function requestTrackingIfNeeded(): Promise<void> {
 
 /** Takes the banner away straight after a purchase, and gives its space back to the game. */
 async function removeAdMobBanner(): Promise<void> {
+  bannerShown = false;
   await AdMob.removeBanner().catch(() => {});
   document.documentElement.style.removeProperty('--ad-height');
 }
