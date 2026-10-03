@@ -15,6 +15,9 @@ export const ADSENSE_CLIENT: string = env.VITE_ADSENSE_CLIENT ?? 'ca-pub-5632873
  */
 export const ADMOB_BANNER_ID: string = env.VITE_ADMOB_BANNER_ID ?? 'ca-app-pub-5632873189325776/5646957190';
 
+/** AdMob banner unit for the iOS app. Empty until the iOS app exists in AdMob: no ads on iOS until set. */
+export const ADMOB_BANNER_ID_IOS: string = env.VITE_ADMOB_BANNER_ID_IOS ?? '';
+
 /**
  * RevenueCat public SDK keys (safe to ship in the app; they only identify the project). Empty until
  * the RevenueCat project exists: with no key for the platform, purchases are switched off and the

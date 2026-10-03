@@ -23,6 +23,7 @@ import { dailyNumber, decodeSeed, encodeSeed, toDateKey } from './game/puzzle';
 import { buildShareText } from './game/shareText';
 import { recordResult } from './game/stats';
 import * as persist from './persistence';
+import { requestTrackingIfNeeded } from './platform/ads';
 import { haptic, type HapticEvent } from './platform/haptics';
 import { onBackButton } from './platform/native';
 import { shareText, shareUrl } from './platform/share';
@@ -129,6 +130,8 @@ export default function App() {
         showToast(finished.puzzle.answer.toUpperCase(), 1900);
       }
       setTimeout(() => setModal('stats'), 2000);
+      // iOS only: Apple's tracking prompt, once, after a finished game rather than at launch.
+      setTimeout(() => void requestTrackingIfNeeded(), 2600);
     },
     [showToast, buzz],
   );

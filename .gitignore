@@ -9,7 +9,7 @@ tsconfig.tsbuildinfo
 .logs/
 *.local
 android/
-ios/
+# ios/ is committed (settings, icon, launch screen); ios/.gitignore excludes generated files.
 
 # Capacitor
 .capacitor/

@@ -30,38 +30,29 @@ Bundle ID: `com.mimhoff.wordlock` (same as Android's package name).
 
 - [ ] In AdMob, add an **iOS app** (it gets its own app ID `ca-app-pub-…~…`) and an iOS **banner
       ad unit**.
-- [ ] **Code change**: use the iOS banner unit on iOS (today `ADMOB_BANNER_ID` in `src/config.ts` is
-      the Android one), e.g. an `ADMOB_BANNER_ID_IOS`.
-- [ ] **Code change**: ask for **App Tracking Transparency** permission on iOS before loading ads
-      (`AdMob.trackingAuthorizationStatus()` / `requestTrackingAuthorization()` in
-      `src/platform/ads.ts`). Without it, ads are non-personalised and earn less. Ask once, after the
-      consent form, never at first launch before the player has seen the game.
+- [x] Code: iOS uses its own banner unit, `ADMOB_BANNER_ID_IOS` in `src/config.ts`. It's empty for now,
+      and **AdMob isn't started at all on iOS until it's set**. Test builds use Google's test units.
+- [ ] Put the iOS banner unit ID into `ADMOB_BANNER_ID_IOS`.
+- [x] Code: **App Tracking Transparency** is asked once, after the player's first finished game
+      (`requestTrackingIfNeeded()` in `src/platform/ads.ts`), so never at first launch and always after
+      Google's consent form. Declining still shows (non-personalised) ads.
 - [ ] In AdMob → **Privacy & messaging**, publish an **IDFA explainer** message for iOS (optional,
       shown before Apple's prompt) as well as the GDPR consent message.
 
 ## 4. The Xcode project (`npx cap add ios`)
 
-Run `npm install @capacitor/ios && npx cap add ios`. Capacitor 8 sets new iOS projects up with Swift
-Package Manager; if a plugin (e.g. AdMob) fails to resolve, recreate with CocoaPods instead
-(`npx cap add ios --packagemanager CocoaPods`, which needs CocoaPods on the build machine).
-Then, in `ios/App/App/Info.plist`:
+- [x] The project exists (`ios/`, committed), made with `npx cap add ios`. Capacitor 8 uses Swift
+      Package Manager, and all six plugins (AdMob, RevenueCat, app, haptics, preferences, share) support it.
+- [x] `Info.plist`: tracking-prompt text, `ITSAppUsesNonExemptEncryption` = NO, portrait only, and
+      Google's own ad-network ID in `SKAdNetworkItems`.
+- [x] iPhone only (`TARGETED_DEVICE_FAMILY = 1`), so no iPad screenshots or layout testing.
+- [x] App icon: the grid at 1024×1024, no transparency (iOS rounds the corners itself).
+- [x] Launch screen: the white padlock on crimson `#B3203A`, matching Android's splash.
+- [ ] **Replace the placeholder `GADApplicationIdentifier`** in `ios/App/App/Info.plist`. It's Google's
+      public sample ID (test ads only) until WordLock's iOS app exists in AdMob.
+- [ ] Optionally extend `SKAdNetworkItems` with the third-party list from AdMob's iOS guide.
 
-- [ ] `GADApplicationIdentifier`: the iOS AdMob app ID.
-- [ ] `SKAdNetworkItems`: Google's list of ad-network IDs (from AdMob's iOS quick-start guide).
-- [ ] `NSUserTrackingUsageDescription`: e.g. "Lets WordLock show you more relevant ads. The game
-      works the same either way."
-- [ ] `ITSAppUsesNonExemptEncryption` = `NO`, so each upload skips the export-compliance question.
-- [ ] Portrait only (`UISupportedInterfaceOrientations`), and iPhone only unless you want to
-      support iPad (iPad needs its own screenshots and layout checks).
-
-Assets:
-- [ ] **App icon**: one 1024×1024 PNG, **no transparency**: the grid, rendered from
-      `scripts/icons/icon-grid.html` (same as `public/icons/icon-512x512.png`, at 1024).
-      iOS rounds the corners itself.
-- [ ] **Launch screen**: crimson `#B3203A` with the white padlock, to match Android's splash
-      (`LaunchScreen.storyboard`: background colour plus a centred padlock image).
-
-Commit the `ios/` folder (unlike `android/`, nothing in it is secret), or regenerate it in CI.
+After changing web code, `npx cap sync ios` copies the build into the project (CI does this).
 
 ## 5. Cloud builds with Codemagic
 
