@@ -19,6 +19,16 @@ puzzle and the 🔒/🔑 share grid are how the game grows, so nothing gets in f
   shared result.
 - **Web** keeps AdSense and the Ko-fi link; purchases are Android (and later iOS) only.
 
+## Release settings (Play Console)
+
+| Setting | Value |
+|---|---|
+| **App price** | **Free**. Set during testing; Play never allows a free app to become paid again, which is intended: WordLock never charges up front. |
+| **In-app product** | `wordlock_plus`, a one-time (non-consumable) purchase, around $2.99–$4.99, **active** |
+| **Payments profile** | Set up (in-app purchases need it even though the app is free) |
+| **Store listing** | "Contains ads" and "In-app purchases" declared; the description can mention Plus (no ads + Expert) without suggesting the free game is limited |
+| **Privacy policy** | https://mimhoff.com/wordlock/privacy-policy.html |
+
 ## Where things stand
 
 Done:
