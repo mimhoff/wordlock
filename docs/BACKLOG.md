@@ -9,6 +9,9 @@ Parked until testers have played for a while. Decide with their feedback, not be
   this confusing. The alternative is to **skip the lock** (the cursor jumps over it), which raises
   the question of what happens when the lock pick opens that tile mid-word: the cursor would need
   to come back to it, or the letters would need to shift. Watch which one testers expect.
+  - 3 Oct: a tester kept typing through the lock, so a word with that letter twice needed it typed
+    twice. Their take: "it's locked, so why would you be able to input something". One vote for
+    skipping.
 - **Expert difficulty.** Is the given first word (a yellow letter under the row-2 lock) too easy or
   too hard? The simulator can measure win rates once there's a sense of what feels right.
 
