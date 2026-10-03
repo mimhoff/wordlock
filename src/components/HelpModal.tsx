@@ -34,7 +34,8 @@ export function HelpModal({ onClose }: { onClose: () => void }) {
         </div>
         <p>
           <strong>B</strong> is in the right spot. <strong>R</strong> is in the word, but somewhere else.{' '}
-          <strong>A</strong>, <strong>K</strong> and <strong>E</strong> aren't in the word.
+          <strong>A</strong>, <strong>K</strong> and <strong>E</strong> aren't in the word. The keyboard shows the
+          same colours, and every letter stays playable, even ruled-out ones.
         </p>
 
         <h3>Every row locks a letter</h3>

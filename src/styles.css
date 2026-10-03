@@ -46,10 +46,10 @@
     --present-text: #241a00;
     --absent: #474e5a;
     --locked: #c62a44;
-    --key-bg: #3a3d44;
-    --key-text: #f1f0ec;
-    --key-absent: #24262b;
-    --key-absent-text: #6f737b;
+    --key-bg: #6c7079;
+    --key-text: #ffffff;
+    --key-absent: #474e5a;
+    --key-absent-text: #e3e5e9;
     --modal-bg: #1d1f23;
     --backdrop: rgba(0, 0, 0, 0.55);
     --toast-bg: #f1f0ec;
@@ -71,10 +71,10 @@
   --present-text: #241a00;
   --absent: #474e5a;
   --locked: #c62a44;
-  --key-bg: #3a3d44;
-  --key-text: #f1f0ec;
-  --key-absent: #24262b;
-  --key-absent-text: #6f737b;
+  --key-bg: #6c7079;
+  --key-text: #ffffff;
+  --key-absent: #474e5a;
+  --key-absent-text: #e3e5e9;
   --modal-bg: #1d1f23;
   --backdrop: rgba(0, 0, 0, 0.55);
   --toast-bg: #f1f0ec;
@@ -584,7 +584,7 @@ button.tile:focus-visible {
   color: #fff;
 }
 
-/* Ruled-out letters recede: darker than untouched keys in dark mode. */
+/* Ruled-out letters take the absent-tile colour, like the board, and stay readable: they can still be typed. */
 .key.absent {
   color: var(--key-absent-text);
 }
