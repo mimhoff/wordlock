@@ -11,10 +11,89 @@
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="apple-touch-icon" sizes="152x152" href="./icons/icon-152x152.png" />
     <link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192x192.png" />
-    <title>WordLock</title>
+    <title>WordLock: the word game where you need to lock in</title>
   </head>
   <body>
     <div id="root"></div>
+    <!-- Readable without JavaScript, for search engines and anyone who scrolls past the game.
+         Removed in the native apps and the installed PWA (see main.tsx). Wording follows the
+         in-game help (HelpModal.tsx) and the Play Store listing. -->
+    <article id="about" class="about">
+      <h1>How to play WordLock</h1>
+      <p>WordLock is a daily word puzzle where every row locks in a letter from your last guess.</p>
+      <p>
+        Find the hidden five-letter word in 8 guesses. After each guess, the tiles show how close you were.
+      </p>
+      <div class="about-row" aria-hidden="true">
+        <span class="correct">B</span><span class="present">R</span><span class="absent">A</span><span class="absent">K</span><span class="absent">E</span>
+      </div>
+      <p>
+        <strong>B</strong> is in the right spot. <strong>R</strong> is in the word, but somewhere else.
+        <strong>A</strong>, <strong>K</strong> and <strong>E</strong> aren't in the word. The keyboard shows the
+        same colours, and every letter stays playable, even ruled-out ones.
+      </p>
+
+      <h2>Every row locks a letter</h2>
+      <p>
+        From the second row on, one tile in each row is <strong>locked</strong>. It keeps the letter from the same
+        spot in your previous guess, and you can't change it.
+      </p>
+      <div class="about-row" aria-hidden="true">
+        <span class="absent">C</span><span class="absent">R</span><span class="correct">A</span><span class="absent">N</span><span class="present">E</span>
+      </div>
+      <div class="about-row" aria-hidden="true">
+        <span class="empty">S</span><span class="empty">T</span><span class="empty">A</span><span class="empty"></span><span class="locked">E</span>
+      </div>
+      <p>
+        Here the last spot is locked, so this guess has to end in <strong>E</strong>, even though E belongs somewhere
+        else. The first and last rows are always free, and a lock never lands in the same spot twice in a row.
+      </p>
+
+      <h2>Plan ahead</h2>
+      <p>
+        On <strong>Standard</strong> you can see where the upcoming locks are, so pick guesses that leave useful
+        letters behind. On <strong>Hidden Locks</strong>, each lock only appears when you reach its row.
+      </p>
+
+      <h2>Your lock pick</h2>
+      <p>
+        Once per game, tap or click a lock to open it and play that row freely. Changed your mind? Tap it again to
+        put the lock back, any time before you submit. Shared results show 🔑 where you used it, or 🔒 if you won
+        without it.
+      </p>
+
+      <h2>Daily and practice</h2>
+      <p>
+        <strong>Daily</strong> is a new puzzle every midnight, with the same word and locks for everyone.
+        <strong>Practice</strong> is unlimited, and you can share a practice puzzle's link to challenge friends.
+      </p>
+
+      <h2>Tips</h2>
+      <ul>
+        <li>Plan ahead: your first guesses set up your later ones.</li>
+        <li>Locking in a correct (green) letter is powerful. Locking in a wrong letter makes things challenging.</li>
+        <li>On Standard, the lock icons show which position will be locked on each row.</li>
+        <li>The best players think 2–3 moves ahead.</li>
+      </ul>
+
+      <h2>Questions</h2>
+      <h3>When does the daily puzzle change?</h3>
+      <p>At midnight in your own time zone. Everyone gets the same word and locks on the same date.</p>
+      <h3>Where are my stats saved?</h3>
+      <p>
+        In your browser, on this device. Statistics (games played, win %, streaks and guess distribution) are kept
+        separately for daily and practice games.
+      </p>
+      <h3>Is it free?</h3>
+      <p>Yes. WordLock is supported by ads and by players on <a href="https://ko-fi.com/mimhoff">Ko-fi</a>.</p>
+
+      <nav class="about-links" aria-label="More">
+        <a href="/games/">More games</a>
+        <a href="./privacy-policy.html">Privacy policy</a>
+        <a href="https://ko-fi.com/mimhoff">Ko-fi</a>
+        <a href="/">mimhoff.com</a>
+      </nav>
+    </article>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

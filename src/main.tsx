@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import '@fontsource-variable/space-grotesk';
@@ -17,7 +18,18 @@ function removeLegacyCaches() {
     .catch(() => {});
 }
 
+/**
+ * The how-to-play article in index.html is for the website. The native apps and the installed
+ * PWA are full-screen games, so it's removed there rather than left to scroll under the board.
+ */
+function removeWebArticle() {
+  if (Capacitor.isNativePlatform() || window.matchMedia('(display-mode: standalone)').matches) {
+    document.getElementById('about')?.remove();
+  }
+}
+
 async function start() {
+  removeWebArticle();
   await initStorage();
   migrateLegacyData();
   removeLegacyCaches();

@@ -993,3 +993,77 @@ button.tile:focus-visible {
   outline: 2px solid var(--text);
   outline-offset: 2px;
 }
+
+/* ------------------------------------------- how-to-play article (website only) */
+
+.about {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 40px 16px calc(var(--inset-bottom) + 48px);
+  border-top: 1px solid var(--border);
+  line-height: 1.6;
+  user-select: text;
+}
+
+.about h1 {
+  margin: 0 0 12px;
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.about h2 {
+  margin: 32px 0 8px;
+  font-size: 1.2rem;
+}
+
+.about h3 {
+  margin: 20px 0 4px;
+  font-size: 1rem;
+}
+
+.about p,
+.about ul {
+  margin: 0 0 12px;
+}
+
+.about a {
+  color: var(--text);
+}
+
+.about-row {
+  display: flex;
+  gap: 5px;
+  margin: 12px 0;
+}
+
+.about-row span {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #ffffff;
+  box-sizing: border-box;
+}
+
+.about-row .correct { background: var(--correct); }
+.about-row .present { background: var(--present); color: var(--present-text); }
+.about-row .absent { background: var(--absent); }
+.about-row .locked { background: var(--locked); }
+.about-row .empty { border: 2px solid var(--border-filled); color: var(--text); }
+
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.about-links a {
+  color: var(--muted);
+}
