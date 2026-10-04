@@ -13,7 +13,7 @@ puzzle and the 🔒/🔑 share grid are how the game grows, so nothing gets in f
 | **Expert** difficulty: start from a given word whose row-2 lock carries a yellow letter; no lock pick | — | ✅ |
 | Extras (e.g. the Heist / Dig / Frozen themes, a puzzle archive) | — | ✅ |
 
-- **Price:** around $2.99–$4.99, one-time. No subscription.
+- **Price:** one-time, no subscription. US$1.99 during testing; revisit once Plus has more in it.
 - **No full-screen interstitial ads**, ever.
 - **Rewarded ads**, if any, only in Practice and never for lock picks or anything that appears in a
   shared result.
@@ -24,7 +24,7 @@ puzzle and the 🔒/🔑 share grid are how the game grows, so nothing gets in f
 | Setting | Value |
 |---|---|
 | **App price** | **Free**. Set during testing; Play never allows a free app to become paid again, which is intended: WordLock never charges up front. |
-| **In-app product** | `wordlock_plus`, a one-time (non-consumable) purchase, around $2.99–$4.99, **active** |
+| **In-app product** | `wordlock_plus`, a one-time (non-consumable) purchase, US$1.99 base price for testing (Google converts it per country; revisit before launch), **active** |
 | **Payments profile** | Set up (in-app purchases need it even though the app is free) |
 | **Store listing** | "Contains ads" and "In-app purchases" declared; the description can mention Plus (no ads + Expert) without suggesting the free game is limited |
 | **Privacy policy** | https://mimhoff.com/wordlock/privacy-policy.html |
