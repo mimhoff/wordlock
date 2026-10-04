@@ -54,7 +54,7 @@ To do, in your accounts:
 Done in code (RevenueCat, `@revenuecat/purchases-capacitor`):
 - [x] `src/platform/billing.ts`: configures RevenueCat in the native app, restores the player's Plus
       status on start-up, and keeps `isPremium()` in sync with the store.
-- [x] Settings → **WordLock Plus**: **Get Plus** (the price shows in Google's purchase sheet, not the app) and **Restore purchase**; a thank-you
+- [x] Settings → **WordLock Plus**: the store price, **Get Plus** and **Restore purchase**; a thank-you
       once bought. Hidden on the website and until a RevenueCat key is configured.
 - [x] Privacy policy mentions RevenueCat (re-publish the hosted copy).
 

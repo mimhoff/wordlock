@@ -44,7 +44,7 @@ export function PlusSection({ premium }: { premium: boolean }) {
           <p className="plus-pitch">Remove ads and unlock Expert. A one-time purchase.</p>
           <div className="plus-actions">
             <button className="button primary" onClick={buy} disabled={busy || !offer}>
-              {offer ? 'Get Plus' : 'Loading…'}
+              {offer ? `Get Plus · ${offer.price}` : 'Loading…'}
             </button>
             <button className="link-button" onClick={restore} disabled={busy}>
               Restore purchase
