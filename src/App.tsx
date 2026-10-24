@@ -302,13 +302,15 @@ export default function App() {
         </nav>
         {game.difficulty !== 'expert' && (
         <span
-          className={`pick-pill ${pickState}`}
+          className={`pick-tile ${pickState}`}
           title={PICK_TITLES[pickState]}
           aria-label={`Lock picks left: ${PICK_COUNTS[pickState]}. ${PICK_TITLES[pickState]}`}
           role="status"
         >
           <KeyIcon />
-          <span aria-hidden="true">{PICK_COUNTS[pickState]}</span>
+          <span className="pick-count" aria-hidden="true">
+            {PICK_COUNTS[pickState]}
+          </span>
         </span>
         )}
       </div>

@@ -286,44 +286,57 @@ h1,
   font-weight: 700;
 }
 
-/* Lock pick indicator next to the mode switch. */
-.pick-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+/* Lock pick indicator next to the mode switch: a key on a tile, like the board's, with a count badge. */
+.pick-tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 34px;
   height: 34px;
-  padding: 0 12px 0 10px;
-  border-radius: 999px;
-  background: #15171a;
-  /* Keeps the black pill distinct from the dark-mode background. */
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
-  color: #f6c945;
-  font-size: 0.95rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  border: 2px solid var(--present);
+  border-radius: var(--radius);
+  background: var(--present);
+  color: var(--present-text);
 }
 
-.pick-pill svg {
+.pick-tile svg {
   width: 20px;
   height: 20px;
 }
 
-.pick-pill span {
-  color: #f6f5f1;
+.pick-tile .pick-count {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
 }
 
 /* A lock is open but can still be put back: the pick is spoken for. */
-.pick-pill.active {
+.pick-tile.active {
   box-shadow: 0 0 0 2px var(--locked);
 }
 
-.pick-pill.used {
-  color: #6b6f76;
+/* Spent: an empty dashed tile, like an open lock on the board. */
+.pick-tile.used {
+  border-style: dashed;
+  border-color: var(--border-filled);
+  background: none;
+  color: var(--muted);
 }
 
-.pick-pill.used span {
-  color: #8b8f96;
+.pick-tile.used .pick-count {
+  background: var(--border);
+  color: var(--muted);
 }
 
 /* ----------------------------------------------------------------- board */
