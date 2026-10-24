@@ -1,10 +1,13 @@
+import { Capacitor } from '@capacitor/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Board } from './components/Board';
 import { HelpModal } from './components/HelpModal';
-import { HelpIcon, KeyIcon, LockIcon, NewGameIcon, SettingsIcon, StatsIcon } from './components/icons';
+import { TESTER_GROUP_URL } from './config';
+import { CloseIcon, HelpIcon, KeyIcon, LockIcon, NewGameIcon, SettingsIcon, StatsIcon } from './components/icons';
 import { Keyboard } from './components/Keyboard';
 import { SettingsModal } from './components/SettingsModal';
 import { StatsModal } from './components/StatsModal';
+import { TesterModal } from './components/TesterModal';
 import { Toasts, useToasts } from './components/Toasts';
 import { DIFFICULTIES, WIN_MESSAGES, WORD_LENGTH, type GameMode } from './game/constants';
 import {
@@ -28,7 +31,7 @@ import { onBackButton } from './platform/native';
 import { shareText, shareUrl } from './platform/share';
 import type { Settings } from './settings';
 
-type ModalKind = 'help' | 'stats' | 'settings' | null;
+type ModalKind = 'help' | 'stats' | 'settings' | 'tester' | null;
 
 type PickState = 'ready' | 'active' | 'used';
 const PICK_COUNTS: Record<PickState, number> = { ready: 1, active: 0, used: 0 };
@@ -57,6 +60,10 @@ export default function App() {
   const [revealRow, setRevealRow] = useState<number | null>(null);
   const [bounceRow, setBounceRow] = useState<number | null>(null);
   const [shake, setShake] = useState(false);
+  // Website only: recruits testers for the Android closed test until dismissed.
+  const [showTesterBanner, setShowTesterBanner] = useState(
+    () => TESTER_GROUP_URL !== '' && !Capacitor.isNativePlatform() && !persist.testerBannerDismissed(),
+  );
   const { toasts, showToast } = useToasts();
 
   const game = mode === 'daily' ? daily : practice;
@@ -267,6 +274,24 @@ export default function App() {
         </div>
       </header>
 
+      {showTesterBanner && (
+        <div className="tester-banner">
+          <button className="tester-banner-link" onClick={() => setModal('tester')}>
+            Got Android? <strong>Help test the app</strong>
+          </button>
+          <button
+            className="tester-banner-close"
+            onClick={() => {
+              persist.dismissTesterBanner();
+              setShowTesterBanner(false);
+            }}
+            aria-label="Dismiss"
+          >
+            <CloseIcon />
+          </button>
+        </div>
+      )}
+
       <div className="mode-row">
         <nav className="mode-toggle segmented" aria-label="Game mode">
           {(['daily', 'practice'] as const).map((m) => (
@@ -303,6 +328,7 @@ export default function App() {
       <Toasts toasts={toasts} />
 
       {modal === 'help' && <HelpModal onClose={closeModal} />}
+      {modal === 'tester' && <TesterModal onClose={closeModal} />}
       {modal === 'stats' && (
         <StatsModal
           game={game}

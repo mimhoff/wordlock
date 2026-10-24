@@ -125,6 +125,14 @@ and add `signingConfig signingConfigs.release` to `buildTypes { release { … } 
 The store listing, privacy policy, data-safety answers and the pre-launch checklist live in
 [`play-store-assets/`](../play-store-assets/) (start with `DEPLOYMENT-GUIDE.md` and `PLAY-STORE-CHECKLIST.md`).
 
+## Recruiting closed-test testers
+
+New personal Play accounts need 12 testers opted in to a closed test for 14 days before production.
+The website can recruit them: set `TESTER_GROUP_URL` in `src/config.ts` (or `VITE_TESTER_GROUP_URL`)
+to the testers Google Group and redeploy. Web visitors then see a dismissible "Got Android? Help test
+the app" banner that explains the steps: join the group, opt in at `TESTER_OPTIN_URL`, install. Add the
+group as the tester list on the closed track. Set the URL back to `''` once the app is in production.
+
 ## Troubleshooting
 
 | Symptom | Fix |

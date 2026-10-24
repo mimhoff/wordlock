@@ -75,5 +75,8 @@ export const saveMode = (mode: GameMode) => save('mode', mode);
 export const hasSeenHelp = () => load('seenHelp', false);
 export const markHelpSeen = () => save('seenHelp', true);
 
+export const testerBannerDismissed = () => load('testerBannerDismissed', false);
+export const dismissTesterBanner = () => save('testerBannerDismissed', true);
+
 export const hasSeenPickTip = () => load('seenPickTip', false);
 export const markPickTipSeen = () => save('seenPickTip', true);

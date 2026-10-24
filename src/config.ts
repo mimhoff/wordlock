@@ -4,6 +4,15 @@ const env = import.meta.env;
 /** Canonical public URL, included in shared results. */
 export const SHARE_URL: string = env.VITE_SHARE_URL ?? 'https://mimhoff.com/wordlock';
 
+/**
+ * Android closed test (website only). Google admits testers through a Google Group on the closed
+ * track: people join the group, then opt in on Play. The banner stays hidden while the group URL is
+ * empty; clear it again once the app is in production.
+ */
+export const TESTER_GROUP_URL: string = env.VITE_TESTER_GROUP_URL ?? '';
+export const TESTER_OPTIN_URL: string =
+  env.VITE_TESTER_OPTIN_URL ?? 'https://play.google.com/apps/testing/com.mimhoff.wordlock';
+
 export const KOFI_URL: string = env.VITE_KOFI_URL ?? 'https://ko-fi.com/mimhoff';
 
 /** Google AdSense publisher ID (web only). Set VITE_ADSENSE_CLIENT to '' to disable. */

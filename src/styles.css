@@ -232,6 +232,60 @@ h1,
   margin-top: 8px;
 }
 
+/* Website only: recruits Android closed-test testers. */
+.tester-banner {
+  display: flex;
+  align-items: center;
+  margin: 8px 8px 0;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--correct) 14%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--correct) 40%, transparent);
+}
+
+.tester-banner-link {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 7px 12px;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.tester-banner-link strong {
+  color: var(--correct);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.tester-banner-close {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 32px;
+  border: none;
+  background: none;
+  color: var(--muted);
+}
+
+.tester-banner-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+.tester-steps {
+  padding-left: 1.4em;
+  line-height: 1.5;
+}
+
+.tester-steps li + li {
+  margin-top: 6px;
+}
+
+.tester-steps a {
+  color: var(--correct);
+  font-weight: 700;
+}
+
 /* Lock pick indicator next to the mode switch. */
 .pick-pill {
   display: inline-flex;
