@@ -19,6 +19,7 @@
   --present-text: #2a2000;
   --absent: #6e7a8a;
   --locked: #b3203a;
+  --key: #d9a91c;
   --key-bg: #e4e2db;
   --key-text: #15171a;
   --key-absent: #6e7a8a;
@@ -46,6 +47,7 @@
     --present-text: #241a00;
     --absent: #474e5a;
     --locked: #c62a44;
+    --key: #e9bd3e;
     --key-bg: #6c7079;
     --key-text: #ffffff;
     --key-absent: #474e5a;
@@ -71,6 +73,7 @@
   --present-text: #241a00;
   --absent: #474e5a;
   --locked: #c62a44;
+  --key: #e9bd3e;
   --key-bg: #6c7079;
   --key-text: #ffffff;
   --key-absent: #474e5a;
@@ -286,17 +289,16 @@ h1,
   font-weight: 700;
 }
 
-/* Lock pick indicator next to the mode switch: a key on a tile, like the board's, with a count badge. */
+/* Lock pick indicator next to the mode switch: a gold key in an outlined tile, with a count badge. */
 .pick-tile {
   position: relative;
   display: grid;
   place-items: center;
   width: 34px;
   height: 34px;
-  border: 2px solid var(--present);
+  border: 2px solid var(--key);
   border-radius: var(--radius);
-  background: var(--present);
-  color: var(--present-text);
+  color: var(--key);
 }
 
 .pick-tile svg {
@@ -323,14 +325,13 @@ h1,
 
 /* A lock is open but can still be put back: the pick is spoken for. */
 .pick-tile.active {
-  box-shadow: 0 0 0 2px var(--locked);
+  border-color: var(--locked);
 }
 
 /* Spent: an empty dashed tile, like an open lock on the board. */
 .pick-tile.used {
   border-style: dashed;
   border-color: var(--border-filled);
-  background: none;
   color: var(--muted);
 }
 
